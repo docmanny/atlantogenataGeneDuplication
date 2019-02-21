@@ -1,0 +1,54 @@
+# Snakemake RecSearch
+
+This is a Snakemake setup to facilitate Reciprocal Best-Hit searches using my RecSearch package.
+
+## Setup
+
+1. Install `conda`, `bioconda`, and `snakemake` on your computer.
+2. Clone this repo.
+3. Create and install the conda environment needed for this pipeline using:
+
+```conda env create --name RecSearch --file envs/conda_env.yaml```
+
+4. Activate the environment using `conda activate RecSearch`.
+
+## Data needed prior to use
+
+### Genomes
+In order to run the pipeline, you will need at least 2 genomes: at least one or more target genomes,
+and a query genome for the reverse search.
+You should save these in the `data/genomes` folder.
+
+### 2bit files (Blat only)
+If you are planning to use BLAT for the reciprocal searches (currently the only option actually), then you need to
+convert the genomes into 2bit files using `faToTwoBit <genome.fa> <2bit.fa>` and save these files in the `data/2bit`
+folder.
+
+### Port Table Config (Blat only, kinda)
+To use BLAT and gfServer/gfClient, you must specify a port for each gfServer. Additionally, various parts of this
+pipeline require interconverting between species names and genome assemblies. To facilitate this, a file has been
+included named `portTable.csv` in the `data` folder. Various genomes and species have already been included in this
+file along with suggested ports. However, feel free to add/move/remove species as necessary.
+
+### Query Files
+You should save all query sequences in `data/input`. Note that currently the pipeline assumes a FASTA input sequence
+with the extension ".fa".
+
+### SraRunTable (optional)
+The Snakefile supports assembling _de novo_ transcriptomes for target genomes using SRA identifiers and the
+HISAT2-StringTie pipeline. To use this feature, download an SraRunTable with the SRA identifiers of a species of
+interest, and save the file as "Genus_species_SraRunTable.tsv". `Snakemake` will use the info in `data/portTable.csv`
+to automatically make transcriptomes for any specified assembly associated with that species.
+
+### Other lines of evidence for Reciprocal Best-Hits (optional)
+In addition to performing RBH Searches, this pipeline can intersect the hits with other lines of evidence to validate
+the results, and return a list of "evidenced" hits. To do so, simply download the other evidence as either a BED or a
+GFF file into either `data/BED` or `data/GFF`, respectively.
+
+
+## Usage
+
+I highly suggest reading both the (snakemake tutorial)[https://snakemake.readthedocs.io/en/stable/tutorial/setup.html]
+and looking through the different snakefiles in the `rules/` folder to see how to use this script. In general, one
+generate all the intersecting lines of evidence for each assembly, and save them to their respective folders first so
+that Snakemake can see them and generate an appropriate course of action as a result.

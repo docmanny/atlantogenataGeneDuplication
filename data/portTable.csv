@@ -1,0 +1,410 @@
+"#","Paenungulata",,,
+30003,20003,"loxAfr3","African savanna elephant","Loxodonta africana"
+30004,20004,"loxAfr4","African savanna elephant","Loxodonta africana"
+30005,20005,"proCap1","Rock hyrax","Procavia capensis"
+30006,20006,"proCap2","Rock hyrax","Procavia capensis"
+30007,20007,"proCap3","Rock hyrax","Procavia capensis"
+30008,20008,"triMan1","Manatee","Trichechus manatus"
+30009,20009,"triManLat2","West Indian Manatee","Trichechus manatus"
+"#","Pseudopaenungulata",,,
+30010,20010,"oryAfe1.1","Aardvark","Orycteropus afer"
+30011,20011,"oryAfe1.2","Aardvark","Orycteropus afer"
+30012,20012,"oryAfe2.1","Aardvark","Orycteropus afer"
+30013,20013,"oryAfe2.2","Aardvark","Orycteropus afer"
+"#","Xenarthra",,,
+30014,20014,"echTel2","Lesser Hedgehog Tenrec","Echinops telfairi"
+30015,20015,,,
+30016,20016,,,
+30017,20017,,,
+30018,20018,,,
+30019,20019,,,
+"#","Elephantidae",,,
+30020,20020,"loxAfrC","African savanna elephant","Loxodonta africana"
+30021,20021,"palAntN","Straight tusked elephant","Palaeoloxodon antiquus"
+30022,20022,"loxCycF","African forest elephant","Loxodonta cyclotis"
+30023,20023,"mamColU","Columbian mammoth","Mammuthus columbi"
+30024,20024,"mamAmeI","American mastodon","Mammut americanum"
+30025,20025,"mamPriV","Woolly mammoth","Mammuthus primigenius"
+30026,20026,"eleMaxD","Asian elephant","Elephas maxima"
+30027,20027,,,
+30028,20028,,,
+30029,20029,,,
+"#","Afroinsectivora",,,
+30030,20030,"choHof1","Hoffmans two-toed sloth","Choloepus hoffmannii"
+30031,20031,"choHof2","Hoffmanns two-toed sloth","Choloepus hoffmannii"
+30032,20032,"chrAsi1m","Cape golden mole","Chrysochloris asiatica"
+30033,20033,"eleEdw1m","Cape elephant shrew","Elephantulus edwardii"
+30034,20034,"dasNov3","Nine-banded armadillo","Dasypus novemcinctus"
+30035,20035,,,
+30036,20036,,,
+30037,20037,,,
+30038,20038,,,
+30039,20039,,,
+"#","Rodentia",,,
+30040,20040,"cavApe1","Brazillian guinea pig","Cavia aperea"
+30041,20041,"cavPor3","Guinea pig","Cavia porcellus"
+30042,20042,"hetGla2","Naked mole rat","Heterocephalus glaber"
+30043,20043,"nanGal1","Upper Galilee mountains blind mole rat","Spalax galili"
+30044,20044,"criGri1","Chinese hamster","Cricetulus griseus"
+30045,20045,"dipOrd1","Ord’s Kangaroo rat","Dipodomys ordii"
+30046,20046,"mm10","Mouse","Mus musculus"
+30047,20047,"ochPri3","American Pika","Ochotona princeps"
+30048,20048,"speTri2","Thirteen-lined ground squirrel","Spermophilus tridecemlineatus"
+30049,20049,"oryCun2","European Rabbit","Oryctolagus cuniculus"
+30050,20050,"rn6","Norway Rat","Rattus norvegicus"
+30051,20051,"micOch1","Prairie vole","Microtus ochrogaster"
+30052,20052,,,
+30053,20053,,,
+30054,20054,,,
+30055,20055,,,
+30056,20056,,,
+30057,20057,,,
+30058,20058,,,
+30059,20059,,,
+30060,20060,,,
+30061,20061,,,
+30062,20062,,,
+30063,20063,,,
+30064,20064,,,
+30065,20065,,,
+30066,20066,,,
+30067,20067,,,
+30068,20068,,,
+30069,20069,,,
+30070,20070,,,
+30071,20071,,,
+30072,20072,,,
+30073,20073,,,
+30074,20074,,,
+30075,20075,,,
+30076,20076,,,
+30077,20077,,,
+30078,20078,,,
+30079,20079,,,
+30080,20080,,,
+30081,20081,,,
+30082,20082,,,
+30083,20083,,,
+30084,20084,,,
+30085,20085,,,
+30086,20086,,,
+30087,20087,,,
+30088,20088,,,
+30089,20089,,,
+30090,20090,,,
+30091,20091,,,
+30092,20092,,,
+30093,20093,,,
+30094,20094,,,
+30095,20095,,,
+30096,20096,,,
+30097,20097,,,
+30098,20098,,,
+30099,20099,,,
+"#","Chiroptera",,,
+30100,20100,"desRot2","Common vampire bat","Desmondus rotundus"
+30101,20101,"desRot2.softmask","Common vampire bat","Desmondus rotundus"
+30102,20102,"eidHel1","Straw-colored fruit bat","Eidolon helvum"
+30103,20103,"eptFus1","Big brown bat ","Eptesicus fuscus"
+30104,20104,"hipArm1","Great roundleaf bat ","Hipposideros armiger"
+30105,20105,"megLyr1","Greater false vampire bat ","Megaderma lyra"
+30106,20106,"minNat1","Natal long-fingered bat ","Miniopterus natalensis"
+30107,20107,"myoLuc2","Little brown bat ","Myotis lucifugus"
+30108,20108,"myoDav1","Davids myotis ","Myotis davidii"
+30109,20109,"pteAle1","Black flying fox ","Pteropus alecto"
+30110,20110,"myoBra1","Brandts bat ","Myotis brandtii"
+30111,20111,"myoBra1.softmask","Brandts bat ","Myotis brandtii"
+30112,20112,"pteVam1","Large flying fox ","Pteropus vampiris"
+30113,20113,"pteVam2","Large flying fox ","Pteropus vampiris"
+30114,20114,"ptePar1","Parnells mustached bat ","Pteronotus parnellii"
+30115,20115,"rhiFer1","Greater horseshoe bat ","Rhinolophus ferrumequinum"
+30116,20116,"rouAeg2","Egyptian fruit bat ","Rousettus aegyptiacus"
+30117,20117,"rhiSin1","Chinese rufous horseshoe bat ","Rhinolophus sinicus"
+30118,20118,,,
+30119,20119,,,
+30120,20120,,,
+30121,20121,,,
+30122,20122,,,
+30123,20123,,,
+30124,20124,,,
+30125,20125,,,
+30126,20126,,,
+30127,20127,,,
+30128,20128,,,
+30129,20129,,,
+30130,20130,,,
+30131,20131,,,
+30132,20132,,,
+30133,20133,,,
+30134,20134,,,
+30135,20135,,,
+30136,20136,,,
+30137,20137,,,
+30138,20138,,,
+30139,20139,,,
+30140,20140,,,
+30141,20141,,,
+30142,20142,,,
+30143,20143,,,
+30144,20144,,,
+30145,20145,,,
+30146,20146,,,
+30147,20147,,,
+30148,20148,,,
+30149,20149,,,
+"#","Caniforma",,,
+30150,20150,"ailMel1","Panda","Ailuropoda melanoleuca"
+30151,20151,"canFam3","Dog","Canis familiaris"
+30152,20152,"canLup1","Gray wolf","Canis lupus"
+30153,20153,,,
+30154,20154,,,
+30155,20155,,,
+30156,20156,,,
+30157,20157,,,
+30158,20158,,,
+30159,20159,,,
+"#","Feliforma",,,
+30160,20160,"felCat8","Cat","Felis catus"
+30161,20161,,,
+30162,20162,,,
+30163,20163,,,
+30164,20164,,,
+30165,20165,,,
+30166,20166,,,
+30167,20167,,,
+30168,20168,,,
+30169,20169,,,
+"#","Theria",,,
+30170,20170,"ornAna2","Platypus","Ornithorhynchus anatinus"
+"#","Metatheria",,,
+30171,20171,"sarHar1","Tasmanian devil","Sarcophilus harrisii"
+30172,20172,"monDom5","Gray short-tailed opossum","Monodelphis domestica"
+30173,20173,"macEug2","Tammar Wallaby","Macropus eugenii"
+30174,20174,,,
+30175,20175,,,
+30176,20176,,,
+30177,20177,,,
+30178,20178,,,
+30179,20179,,,
+"#","Musteloidea",,,
+30180,20180,"musFur1","Domestic ferret","Mustela putorius furo"
+30181,20181,,,
+30182,20182,,,
+30183,20183,,,
+30184,20184,,,
+"#","Pinipedia",,,
+30185,20185,"odoRosDiv1","Pacific walrus","Odobenus rosmarus divergens"
+30186,20186,,,
+30187,20187,,,
+30188,20188,,,
+30189,20189,,,
+30190,20190,,,
+30191,20191,,,
+30192,20192,,,
+30193,20193,,,
+30194,20194,,,
+30195,20195,,,
+30196,20196,,,
+30197,20197,,,
+30198,20198,,,
+30199,20199,,,
+"#","Cetacea",,,
+30200,20200,"balAcu1m","Minke whale","Balaenoptera acutorostrata"
+30201,20201,"balMys1","Bowhead whale","Balaena mysticetus"
+30202,20202,"orcOrc1","Killer whale","Orcinus orca"
+30203,20203,"turTru2","Common bottlenose dolphin","Tursiops truncatus"
+30204,20204,"lipVex1","Yangtze river dolphin","Lipotes vexillifer"
+30205,20205,"neoAsi1","Yangtze finless porpoise","Neophocaena phocaenoides"
+30206,20206,"delLuc1","Beluga whale","Delphinapterus leucas"
+30207,20207,"phyCat1","Sperm whale","Physeter macrocephalus"
+30208,20208,"turAdu1","Indo-pacific bottlenose dolphin","Tursiops aduncus"
+30209,20209,"balBon1","Antarctic minke whale","Balaenoptera bonaerensis"
+30210,20210,"phoPho1","Harbor porpoise","Phocoena phocoena"
+30211,20211,"escRob1","Grey whale","Eschrichtius robustus"
+30212,20212,,,
+30213,20213,,,
+30214,20214,,,
+30215,20215,,,
+30216,20216,,,
+30217,20217,,,
+30218,20218,,,
+30219,20219,,,
+"#","Suidae",,,
+30220,20220,"susScr11","Pig","Sus scrofa"
+30221,20221,,,
+"#","Camelidae",,,
+30222,20222,"vicPac2","Alpaca","Vicugna pacos"
+30223,20223,,,
+30224,20224,,,
+"#","Bovidae",,,
+30225,20225,"bosTau8","Cow","Bos taurus"
+30226,20226,"bisBis1","Bison","Bison bison"
+30227,20227,"oviAri3","Sheep","Ovis aries"
+30228,20228,"bosTau7","Cow","Bos taurus"
+30229,20229,,,
+30230,20230,,,
+30231,20231,,,
+"#","Perissodactyla",,,
+30232,20232,"cerSim1","White rhinoceros","Ceratotherium simum"
+30233,20233,"equCab2","Horse","Equus ferus caballus"
+30234,20234,,,
+30235,20235,,,
+30236,20236,,,
+30237,20237,,,
+30238,20238,,,
+30239,20239,,,
+30240,20240,,,
+30241,20241,,,
+30242,20242,,,
+30243,20243,,,
+30244,20244,,,
+30245,20245,,,
+30246,20246,,,
+30247,20247,,,
+30248,20248,,,
+30249,20249,,,
+"#","Primate",,,
+30250,20250,"hg19","Human","Homo sapiens"
+30251,20251,"hg38","Human","Homo sapiens"
+30252,20252,"hg38_maskRep_noVarChr_fragWithGenes","Human Annotated","Homo sapiens"
+30253,20253,,,
+30254,20254,,,
+30255,20255,,,
+30256,20256,"panTro3","Chimpanzee","Pan troglodytes"
+30257,20257,"panTro4","Chimpanzee","Pan troglodytes"
+30258,20258,"panPan1","Bonobo","Pan paniscus"
+30259,20259,"panPan2","Bonobo","Pan paniscus"
+30260,20260,"gorGor3","Gorilla","Gorilla gorilla"
+30261,20261,"gorGor4","Gorilla","Gorilla gorilla"
+30262,20262,"gorGor5","Gorilla","Gorilla gorilla"
+30263,20263,"ponAbe2","Orangutan","Pongo abelii"
+30264,20264,"nomLeu1","Gibbon","Nomascus leucogenys"
+30265,20265,"nomLeu2","Gibbon","Nomascus leucogenys"
+30266,20266,"nomLeu3","Gibbon","Nomascus leucogenys"
+30267,20267,"chlSab2","Green monkey","Chlorocebus sabaeus"
+30268,20268,"macFas5","Crab-eating macaque","Macaca fascicularis"
+30269,20269,"rheMac8","Rhesus macaque","Macaca mulatta"
+30270,20270,"papHam1","Baboon hamadryas","Papio hamadryas"
+30271,20271,"papAnu2","Baboon anubis","Papio anubis"
+30272,20272,"nasLar1","Proboscis monkey","Nasalis larvatus"
+30273,20273,"rhiRox1","Golden snub-nosed monkey","Rhinopithecus roxellana"
+30274,20274,"calJac1","Common marmoset","Callithrix jacchus"
+30275,20275,"calJac3","Common marmoset","Callithrix jacchus"
+30276,20276,"saiBol1","Squirrel monkey","Saimiri boliviensis"
+30277,20277,"tarSyr1","Philippine tarsier","Tarsius syrichta"
+30278,20278,"tarSyr2","Philippine tarsier","Tarsius syrichta"
+30279,20279,"micMur1","Mouse lemur","Microcebus murinus"
+30280,20280,"micMur2","Mouse lemur","Microcebus murinus"
+30281,20281,"otoGar3","Bushbaby","Otolemur garnettii"
+30282,20282,,,
+30283,20283,,,
+30284,20284,,,
+30285,20285,,,
+30286,20286,,,
+30287,20287,,,
+30288,20288,,,
+30289,20289,,,
+"#","Dermoptera",,,
+30290,20290,"galVar1","Malayan flying lemur","Galeopterus variegatus"
+"#","Scandentia",,,
+30291,20291,"tupBel1","Tree shrew","Tupaia glis"
+"#","Eulipotyphla",,,
+30292,20292,"eriEur2","Hedgehog","Erinaceus europaeus"
+30293,20293,"sorAra2","Common shrew","Sorex araneus"
+30294,20294,,,
+30295,20295,,,
+30296,20296,,,
+30297,20297,,,
+30298,20298,,,
+30299,20299,,,
+"#","Non-mammals",,,
+30300,20300,"galGal5","Chicken","Gallus gallus"
+30301,20301,"allMis1","American alligator","Alligator mississippiensis"
+30302,20302,"anoCar2","Carolina anole lizard","Anolis carolinensis"
+30303,20303,"aptMan1","Brown kiwi","Apteryx mantelli"
+30304,20304,"calMil1","Elephant shark","Callorhinchus milii"
+30305,20305,"danRer10","Zebrafish","Danio rerio"
+30306,20306,"chrPic1","Painted turtle","Chrysemys picta"
+30307,20307,"dm6","Fruit fly","Drosophila melanogaster"
+30308,20308,"xenTro7","Western clawed frog","Xenopus tropicalis"
+30309,20309,"sacCer3","Yeast","Saccharomyces cerevisiae"
+30310,20310,"petMar2","Sea lamprey","Petromyzon marinus"
+30311,20311,"taeGut2","Zebra finch","Taeniopygia guttata"
+30312,20312,"fr2","Puffer fish","Fugu rubripes"
+30313,20313,"latCha1","Coelacanth","Latimeria chalumnae"
+30314,20314,"melGal1","Turkey","Meleagris gallopavo"
+30315,20315,"geoFor1","Medium ground finch","Geospiza fortis"
+30316,20316,"melUnd1","Budgerigar","Melopsittacus undulatus"
+"#","HiC Genomes",,,
+30317,20317,"Cavpor3.0_HiC","Guinea pig (DNAZoo)","Cavia porcellus"
+30318,20318,"CerSimSim1.0_HiC","White rhinoceros (DNAZoo)","Ceratotherium simum"
+30319,20319,"ChiLan1.0_HiC","Domestic chinchilla hybrid (DNAZoo)","Chinchilla lanigera"
+30320,20320,"MesAur1.0_HiC","Golden hamster (DNAZoo)","Mesocricetus auratus"
+30321,20321,"MusPutFur1.0_HiC","Domestic ferret (DNAZoo)","Mustela putorius furo"
+30322,20322,"PanPar1.0_HiC","Leopard (DNAZoo)","Panthera pardus"
+30323,20323,"PanTig1.0_HiC","Tiger (DNAZoo)","Panthera tigris"
+30324,20324,"PumCon1.0_HiC","Cougar (DNAZoo)","Puma concolor"
+30325,20325,"Pvam_2.0_HiC","Large flying fox  (DNAZoo)","Pteropus vampiris"
+30326,20326,"UrsMar_1.0_HiC","Polar bear (DNAZoo)","Ursus maritimus"
+30327,20327,"VulVul2.2_HiC","Red fox (DNAZoo)","Vulpes vulpes"
+30328,20328,"aciJub1_HiC","Cheetah (DNAZoo)","Acinonyx jubatus"
+30329,20329,"ailFul-ASM200746v1_HiC","Red panda (DNAZoo)","Ailurus fulgens"
+30330,20330,"axiPor-ASM379854v1_HiC","Hog deer (DNAZoo)","Axis porcinus"
+30331,20331,"bisBis_UMD1.0_HiC","American Bison (DNAZoo)","Bison bison"
+30332,20332,"camDro-PRJNA234474-V1.0_HiC","Dromedary (DNAZoo)","Camelus dromedarius"
+30333,20333,"canLupDin-ASM325472v1_HiC","Dingo (DNAZoo)","Canis lupus dingo"
+30334,20334,"casCan_v1.0_HiC","Canadian beaver (DNAZoo)","Castor canadensis"
+30335,20335,"choHof-C_hoffmanni-2.0.1_HiC","Hoffmanns two-toed sloth (DNAZoo)","Choloepus hoffmannii"
+30336,20336,"delLeu-ASM228892v2_HiC","Beluga whale (DNAZoo)","Delphinapterus leucas"
+30337,20337,"didVer-dv-2k","Virginia opossum (DNAZoo)","Didelphis virginiana"
+30338,20338,"eidHel1-ASM46528v1_HiC","Straw-colored fruit bat (DNAZoo)","Eidolon helvum"
+30339,20339,"enhLut-ASM228890v2_HiC","Sea otter (DNAZoo)","Enhydra lutris"
+30340,20340,"equAsi-ASM303372v1_HiC","Donkey (DNAZoo)","Equus asinus"
+30341,20341,"eulFla-Eflavifronsk33QCA_HiC","Blue-eyed black lemur (DNAZoo)","Eulemur flavifrons"
+30342,20342,"fukDam-DMR_v1.0_HiC","Damaraland mole-rat (DNAZoo)","Fukomys damarensis"
+30343,20343,"girCam-ASM165123v1_HiC","Giraffe (DNAZoo)","Giraffa camelopardalis"
+30344,20344,"lagObl-ASM367639v1_HiC","Pacific white-sided dolphin  (DNAZoo)","Lagenorhynchus obliquidens"
+30345,20345,"macEug-me-1k","Tammar wallaby (DNAZoo)","Macropus eugenii"
+30346,20346,"macFul-mf-2k","Western grey kangaroo (DNAZoo)","Macropus fuliginosus"
+30347,20347,"macGig-mg-2k","Eastern grey kangaro (DNAZoo)","Macropus giganteus"
+30348,20348,"makRuf-mr-2k","Red kangaroo (DNAZoo)","Macropus rufus"
+30349,20349,"odoRos-Oros_1.0_HiC","Walrus (DNAZoo)","Odobenus rosmarus"
+30350,20350,"odoVir-Ovir.te_1.0_HiC","White-tailed deer (DNAZoo)","Odocoileus virginianus"
+30351,20351,"okaJoh-ASM166083v1_HiC","Okapi (DNAZoo)","Okapia johnstoni"
+30352,20352,"orcOrc-Oorc_1.1_HiC","Killer whale (DNAZoo)","Orcinus orca"
+30353,20353,"phaGym-pg-2k","Ground cuscus (DNAZoo)","Phalanger gymnotis"
+30354,20354,"proCap-Pcap_2.0_HiC","Rock hyrax (DNAZoo)","Procavia capensis"
+30355,20355,"proCoq-Pcoq_1.0_HiC","Coquerel's sifaka (DNAZoo)","Propithecus coquereli"
+30356,20356,"proLot-pl-1k","Common raccoon (DNAZoo)","Procyon lotor"
+30357,20357,"pytMolBiv-Python_molurus_bivittatus-5.0.2_HiC","Burmese python (DNAZoo)","Python bivittatus"
+30358,20358,"saiBolDis_HiC","Squirrel monkey (DNAZoo)","Saimiri boliviensis"
+30359,20359,"surSur-meerkat_22Aug2017_6uvM2_HiC","Meerkat (DNAZoo)","Suricata suricatta"
+30360,20360,"turAdu-ASM322739v1_HiC","Indo-pacific bottlenose dolphin (DNAZoo)","Tursiops aduncus"
+30361,20361,"turTru-NIST_Tur_tru_v1_HiC","Common bottlenose dolphin (DNAZoo)","Tursiops truncatus"
+30362,20362,"ursAme-ASM334442v1_HiC","American black bear (DNAZoo)","Ursus americanus"
+30363,20363,"ursArc-ASM358476v1_HiC","Grizzly bear (DNAZoo)","Ursus arctos"
+30364,20364,"vicPac-Vicugna_pacos-2.0.1_HiC","Alpaca (DNAZoo)","Vicugna pacos"
+30365,20365,"vomUrs-vu-2k","Wombat (DNAZoo)","Vombatus ursinus"
+30366,20366,"MonDom5_HiC","Gray short-tailed opossum (DNAZoo)","Monodelphis domestica"
+30367,20367,"Mmur_3.0_HiC","Gray mouse lemur (DNAZoo)","Microcebus murinus"
+30368,20368,"OryCun2.0_HiC","European rabbit (DNAZoo)","Oryctolagus cuniculus"
+30369,20369,"canFamDis_HiC","Domestic dog (Golden Retriever) (DNAZoo)","Canis familiaris"
+30370,20370,"mOrnAna1.pri.cur.20181116","Platypus (VGP)","Ornithorhynchus anatinus"
+30371,20371,"mPhyDis1.pri.cur.20180907","Pale spear-nosed bat (VGP)","Phyllostomus discolor"
+30372,20372,"mRhiFer1.pri.cur.20180907","Greater horseshoe bat (VGP)","Rhinolophus ferrumequinum"
+30373,20373,"bStrHab1.pri.cur.20180907","Owl parrot (VGP)","Strigops habroptilus"
+30374,20374,"bTaeGut1.pri.cur.20181023","Zebra finch (VGP)","Taeniopygia guttata"
+30375,20375,"aRhiBiv1.pri.cur.20180909","Two-lined caecilian (VGP)","Rhinatrema bivittatum"
+30376,20376,"bCalAnn1.pri.cur.20180926","Anna's hummingbird (VGP)","Calypte anna"
+30377,20377,"fArcCen1.pri.cur.20181118","Flier cichlid (VGP)","Archocentrus centrarchus"
+30378,20378,"cheMyd1","Green Sea Turtle","Chelonia mydas"
+30379,20379,"cheAbi1","Lonesome George","Chelonoidis abingdonii"
+30380,20380,,,
+30381,20381,,,
+30382,20382,,,
+30383,20383,,,
+30384,20384,,,
+30385,20385,,,
+30386,20386,,,
+30387,20387,,,
+30388,20388,,,

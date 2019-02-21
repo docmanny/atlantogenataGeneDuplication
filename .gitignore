@@ -1,0 +1,8 @@
+analysis/
+data/2bit/*
+data/genome/*
+data/input/*
+flags/
+logs/
+output/
+.snakemake/envs/src
