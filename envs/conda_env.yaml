@@ -4,36 +4,59 @@ channels:
   - conda-forge
   - r
 dependencies:
-  - snakemake-minimal =5.2.4
+  - snakemake-minimal
   - python =3.6
-  - r =3.5.1
+  - r-base =3.6.1
   - r-essentials
-#  - r-reshape2
-#  - r-ape
-#  - r-rcolorbrewer
-#  - r-viridis
-#  - r-upsetr
-  - rpy2
-  - rstudio
-  - r-git2r
-  - jinja2 =2.10
-  - networkx =2.1
-  - matplotlib =2.2.3
-  - graphviz =2.38.0
-  - bcftools =1.9
-  - samtools =1.9
-  - hisat2
-  - stringtie
-  - sra-tools
-  - Click =7.0
-  - biopython =1.73
-  - dill =0.2.8.2
-  - multiprocess =0.70.6.1
-  - mygene =3.1.0
-  - nose =1.3.7
-  - pandas = 0.23.4
+  - r-reshape2 
+  - r-ape 
+  - r-rcolorbrewer
+  - r-viridis 
+  - r-upsetr 
+  - r-tidyverse 
+  - r-workflowr 
+  - r-optparse 
+  - bioconductor-ballgown 
+  - r-biocmanager 
+  - bioconductor-biocgenerics 
+  - bioconductor-genomicranges 
+  - bioconductor-biomart 
+  - bioconductor-annotationhub
+  - bioconductor-ggbio 
+  - bioconductor-ggtree
+  - r-tidytree
+  - r-ggpubr 
+  - r-plotly
+  - r-ggplotify
+  - r-geiger 
+  - r-ape
+  - rpy2 
+  - r-reticulate 
+  - rstudio 
+  - r-git2r 
+  - gffutils 
+  - jinja2 
+  - networkx 
+  - matplotlib 
+  - graphviz 
+  - bcftools 
+  - samtools 
+  - bamtools 
+  - hisat2 
+  - stringtie 
+  - sra-tools 
+  - Click 
+  - biopython 
+  - dill 
+  - multiprocess 
+  - mygene 
+  - nose 
+  - pandas 
   - wget
-  - ucsc-fatotwobit
-  - parallel
+  - ucsc-fatotwobit 
+  - ucsc-blat 
+  - parallel 
+  - pip 
   - pip:
     - "-e git+https://github.com/docmanny/RecBlast#egg=RecBlast"
+  - bioconda::cafe

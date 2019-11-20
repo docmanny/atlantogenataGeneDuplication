@@ -25,7 +25,9 @@ dir_idx = "output/hisat2-build"
 dir_bam = "output/hisat2"
 dir_sra = "data/SraRunTable"
 dir_gff3 = "output/StringTie/deNovo"
+dir_stringtieMerge = "output/StringTie/merge"
 dir_stringtie = "output/StringTie/final"
+dir_stringtieMergeFinal = "output/StringTie/finalMerge"
 
 ## Log directories
 log_idx = "logs/hisat2-build"
@@ -33,6 +35,7 @@ log_bam = "logs/hisat2"
 log_bai = "logs/samtools-index"
 log_gff3 = "logs/StringTie/deNovo"
 log_stringtie = "logs/StringTie/final"
+log_stringtieMergeFinal = "logs/StringTie/finalMerge"
 log_flags = "logs/flags"
 
 
@@ -53,7 +56,7 @@ rule all:
 
 rule test:
     input:
-        genomes=expand("/usr/db/{g}", g=pt["Genome"])
+        genomes=expand("{dir}/{g}", g=pt["Genome"], dir=dir_genome)
     shell:
         "echo {genomes}"
 
@@ -68,3 +71,5 @@ include: "rules/RNA-seq.smk"
 include: "rules/RecBLAT.smk"
 # Rules for intersecting the RecBlat output
 include: "rules/intersections.smk"
+# Rules for other things
+include: "rules/extras.smk"

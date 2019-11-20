@@ -1,0 +1,16 @@
+name: Alignment
+channels:
+  - r
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - hisat2
+  - stringtie
+  - samtools
+  - parallel
+  - snakemake-minimal
+  - sra-tools  
+  - gffutils
+  - openssl=1.0
+  - bedops

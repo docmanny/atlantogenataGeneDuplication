@@ -1,4 +1,4 @@
 port_table: "./data/portTable.csv"
-
+sra_file: "./data/SraRunTable/SraRunTable.csv"
 
     

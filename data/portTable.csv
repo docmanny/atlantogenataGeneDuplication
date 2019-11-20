@@ -4,8 +4,8 @@
 30005,20005,"proCap1","Rock hyrax","Procavia capensis"
 30006,20006,"proCap2","Rock hyrax","Procavia capensis"
 30007,20007,"proCap3","Rock hyrax","Procavia capensis"
-30008,20008,"triMan1","Manatee","Trichechus manatus"
-30009,20009,"triManLat2","West Indian Manatee","Trichechus manatus"
+30008,20008,"triMan1","Manatee","Trichechus manatus latirostris"
+30009,20009,"triManLat2","West Indian Manatee","Trichechus manatus latirostris"
 "#","Pseudopaenungulata",,,
 30010,20010,"oryAfe1.1","Aardvark","Orycteropus afer"
 30011,20011,"oryAfe1.2","Aardvark","Orycteropus afer"
@@ -102,8 +102,7 @@
 30098,20098,,,
 30099,20099,,,
 "#","Chiroptera",,,
-30100,20100,"desRot2","Common vampire bat","Desmondus rotundus"
-30101,20101,"desRot2.softmask","Common vampire bat","Desmondus rotundus"
+30100,20100,"desRot2","Common vampire bat","Desmodus rotundus"
 30102,20102,"eidHel1","Straw-colored fruit bat","Eidolon helvum"
 30103,20103,"eptFus1","Big brown bat ","Eptesicus fuscus"
 30104,20104,"hipArm1","Great roundleaf bat ","Hipposideros armiger"
@@ -113,13 +112,11 @@
 30108,20108,"myoDav1","Davids myotis ","Myotis davidii"
 30109,20109,"pteAle1","Black flying fox ","Pteropus alecto"
 30110,20110,"myoBra1","Brandts bat ","Myotis brandtii"
-30111,20111,"myoBra1.softmask","Brandts bat ","Myotis brandtii"
 30112,20112,"pteVam1","Large flying fox ","Pteropus vampiris"
 30113,20113,"pteVam2","Large flying fox ","Pteropus vampiris"
 30114,20114,"ptePar1","Parnells mustached bat ","Pteronotus parnellii"
 30115,20115,"rhiFer1","Greater horseshoe bat ","Rhinolophus ferrumequinum"
 30116,20116,"rouAeg2","Egyptian fruit bat ","Rousettus aegyptiacus"
-30117,20117,"rhiSin1","Chinese rufous horseshoe bat ","Rhinolophus sinicus"
 30118,20118,,,
 30119,20119,,,
 30120,20120,,,
@@ -209,7 +206,6 @@
 30198,20198,,,
 30199,20199,,,
 "#","Cetacea",,,
-30200,20200,"balAcu1m","Minke whale","Balaenoptera acutorostrata"
 30201,20201,"balMys1","Bowhead whale","Balaena mysticetus"
 30202,20202,"orcOrc1","Killer whale","Orcinus orca"
 30203,20203,"turTru2","Common bottlenose dolphin","Tursiops truncatus"

@@ -1,0 +1,9 @@
+triManLat2
+pteAle1
+ptePar1
+rhiFer1
+rouAeg2
+rhiSin1
+turTru-NIST_Tur_tru_v1_HiC
+ursAme-ASM334442v1_HiC
+vomUrs-vu-2k

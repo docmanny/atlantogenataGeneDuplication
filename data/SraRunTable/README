@@ -1,0 +1,19 @@
+Generated in steps in R by:
+
+library(tidyverse)
+library(magrittr)
+
+port.table <- read_csv("data/portTable.csv", comment = '"#"', col_names = c("TranslatedPort", "UntranslatedPort", "Genome", "CommonName", "Species"))
+files <- dir("data/SraRunTable-real/", full.names = T)
+df.list <- files %>% lapply(read_csv, col_types = cols(.default = "c")) %>% set_names(., files)
+realSRA <- df.list %>% bind_rows()
+realSRA %<>% filter(str_detect(`DATASTORE filetype`, pattern = "sra|fastq"), !is.na(MBytes))
+species.SRA <- realSRA %>% pull(Organism) %>% unique()
+setdiff(species.SRA, actual.species)
+doublecheck.species <- setdiff(actual.species, species.SRA) %>% setNames(.,.)
+doublecheck.species %>% lapply(., function(x) {species.SRA[str_detect(pattern=x, string=species.SRA)] %>% ifelse(length(.)>0, ., NA)}) %>% unlist %>% na.omit %>% c(., actual.species) -> actual.species.plusrenames
+realSRA.onlyActualSpecies <- realSRA %>% filter(Organism %in% actual.species.plusrenames)
+realSRA.onlyActualSpecies %>% group_by(Organism) %>% slice(., sample(1:n())) %>% mutate(cumMBytes=cumsum(MBytes)) %>% filter(cumMBytes <= 500000) %>% ungroup -> SRA.limited
+SRA.limited %>% pull(Organism) %>% table
+SRA.limited %>% write_csv("data/SraRunTable-real/SraRunTable.csv")
+
