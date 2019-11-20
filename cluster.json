@@ -1,0 +1,15 @@
+{
+    "__default__" :
+    {
+        "mem" : 32000,
+        "n" : 1,
+        "tasks" : 20,
+        "name" : "JMV-{rule}-{wildcards}",
+        "logfile": "logs/snake-{rule}-{wildcards}-%j.out"
+    },
+    "hisat2-build" : 
+    {
+        "mem" : 120000,
+        "tasks" : 20
+    }
+}
