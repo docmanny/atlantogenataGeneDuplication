@@ -1,4 +1,8 @@
-port_table: "./data/portTable.csv"
-sra_file: "./data/SraRunTable/SraRunTable.csv"
+# General
+port_table: "data/portTable.csv"
+sra_file: "data/SraRunTable/SraRunTable.csv"
 
-    
+# RecSearch
+query_file: "data/input/queries.fasta"
+query_type: "prot"
+

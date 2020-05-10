@@ -10,7 +10,10 @@
 #SBATCH --account=pi-gilad
 #SBATCH --mem=4G
 #SBATCH --tasks-per-node=4
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=juan@vazquez.bio
 
 conda activate RecBlat
 
-bash /project2/gilad/juanvazquez/projects/smRecSearch/submitSnakeMake.sh $*
+bash /project2/gilad/juanvazquez/projects/smRecSearch/submitSnakeMake.sh $* | tee snakemake.log
+#bash /project2/gilad/juanvazquez/projects/smRecSearch/run.txt | tee snakemake.log

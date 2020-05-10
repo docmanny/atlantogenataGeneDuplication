@@ -1,9 +1,9 @@
 "#","Paenungulata",,,
 30003,20003,"loxAfr3","African savanna elephant","Loxodonta africana"
-30004,20004,"loxAfr4","African savanna elephant","Loxodonta africana"
+30004,20004,"eleMaxD","Asian elephant","Elephas maximus"
 30005,20005,"proCap1","Rock hyrax","Procavia capensis"
 30006,20006,"proCap2","Rock hyrax","Procavia capensis"
-30007,20007,"proCap3","Rock hyrax","Procavia capensis"
+30007,20007,"proCap-Pcap_2.0_HiC","Rock hyrax (DNAZoo)","Procavia capensis"
 30008,20008,"triMan1","Manatee","Trichechus manatus latirostris"
 30009,20009,"triManLat2","West Indian Manatee","Trichechus manatus latirostris"
 "#","Pseudopaenungulata",,,
@@ -25,13 +25,13 @@
 30023,20023,"mamColU","Columbian mammoth","Mammuthus columbi"
 30024,20024,"mamAmeI","American mastodon","Mammut americanum"
 30025,20025,"mamPriV","Woolly mammoth","Mammuthus primigenius"
-30026,20026,"eleMaxD","Asian elephant","Elephas maxima"
+30026,20026,"loxAfr4","African savanna elephant","Loxodonta africana"
 30027,20027,,,
 30028,20028,,,
 30029,20029,,,
 "#","Afroinsectivora",,,
-30030,20030,"choHof1","Hoffmans two-toed sloth","Choloepus hoffmannii"
-30031,20031,"choHof2","Hoffmanns two-toed sloth","Choloepus hoffmannii"
+30030,20030,"choHof1","Hoffmans two-toed sloth","Choloepus hoffmanni"
+30031,20031,"choHof2","Hoffmanns two-toed sloth","Choloepus hoffmanni"
 30032,20032,"chrAsi1m","Cape golden mole","Chrysochloris asiatica"
 30033,20033,"eleEdw1m","Cape elephant shrew","Elephantulus edwardii"
 30034,20034,"dasNov3","Nine-banded armadillo","Dasypus novemcinctus"
@@ -112,12 +112,12 @@
 30108,20108,"myoDav1","Davids myotis ","Myotis davidii"
 30109,20109,"pteAle1","Black flying fox ","Pteropus alecto"
 30110,20110,"myoBra1","Brandts bat ","Myotis brandtii"
-30112,20112,"pteVam1","Large flying fox ","Pteropus vampiris"
-30113,20113,"pteVam2","Large flying fox ","Pteropus vampiris"
+30112,20112,"pteVam1","Large flying fox ","Pteropus vampyrus"
+30113,20113,"pteVam2","Large flying fox ","Pteropus vampyrus"
 30114,20114,"ptePar1","Parnells mustached bat ","Pteronotus parnellii"
 30115,20115,"rhiFer1","Greater horseshoe bat ","Rhinolophus ferrumequinum"
 30116,20116,"rouAeg2","Egyptian fruit bat ","Rousettus aegyptiacus"
-30118,20118,,,
+30118,20118,"myoLuc2_HiC","Little brown bat (DNAZoo)", "Myotis lucifugus"
 30119,20119,,,
 30120,20120,,,
 30121,20121,,,
@@ -301,7 +301,7 @@
 30288,20288,,,
 30289,20289,,,
 "#","Dermoptera",,,
-30290,20290,"galVar1","Malayan flying lemur","Galeopterus variegatus"
+30290,20290,"galVar1","Malayan flying lemur","Cynocephalus variegatus"
 "#","Scandentia",,,
 30291,20291,"tupBel1","Tree shrew","Tupaia glis"
 "#","Eulipotyphla",,,
@@ -340,19 +340,19 @@
 30322,20322,"PanPar1.0_HiC","Leopard (DNAZoo)","Panthera pardus"
 30323,20323,"PanTig1.0_HiC","Tiger (DNAZoo)","Panthera tigris"
 30324,20324,"PumCon1.0_HiC","Cougar (DNAZoo)","Puma concolor"
-30325,20325,"Pvam_2.0_HiC","Large flying fox  (DNAZoo)","Pteropus vampiris"
+30325,20325,"Pvam_2.0_HiC","Large flying fox  (DNAZoo)","Pteropus vampyrus"
 30326,20326,"UrsMar_1.0_HiC","Polar bear (DNAZoo)","Ursus maritimus"
 30327,20327,"VulVul2.2_HiC","Red fox (DNAZoo)","Vulpes vulpes"
 30328,20328,"aciJub1_HiC","Cheetah (DNAZoo)","Acinonyx jubatus"
 30329,20329,"ailFul-ASM200746v1_HiC","Red panda (DNAZoo)","Ailurus fulgens"
 30330,20330,"axiPor-ASM379854v1_HiC","Hog deer (DNAZoo)","Axis porcinus"
-30331,20331,"bisBis_UMD1.0_HiC","American Bison (DNAZoo)","Bison bison"
+30331,20331,"bisBis1_HiC","American Bison (DNAZoo)","Bison bison"
 30332,20332,"camDro-PRJNA234474-V1.0_HiC","Dromedary (DNAZoo)","Camelus dromedarius"
 30333,20333,"canLupDin-ASM325472v1_HiC","Dingo (DNAZoo)","Canis lupus dingo"
 30334,20334,"casCan_v1.0_HiC","Canadian beaver (DNAZoo)","Castor canadensis"
-30335,20335,"choHof-C_hoffmanni-2.0.1_HiC","Hoffmanns two-toed sloth (DNAZoo)","Choloepus hoffmannii"
+30335,20335,"choHof-C_hoffmanni-2.0.1_HiC","Hoffmanns two-toed sloth (DNAZoo)","Choloepus hoffmanni"
 30336,20336,"delLeu-ASM228892v2_HiC","Beluga whale (DNAZoo)","Delphinapterus leucas"
-30337,20337,"didVer-dv-2k","Virginia opossum (DNAZoo)","Didelphis virginiana"
+30337,20337,"didVer1","Virginia opossum (DNAZoo)","Didelphis virginiana"
 30338,20338,"eidHel1-ASM46528v1_HiC","Straw-colored fruit bat (DNAZoo)","Eidolon helvum"
 30339,20339,"enhLut-ASM228890v2_HiC","Sea otter (DNAZoo)","Enhydra lutris"
 30340,20340,"equAsi-ASM303372v1_HiC","Donkey (DNAZoo)","Equus asinus"
@@ -360,18 +360,18 @@
 30342,20342,"fukDam-DMR_v1.0_HiC","Damaraland mole-rat (DNAZoo)","Fukomys damarensis"
 30343,20343,"girCam-ASM165123v1_HiC","Giraffe (DNAZoo)","Giraffa camelopardalis"
 30344,20344,"lagObl-ASM367639v1_HiC","Pacific white-sided dolphin  (DNAZoo)","Lagenorhynchus obliquidens"
-30345,20345,"macEug-me-1k","Tammar wallaby (DNAZoo)","Macropus eugenii"
-30346,20346,"macFul-mf-2k","Western grey kangaroo (DNAZoo)","Macropus fuliginosus"
-30347,20347,"macGig-mg-2k","Eastern grey kangaro (DNAZoo)","Macropus giganteus"
-30348,20348,"makRuf-mr-2k","Red kangaroo (DNAZoo)","Macropus rufus"
+30345,20345,"macEug1","Tammar wallaby (DNAZoo)","Macropus eugenii"
+30346,20346,"macFul1","Western grey kangaroo (DNAZoo)","Macropus fuliginosus"
+30347,20347,"macGig1","Eastern grey kangaro (DNAZoo)","Macropus giganteus"
+30348,20348,"makRuf1","Red kangaroo (DNAZoo)","Macropus rufus"
 30349,20349,"odoRos-Oros_1.0_HiC","Walrus (DNAZoo)","Odobenus rosmarus"
 30350,20350,"odoVir-Ovir.te_1.0_HiC","White-tailed deer (DNAZoo)","Odocoileus virginianus"
 30351,20351,"okaJoh-ASM166083v1_HiC","Okapi (DNAZoo)","Okapia johnstoni"
 30352,20352,"orcOrc-Oorc_1.1_HiC","Killer whale (DNAZoo)","Orcinus orca"
 30353,20353,"phaGym-pg-2k","Ground cuscus (DNAZoo)","Phalanger gymnotis"
-30354,20354,"proCap-Pcap_2.0_HiC","Rock hyrax (DNAZoo)","Procavia capensis"
+30354,20354,"vomUrs1","Wombat","Vombatus ursinus"
 30355,20355,"proCoq-Pcoq_1.0_HiC","Coquerel's sifaka (DNAZoo)","Propithecus coquereli"
-30356,20356,"proLot-pl-1k","Common raccoon (DNAZoo)","Procyon lotor"
+30356,20356,"proLot1","Common raccoon (DNAZoo)","Procyon lotor"
 30357,20357,"pytMolBiv-Python_molurus_bivittatus-5.0.2_HiC","Burmese python (DNAZoo)","Python bivittatus"
 30358,20358,"saiBolDis_HiC","Squirrel monkey (DNAZoo)","Saimiri boliviensis"
 30359,20359,"surSur-meerkat_22Aug2017_6uvM2_HiC","Meerkat (DNAZoo)","Suricata suricatta"
@@ -395,10 +395,10 @@
 30377,20377,"fArcCen1.pri.cur.20181118","Flier cichlid (VGP)","Archocentrus centrarchus"
 30378,20378,"cheMyd1","Green Sea Turtle","Chelonia mydas"
 30379,20379,"cheAbi1","Lonesome George","Chelonoidis abingdonii"
-30380,20380,,,
-30381,20381,,,
-30382,20382,,,
-30383,20383,,,
+30380,20380,"phaGym1","Ground cuscus","Phalanger gymnotis"
+30381,20381,"surSur1_HiC","Meerkat (DNAZoo)","Suricata suricatta"
+30382,20382,"oryAfe1","Aardvark","Orycteropus afer"
+30383,20383,"oryAfe2","Aardvark (DNAZoo)","Orycteropus afer"
 30384,20384,,,
 30385,20385,,,
 30386,20386,,,

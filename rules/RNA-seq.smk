@@ -6,14 +6,17 @@ import numpy
 ########################################################################################################################
 
 
-wildcard_constraints:
-    genome="((([A-Za-z]{1,3})([A-Za-z]{3})+)((\d{1,2}m?|[A-Z])(\.\d+)?(\.softmask)?)?(\d\.[a-z]{3}\.[a-z]{3}\.\d{8})?(-[A-Z][A-Za-z0-9]*([_.][A-Za-z]+){0,2})?(_\d{2}[A-Z][a-z]{2}\d{4}_[A-Za-z0-9]{0,6})?([-_][Vv]?\d{1,2}(\.\d{1,2}){0,2}k?)?(_HiC)?)|(mm10)|(rn6)|(hg19)|(hg38(_maskRep_noVarChr_fragWithGenes)?)|(dm6)|(fr2)",
-    sra="[SED]RR\d+"
+
+
+
+def genome_to_species(genome, genome_df = pt):
+    selection = genome_df['Genome'] == genome
+    return genome_df.loc[selection]["Species"][0]
 
 
 def get_SRA_list(sra_file):
     """Reads a .csv SRA file and returns a dataframe indexed by SRA Run accessions"""
-    df = pd.read_csv(sra_file, usecols=['Run', 'Organism']).set_index("Run", drop=False)
+    df = pd.read_csv(sra_file, usecols=['Run', 'Organism'], comment='#').set_index("Run", drop=False)
     return df
 
 
@@ -56,6 +59,12 @@ def generate_genome_SRA_list(genome_df, sra_file= config["sra_file"]):
 def sra_from_wildcards(wildcards, sra_file= config["sra_file"], genome_df = pt):
     selection = genome_df['Genome'] == wildcards.genome
     return get_SRA_acc2(genome_df.loc[selection].index[0], sra_file)
+
+def species_hasSRA(genome, sra_file=config["sra_file"], genome_df = pt):
+    species = genome_to_species(genome)
+    df = pd.read_csv(sra_file, usecols=['Organism'], comment='#')
+    return (species == df.Organism).any()
+
 
 def stmerge_inputs(wildcards, sra_file= config["sra_file"], genome_df = pt):
     sras = sra_from_wildcards(wildcards, genome_df = pt, sra_file= config["sra_file"])

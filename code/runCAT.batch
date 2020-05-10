@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# sbatch submission script to run main snakemake process. It then submits
+# individual jobs from the compute node.
+
+#SBATCH --job-name=runCAT
+#SBATCH --output=runCAT.out
+#SBATCH --time=36:00:00
+#SBATCH --partition=broadwl
+#SBATCH --mem=48G
+#SBATCH --tasks-per-node=16
+
+source activate cactus
+
+bash runCAT.sh

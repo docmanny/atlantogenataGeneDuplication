@@ -33,6 +33,7 @@ def __main__(query_file, forward_port, forward_species, forward_twobit,
 
     #print(forward_twobit, reverse_twobit, output_root, perc_identity, perc_score, perc_query_span, query_file, sep="\n")
     output_location = Path(output_root, forward_twobit.stem)
+    print(output_location)
 
     recblast = RecSearch(target_species=forward_species, query_species=reverse_species,
                          forward_search_type="tblat", reverse_search_type="blat",
@@ -55,10 +56,10 @@ def __main__(query_file, forward_port, forward_species, forward_twobit,
     recblast.reverse_search_settings['database_port'] = {reverse_species: reverse_port}
     recblast.set_translation_annotation_parameters(method="table", key_value_order=False,
                                                    tsv_location=annotation_lookup_tsv)
-    recblast(run_name="AvA-pcScore{0}_pcIdent{1}_pcQuerySpan{2}_reverse-{3}".format(perc_score, perc_identity, perc_query_span, reverse_twobit.stem),
+    recblast(run_name="{0}-pcScore{1}_pcIdent{2}_pcQuerySpan{3}_reverse-{4}".format(Path(query_file).stem, perc_score, perc_identity, perc_query_span, reverse_twobit.stem),
              output_type="bed-complete",
              output_location=output_location)
-    print(recblast.__str__())
+    
 
 if __name__ == "__main__":
     __main__()

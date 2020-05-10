@@ -1,19 +1,22 @@
 #!/bin/bash
 
-conda activate RecBlat
+conda activate R-GeneLists
 
 snakemake \
-    -kp \
-    --use-conda \
-    --latency-wait 60 \
+    -kpr \
     --ri \
-    -j 999 \
+    --nolock \
+    -j 500 \
     --cluster-config /project2/gilad/juanvazquez/projects/smRecSearch/cluster.json \
     -c "sbatch \
         --mem={cluster.mem} \
         --nodes={cluster.n} \
-        --tasks-per-node={cluster.tasks} \
+        --ntasks-per-node={cluster.tasks} \
         --partition=broadwl \
-        --job-name={cluster.name} \
-	--output={cluster.logfile}" \
+        " \
     $*
+
+
+#    --restart-times 2 \
+#    --ri \
+
