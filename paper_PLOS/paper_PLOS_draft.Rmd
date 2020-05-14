@@ -20,10 +20,10 @@ author_summary: |
   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget porta erat. Morbi consectetur est vel gravida pretium. Suspendisse ut dui eu ante cursus gravida non sed sem. Nullam sapien tellus, commodo id velit id, eleifend volutpat quam. Phasellus mauris velit, dapibus finibus elementum vel, pulvinar non tellus. Nunc pellentesque pretium diam, quis maximus dolor faucibus id. Nunc convallis sodales ante, ut ullamcorper est egestas vitae. Nam sit amet enim ultrices, ultrices elit pulvinar, volutpat risus.
 bibliography: rbhb_paenungulates.bib
 output: 
-  workflowr::wflow_html: default
   rticles::plos_article: 
     includes:
       in_header: preamble.tex
+  workflowr::wflow_html: default
   word_document: default
 csl: plos.csl
 editor_options:
@@ -33,8 +33,11 @@ editor_options:
 <!--_Text based on plos sample manuscript, see [http://journals.plos.org/ploscompbiol/s/latex](http://journals.plos.org/ploscompbiol/s/latex)_-->
 
 ```{r Libraries and functions, include = F}
-knitr::opts_chunk$set(eval=T, echo=F, message = F, warning = T, # fig.width=5, 
+knitr::opts_chunk$set(eval=T, echo=F, message = F, warning = F, # fig.width=5, 
                       fig.retina = T)
+
+if(basename(getwd()) != "paper_PLOS") setwd("paper_PLOS")
+
 set.seed(1234)
 suppressMessages(suppressWarnings(require(data.table)))
 suppressMessages(suppressWarnings(require(tidyverse)))
@@ -66,6 +69,13 @@ gene_list <- read_lines("../output/recBlastDBPrep/AvA_geneList.txt")
 gene_list_filtered <- read_lines("../output/recBlastDBPrep/AvA_geneList_filtered.txt")
 genomeTable <- read_csv("../output/other/genomeTable.csv")
 
+stabletraits.progress <- read_tsv("../data/stableTraits/eutheria.progress")
+
+time.tree <- read.tree("../data/stableTraits/eutheria.tree")
+time.tree.atlantogenata <- tree_subset(time.tree, MRCA(time.tree, "Elephas.maximus", "Dasypus.novemcinctus"), levels_back = 0)
+
+#################################################################################
+
 bsize.tree <- read.beast("../output/AncSizeRec/AnnotatedTreeForFigure.tree") %>% 
   as_tibble %>% 
   mutate(sqrt.rate = branch.length) %>% 
@@ -89,7 +99,7 @@ st.other <- full_join(
   read_tsv("../data/stableTraits/eutheria.ancstates") %>% mutate(Parameter = str_remove(Parameter, "^n(?=\\d)")) %>% rename(label= Parameter), 
   read_tsv("../data/stableTraits/eutheria.brlens") %>% mutate(label=Branch %>% str_split("->") %>% sapply("[",1) %>% str_remove("^n(?=\\d)")), 
   by="label"
-  ) %>% 
+) %>% 
   mutate(node = Branch %>% str_split("->") %>% sapply("[",1) %>% str_remove("^n(?=\\d)"), parent = Branch %>% str_split("->") %>% sapply("[",2) %>% str_remove("^n(?=\\d)"))
 st.other[st.other$label=="0",]$node <- "0"
 class(st.other) <- c(class(st.other), "tbl_tree")
@@ -97,15 +107,32 @@ st.other %<>% select(parent, node, label, everything()) %>% filter(!is.na(parent
 st.part <- merge_tree(st.nexus, st.other)
 st.full <- merge_tree(st.part, bsize.tree)
 
+#################################################################################
+
 ml.treedata <- read.beast("../output/geneLists/maxLikelihood_model_MK+FQ+I+G4-dataType_MORPH-asrMin_0.8/AvA-pcScore0.1_pcIdent0.8_pcQuerySpan0.5_reverse-hg38_maskRep_noVarChr_fragWithGenes/atlantogenata_RBB_filtered_dyn/atlantogenata_RBB_filtered_dyn.nexus")
 
+#################################################################################
+
 geneCopyTable <- read_csv("../output/geneCopyTable/AvA-pcScore0.1_pcIdent0.8_pcQuerySpan0.5_reverse-hg38_maskRep_noVarChr_fragWithGenes/atlantogenata-GeneCopyTable_RBB_filtered_long.csv")
-ORA.all <- lineage.pathway.fdr.table("../output/ORA") %>% 
-  mutate(
-    EnrichRatio = as.numeric(EnrichRatio), FDR=as.numeric(FDR), Size=as.numeric(Size),
-    GeneList = Genes %>% str_replace_all(";", "\n") %>% str_trunc(100, "center", ellipsis = "...\n"),
-    Class = class.pathway(Pathway)
-         ) 
+
+#################################################################################
+
+ORA.all.f <- "../output/extra/ORA_all.csv"
+if (file.exists(ORA.all.f)){
+  ORA.all <- read_csv(ORA.all.f)
+} else{
+  ORA.all <- lineage.pathway.fdr.table("../output/ORA") %>% 
+    mutate(
+      EnrichRatio = as.numeric(EnrichRatio), FDR=as.numeric(FDR), Size=as.numeric(Size),
+      GeneList = Genes %>% str_replace_all(";", "\n") %>% str_trunc(100, "center", ellipsis = "...\n"),
+      Class = class.pathway(Pathway)
+    )
+  dir.create("../output/extra", showWarnings = F)
+  ORA.all %>% write_csv(path=ORA.all.f)
+}
+
+#################################################################################
+
 loxAf4.gene_transcript <- fread(
   "../output/RBHBID-to-StringTieTranscriptID/AvA-pcScore0.1_pcIdent0.8_pcQuerySpan0.5_reverse-hg38_maskRep_noVarChr_fragWithGenes/loxAfr4_RBB_ID-TranscriptID.tsv", 
   sep = "\t",
@@ -130,8 +157,25 @@ triManLat2.gene_transcript <- fread(
     by=Locus] %>% 
   unique
 
-loxAfr4.transcripts <- getTPM.dt("loxAfr4")
-triManLat2.transcripts <- getTPM.dt("triManLat2")
+#################################################################################
+
+loxAfr4.t.f <- "../output/extra/loxafr4_transcripts.csv"
+if (file.exists(loxAfr4.t.f)){
+  loxAfr4.transcripts <- fread(loxAfr4.t.f)
+} else{
+  loxAfr4.transcripts <- getTPM.dt("loxAfr4")
+  dir.create(dirname(loxAfr4.t.f), showWarnings = F)
+  loxAfr4.transcripts %>% fwrite(file = loxAfr4.t.f)
+}
+
+triManLat2.t.f <- "../output/extra/triManLat2_transcripts.csv"
+if (file.exists(triManLat2.t.f)){
+  triManLat2.transcripts <- fread(triManLat2.t.f)
+} else{
+  triManLat2.transcripts <- getTPM.dt("triManLat2")
+  dir.create(dirname(triManLat2.t.f), showWarnings = F)
+  triManLat2.transcripts %>% fwrite(file = triManLat2.t.f)
+}
 
 genomeTable.atlantogenata <- genomeTable %>% filter(label %in% ml.treedata@phylo$tip.label)
 
@@ -148,8 +192,7 @@ CEGMA.qc <- read_csv("../output/CEGMA/CEGMA_QC.csv") %>%
   select(-Value, -Type, -Stat, Genome, Stat=NewStat, Value=Number)
 CEGMA.qc[is.na(CEGMA.qc$Value),]$Value <- 0
 CEGMA.qc %<>% pivot_wider(id_cols=Genome, names_from = Stat, values_from=Value)
-CEGMA.completeness <- read_csv("../output/CEGMA/CEGMA_Completeness.csv", comment = "#", col_names = c("Genome","Group","#Prots","%Completeness","#Total","Average","%Ortho","Missing Proteins")) %>% 
-  filter(!is.na(Average))
+CEGMA.completeness <- read_csv("../output/CEGMA/CEGMA_Completeness_clean.csv")
 
 anage <- read_tsv("../data/AnAge/anage_build14.txt", col_types = list("Weaning (days)"=col_number(), "Weaning weight (g)"=col_number(), "References" = col_character())) %>% 
   select(Genus, Species,"Maximum longevity (yrs)", "Adult weight (g)") %>% 
@@ -224,7 +267,11 @@ bsize.Atlantogenata.table <- bsize.Atlantogenata  %>%
 size.scale <- bsize.tree %>% as_tibble %>% pull(lnSize) %>% unique %>% as.numeric() %>% sort
 size.scale.min <- size.scale[1]
 size.scale.max <- size.scale[length(size.scale)]
-
+get.size.color <- function(n, scale = size.scale){
+  scale.colors = viridis::viridis(n=length(scale)) %>% 
+    set_names(., as.character(scale))
+  scale.colors[as.character(n)]
+}
 bsize.Atlantogenata.nodes <- list(
   "Loxodonta.africana"= bsize.Atlantogenata.table %>% filter(label=="Loxodonta africana") %>% pull(node) %>% unique,
   "Trichechus.manatus"= bsize.Atlantogenata.table %>% filter(label=="Trichechus manatus") %>% pull(node) %>% unique,
@@ -438,10 +485,7 @@ p.tree.atlantogenata.circ <- bsize.Atlantogenata %>%
   # geom_tiplab2(aes(label=Spc.short), hjust = -.1, col="black", size=2)#+ theme(plot.margin=grid::unit(c(-20,-20,-20,-20), "mm"))
   #geom_tiplab(aes(label=Spc.short), hjust = -.1, col="black", size=2)
 
-get.size.color <- function(n){
-  viridis::viridis(n=length(size.scale), )[size.scale[n]]
-}
-
+warning("TODO: de-comment geom_tiplab in p.tree.atlantogenata! Commented currently for offline usage!")
 p.tree.atlantogenata <-  
   bsize.Atlantogenata %>% 
   ggtree(
@@ -449,9 +493,9 @@ p.tree.atlantogenata <-
     continuous=T,
     size = 1.5
   ) + 
-  geom_tiplab(aes(image=highlight, size=I(0.1)), geom="phylopic", 
-              show_guide=F, align = F, linesize = 0, offset= 100
-              ) +
+  # geom_tiplab(aes(image=highlight, size=I(0.1)), geom="phylopic", 
+  #             show_guide=F, align = F, linesize = 0, offset= 100
+  #             ) +
   geom_cladelabel(node=bsize.Atlantogenata.nodes$Proboscidae, label="Proboscidae", 
                   fontsize = 4, align = T, offset = 50, angle=0, barsize = 1, 
                   offset.text = 20,
@@ -599,25 +643,8 @@ ml.tree.increasing.geneCounts.withSize <- ml.tree.increasing.geneCounts %>%
 
 ml.tree.increasing.geneCounts.withSize@phylo$node.label[ml.tree.increasing.geneCounts@phylo$node.label == "Xenarthra"] <- NA
 
-not.me <- function(attr1, attr2, threshold=5){
-  sapply(
-    seq_along(attr1),
-    function(n, a1=attr1, a2=attr2, t=threshold){
-      ifelse(a1[n] >= t, a2[n], NA)
-    }
-  )
-}
-yes.me <- function(attr1, attr2, threshold=5){
-  sapply(
-    seq_along(attr1),
-    function(n, a1=attr1, a2=attr2, t=threshold){
-      ifelse(a1[n] < t, a2[n], NA)
-    }
-  )
-}
-# ml.tree.increasing.geneCounts.withSize %>% as.tibble %>% print(n=1351)
+# ml.tree.increasing.geneCounts.withSize %>% as_tibble %>% print(n=1351)
 ```
-
 
 ```{r Plot Gene Copy Trees, include=F}
 p.ml.tree.increasing.geneCounts.withSize <- ml.tree.increasing.geneCounts.withSize %>% 
@@ -719,13 +746,17 @@ We built a time-calibrated supertree of Eutherian mammals by combining the time-
 
 _Reciprocal Best-Hit BLAT:_ We developed a reciprocal best hit BLAT (RBHB) pipeline to quickly identify homologs and estimate gene copy numbers (__Figure 1A__). The Reciprocal Best Hit (RBH) search strategy is conceptually straightforward: 1) Given a gene of interest $G_A$ in a query genome $A$, one searches a target genome $B$ for all possible matches to $G_A$; 2) For each of these hits, one then performs the reciprocal search in the original query genome to identify the highest-scoring hit; 3) A hit in genome $B$ is defined as a homolog of gene $G_A$ if and only if the original gene $G_A$ is the top reciprocal search hit in genome $A$. We selected BLAT [@blat] as our algorithm of choice, as this algorithm is sensitive to highly simliar (>90% identity) sequences, thus identifying the highest-confidence homologs while minimizing many-to-one mapping problems when searching for multiple genes. RBH performs similar to other more complex methods of orthology prediction, and is particularly good at identifying incomplete genes that may be fragmented in low quality/poor assembled regions of the genome [@AltenhoffAndDessimoz2009; @SalichosAndRokas2011]. 
 
-_Effective Copy Number By Coverage:_ In lower-quality genomes, many genes are fragmented across multiple scaffolds, which results in BLAT calling multiple hits when in reality there is only one gene. To compensate for this, we came up with a novel statistic, Estimated Copy Number by Coverage (ECNC), which averages the number of times we see each nucleotides of a query sequence in a target genome over the total number of nucleotides of the query sequence found overall in each target genome (Supplementary Figure 1). This allows us to correct for genes that have been fragmented across incomplete genomes, without underestimating the copy number of proteins that lack domains found in the human sequence. 
+_Effective Copy Number By Coverage:_ In lower-quality genomes, many genes are fragmented across multiple scaffolds, which results in BLAT calling multiple hits when in reality there is only one gene. To compensate for this, we came up with a novel statistic, Estimated Copy Number by Coverage (ECNC), which averages the number of times we see each nucleotides of a query sequence in a target genome over the total number of nucleotides of the query sequence found overall in each target genome (Supplementary Figure 1). This allows us to correct for genes that have been fragmented across incomplete genomes, while also taking into account missing sequences from the human query in the target genome. Mathematically, this can be written as:  
+$$ ECNC = \frac{\sum_{n=1}^{l} C_n}{\sum_{n=1}^{l} bool(C_n)}$$
+where $n$ is a given nucleotide in the query, $l$ is the total length of the query, $C_n$ is the number of instances that $n$ is present within a reciprocal best hit, and $bool(C_n)$ is 1 if $C_n > 0$ or 0 if $C_n = 0$.  
 
 _RecSearch Pipeline:_ We created a custom Python pipeline for automating RBHB searches between a single reference genome and multiple target genomes using a list of query sequences from the reference genome. For the query sequences in our search, we used the hg38 Proteome provided by UniProt [Accession #UP000005640; @uniprot], which is a comprehensive set of protein sequences curated from a combination of predicted and validated protein sequences generated by the UniProt Consortium. In order to refine our search, we omitted protein sequences originating from long, noncoding RNA loci (e.g. LINC genes); poorly-studied genes from predicted open reading frames (C-ORFs); and sequences with highly repetitive sequences such as zinc fingers, protocadherins, and transposon-containing genes, as these were prone to high levels of false positive hits. After filtering out problematic protein queries, we then used our pipeline (Figure 1A) to search for all copies of our `r length(UP000005640.genenames)` query genes in publicly available Afrotherian genomes, including African savannah elephant (_Loxodonta africana_: loxAfr3, loxAfr4, loxAfrC), African forest elephant (_Loxodonta cyclotis_: loxCycF), Asian Elephant (_Elephas maximus_: eleMaxD), Woolly Mammoth (_Mammuthus primigenius_: mamPriV), Colombian mammoth (_Mammuthus columbi_: mamColU), American mastodon (_Mammut americanum_: mamAmeI), Rock Hyrax (_Procavia capensis_: proCap1, proCap2, proCap2_HiC), West Indian Manatee (_Trichechus manatus latirostris_: triManLat1, triManLat1_HiC), Aardvark (_Orycteropus afer_: oryAfe1, oryAfe1_HiC), Lesser Hedgehog Tenrec (_Echinops telfairi_: echTel2), Nine-banded armadillo (_Dasypus novemcinctus_: dasNov3), Hoffman's two-toed sloth (_Choloepus hoffmannii_: choHof1, choHof2, choHof2_HiC), Cape golden mole (_Chrysochloris asiatica_: chrAsi1), and Cape elephant shrew (_Elephantulus edwardii_: eleEdw1). For many of these species, we covered multiple assemblies in order to test the effects of assembly size and quality on our hits. 
 
 _Duplication gene inclusion criteria:_ In order to condense transcript-level hits into single gene loci, and to resolve many-to-one genome mappings, we removed exons where transcripts from different genes overlapped, and merged overlapping transcripts of the same gene into a single gene locus call. The resulting gene-level copy number table was then combined with the maximum ECNC values observed for each gene in order to call gene duplications. We called a gene duplicated if its copy number was two or more, and if the maximum ECNC value of all the gene transcripts searched was 1.5 or greater; previous studies have shown that incomplete duplications can encode functional genes, therefore partial gene duplications were included provided they passed additional inclusion criteria. The ECNC cut off of 1.5 was selected empirically, as this value minimized the number of false positives seen in a test set of genes and genomes. The results of our initial search are summarized in Figure 1B. Overall, we identified [MEDIAN] genes across all species, or [%HITS/QUERIES] of our starting query genes. 
 
 _Duplicate gene exclusion criteria:_ We excluded genes from downstream analyses for which assignment of homology was uncertain, including uncharacterized ORFs (`r query.binTable %>% filter(C.ORF) %>% length`), LOC (`r query.binTable %>% filter(LOC) %>% length`), HLA genes (`r query.binTable %>% filter(HLA) %>% length`), replication dependent histones (`r query.binTable %>% filter(Histone) %>% length`), odorant receptors (`r query.binTable %>% filter(OlfactoryReceptor) %>% length`), ribosomal proteins (`r query.binTable %>% filter(Riboprotein) %>% length`), zinc finger transcription factors (`r query.binTable %>% filter(ZincFinger) %>% length`), viral and repetitive-element-associated proteins (`r query.binTable %>% filter(Viral) %>% length`) and any protein described as either "Uncharacterized," "Putative," or "Fragment" by UniProt in UP000005640 (`r query.binTable %>% filter(Fragment | Uncharacterized | Putative) %>% length`).
+
+__Orthogonal Genome Assessment using CEGMA__ In order to determine the effect of genome quality on our results, we used the gVolante webserver and CEGMA to assess the quality and completeness of the genome. CEGMA was run using the default settings of [`r warning("TODO: add CEGMA settings")`], and the mammalian-specific core gene sets. 
 
 
 ## Evidence for Functionality of Identified Genes
@@ -746,7 +777,11 @@ We implemented a maximum likelihood method for determining the ancestral copy nu
 
 ## Pathway Enrichment Analysis
 
-To determine which pathways were associated with duplicated genes in each species and lineage, we used WEBGESTALT to perform overrepresentation analysis (ORA) of the duplicated gene lists relative to our initial query gene list. For the database of pathways used in the analysis, we used Reactome [@Reactome], Wikipathways and Wikipathways_cancer [@Wikipathways], and KEGG [@KEGG]. 
+To determine which pathways were associated with duplicated genes in each species and lineage, we used WEBGESTALT to perform overrepresentation analysis (ORA) of the duplicated gene lists relative to our initial query gene list [@webgestalt2019]. For the database of pathways used in the analysis, we used Reactome [@Reactome], Wikipathways, and Wikipathways_cancer [@Wikipathways], and KEGG [@KEGG]. For the ORA, we used FDR for determining significance, and ran the analysis at FDR=0.1, FDR=0.2, FDR=0.3, and FDR=0.5.
+
+## Lifespan Phylogenetic Least-Square Regression and Calculating Estimated Cancer Risk Thoughout Atlantogenata
+
+In order to determine the cancer risk at each node, we used a simplified multistage cancer risk model for body size and lifespan [@ArmitageAndDol; @Peto2015; @Peto2015b]. We defined the 
 
 
 # Results
@@ -787,8 +822,6 @@ ORA.TSG.list.all <- ORA.all%>%
         )
   )
 ```
-
-
 ```{r LoxAfr All TSG Gene Transcripts}
 loxAfr.duplicated <- geneCopyTable %>% 
   filter(Genome == "loxAfr4", ECNC >=1.5, Copy>=2) %>% 
@@ -836,8 +869,6 @@ loxAfr4.geneTPM.ORA.TSG.any <- merge(
   by="Gene"
 )
 ```
-
-
 ```{r LoxAfr Increased Gene Transcripts}
 genes.loxAfr.TSG.increased <- ORA.TSG.list$Loxodonta_africana %>% 
   separate_rows(Genes, sep=", ") %>% 
@@ -872,82 +903,85 @@ loxAfr4.geneTPM.ORA.TSG.increased <- merge(
 
 ```
 ```{r LoxAfr Other Gene Transcripts}
-genesToHighlight.plus <- c(
-   names(ml.treedata.loxAfrHighlight.TSG.any),
-  "RBX1", #Cell cycle, ubiqu., Probo
-  "LIN9", # Cell cycle, Probo
-  "MND1", # Cell Cycle, Elephantidea,
-  "E2F2", #Cell cycle, Tethytheria
-  "MAX", # Cell Cycle, Tethytheria
-  "SYCP3", #Cell cycle, unique to LoxAfr
-  
-  "CDK1", # APC and Cell Cycle, Atlantogenata
-  "RNF168", # ATM, cell cycle, Paen or Pseudo
-  "RBBP8", # ATM Signaling, Cell Cycle, DSB repair, Tethy
-  "MAD2L1", # APC, Tethytheria
-  "CSNK1A1", #APC? Tethytheria
-  "RPA2", # ATR, cell cycle, and stress response, Probo
-  "PSMB3", # APC/C, ubiq, Probo
-  "BUB3", # APC, 2 copies until 3 in LoxAfr
-  
-  "GTF2F1", #TP53 Transcriptional Regulation, Paenungulata
-  "STK11", #REgulation of TP53, Paenungulata
-  "COX5A", #TP53 transcriptional regulation, PRobodiscea
-  "BRD7", # TP53 regulation, Tethytheria
-  "TP53", #TP53 duplicates in Tethytheria
-  "SIAH1", # p53 pathway, Ubiquitin mediated proteolysis, Tethytheria
-  "CASP9", # miRNA regulation of TP53, Cell Death probably, Extant Elephants
-  "PRDX1", # TP53 regulates metabol, LoxAfr & MamPri
-  "LAMTOR5", # Metabolism and TP53, 2x in Atlantogenata but 5x in oryAfe, 4-6 in modern elephants
-  "COX20", # TP53 Regulates Metabolic Genes, LoxAfr
-  
-  "SOD1",  # Oxidative Stress, Probodiscea
-  "SCMH1", # DNA damage response and OS-induced senescence, Probo
-  "RNF2", # OSISenecense, Tethytheria
-  
-  "ORC3", # Replication Stress, Loxondontini, Elephas
-  
-  "RACK1", # Death Receptor Signaling, Tethy or Paen
-  "PCBP2", # Ferroptosis, Loxodontini, Trichechus
-  "NSMAF", # Death Receptor Signaling, Tethytheria
-  "PCBP1", # Ferroptosis, Probodiscea
-  "SERBP1", # Apoptosis, Probodiscea
-  "CASP12", # Apoptosis, Probodiscea
-  "NET1", # Apoptosis in cancers, Elephantidae
-  "CSF2RB", #Apoptosis, Elephantidae
-  
-  "RASA1", # RAS signaling Pathway, Paen
-  "RAB5B", # RAS signaling, Paen
-  "NRAS", #Literally just RAS, Tethytheria
-  "GSK3A", #RAS, Tethy
-  
-  "POLR2K", # TC-NER, Elephantidae
-  
-  "HSBP1", # Heat Shock, Elephantidae
-  "ERCC8", #Ubiquitin mediated proteolysis, Elephantidea
-  "DTX3L", # Ubiquitination & Proteasome degradation, Loxodontini
-  "CTTN", # Proteoglycans in Cancer, Loxodontini
-  
-  "DNAJC2", # Heat Shock, Probo
-  "DET1", # Ubiq-mediate proteolysis, Probo
-  
-  "MAPK3", # Many cancers, Afrotheria
-  "GABARAP", #Senescence and autophagy in cancer, Paen or Tethy
-  "HNRNPK", #LncRNA involvement in Wnt and Cancer, Probodiscea
-  "CACYBP", # Gastric Cancer Network 2, Probodiscea
-  "CHPT1", # Choline Metabolism in Cancer, Probodiscea
-  "PYCR2", # Metabolic reprogramming in colon cancer, Elephantidae
-  "PLPP2", # Choline Metabolism in Cancer, Loxodontini, Elephas, Trichechus
-  "PLAC8", # Gastric Cancer Network 2, continuously increases towards Loxodona
-  
-  "LIMK1", #G13 Signaling, Probo
-  
-  "EEF1A1", # Vinnie wanted to highlight this
-  "EIF4E", #Probodiscea
-  "EIF4A1" # Loxodontini
+genesToHighlight.plus <- list(
+  "CellCycle" = c(
+    "RBX1", #Cell cycle, ubiqu., Probo
+    "LIN9", # Cell cycle, Probo
+    "MND1", # Cell Cycle, Elephantidea,
+    "E2F2", #Cell cycle, Tethytheria
+    "MAX", # Cell Cycle, Tethytheria
+    "SYCP3" #Cell cycle, unique to LoxAfr
+  ),
+  "APC" = c(
+    "CDK1", # APC and Cell Cycle, Atlantogenata
+    "RNF168", # ATM, cell cycle, Paen or Pseudo
+    "RBBP8", # ATM Signaling, Cell Cycle, DSB repair, Tethy
+    "MAD2L1", # APC, Tethytheria
+    "CSNK1A1", #APC? Tethytheria
+    "RPA2", # ATR, cell cycle, and stress response, Probo
+    "PSMB3", # APC/C, ubiq, Probo
+    "BUB3" # APC, 2 copies until 3 in LoxAfr
+  ),
+  "TP53" = c(
+    "GTF2F1", #TP53 Transcriptional Regulation, Paenungulata
+    "STK11", #REgulation of TP53, Paenungulata
+    "COX5A", #TP53 transcriptional regulation, PRobodiscea
+    "BRD7", # TP53 regulation, Tethytheria
+    "TP53", #TP53 duplicates in Tethytheria
+    "SIAH1", # p53 pathway, Ubiquitin mediated proteolysis, Tethytheria
+    "CASP9", # miRNA regulation of TP53, Cell Death probably, Extant Elephants
+    "PRDX1", # TP53 regulates metabol, LoxAfr & MamPri
+    "LAMTOR5", # Metabolism and TP53, 2x in Atlantogenata but 5x in oryAfe, 4-6 in modern elephants
+    "COX20" # TP53 Regulates Metabolic Genes, LoxAfr
+  ),
+  "Stress" = c(
+    "SOD1",  # Oxidative Stress, Probodiscea
+    "SCMH1", # DNA damage response and OS-induced senescence, Probo
+    "RNF2", # OSISenecense, Tethytheria
+    "ORC3", # Replication Stress, Loxondontini, Elephas
+    "POLR2K", # TC-NER, Elephantidae
+    "HSBP1", # Heat Shock, Elephantidae
+    "ERCC8", #Ubiquitin mediated proteolysis, Elephantidea
+    "DTX3L", # Ubiquitination & Proteasome degradation, Loxodontini
+    "DNAJC2", # Heat Shock, Probo
+    "DET1" # Ubiq-mediate proteolysis, Probo
+  ),
+  "Death" = c(
+    "RACK1", # Death Receptor Signaling, Tethy or Paen
+    "PCBP2", # Ferroptosis, Loxodontini, Trichechus
+    "NSMAF", # Death Receptor Signaling, Tethytheria
+    "PCBP1", # Ferroptosis, Probodiscea
+    "SERBP1", # Apoptosis, Probodiscea
+    "CASP12", # Apoptosis, Probodiscea
+    "NET1", # Apoptosis in cancers, Elephantidae
+    "CSF2RB" #Apoptosis, Elephantidae
+  ),
+  "RAS" = c(
+    "RASA1", # RAS signaling Pathway, Paen
+    "RAB5B", # RAS signaling, Paen
+    "NRAS", #Literally just RAS, Tethytheria
+    "GSK3A" #RAS, Tethy
+  ),
+  "CancerRelatedGenes" = c(
+    "MAPK3", # Many cancers, Afrotheria
+    "GABARAP", #Senescence and autophagy in cancer, Paen or Tethy
+    "HNRNPK", #LncRNA involvement in Wnt and Cancer, Probodiscea
+    "CTTN", # Proteoglycans in Cancer, Loxodontini
+    "CACYBP", # Gastric Cancer Network 2, Probodiscea
+    "CHPT1", # Choline Metabolism in Cancer, Probodiscea
+    "PYCR2", # Metabolic reprogramming in colon cancer, Elephantidae
+    "PLPP2", # Choline Metabolism in Cancer, Loxodontini, Elephas, Trichechus
+    "PLAC8" # Gastric Cancer Network 2, continuously increases towards Loxodona
+  ),
+  "EEF.EIF" = c(
+    "EEF1A1", # Vinnie wanted to highlight this
+    "EIF4E", #Probodiscea
+    "EIF4A1" # Loxodontini
+  )
 )
 
 ml.treedata.loxAfrHighlight.plus <- genesToHighlight.plus %>% 
+  unlist %>% 
   set_names(.,.) %>% 
   lapply(., function(gene){
     ml.treedata.table %>% 
@@ -968,8 +1002,6 @@ loxAfr4.geneTPM.genesToHighlight.plus <- merge(
 
 # loxAfr4.geneTPM.duplicated %>% inner_join(., ORA.loxAfr.all.table, by="Gene") %>% arrange(Gene)
 ```
-
-
 ```{r LoxAfr ORA Gene Transcripts}
 
 p.ml.treedata.loxAfrHighlight.TSG.any <- ml.treedata.loxAfrHighlight.TSG.any %>% 
@@ -1020,8 +1052,7 @@ p.ml.treedata.loxAfrHighlight.plus <- ml.treedata.loxAfrHighlight.plus %>%
   )
 
 ```
-
-```{r expressed loxAfr duplicates}
+```{r Expressed LoxAfr Duplicates}
 loxAfr4.expressedDups <- loxAfr4.geneTPM %>% 
   group_by(Gene) %>% 
   summarize(n = n_distinct(Locus)) %>% 
@@ -1031,8 +1062,6 @@ loxAfr4.expressedDups <- loxAfr4.geneTPM %>%
 loxAfr4.geneTPM.ORA.expressedDups <- loxAfr4.geneTPM.ORA.TSG.any %>% 
   filter(Gene %in% loxAfr4.expressedDups)
 ```
-
-
 ```{r Plot: Expressed LoxAfr Duplicates ORA}
 plot.coolgenes <- loxAfr4.geneTPM.ORA.expressedDups %>% 
   filter(Gene %in% genesToHighlight.plus) %>% 
@@ -1071,23 +1100,12 @@ plot.coolgenes <- loxAfr4.geneTPM.ORA.expressedDups %>%
 
 ```
 
-```{r ORA.dotplots}
-p.loxAfr.ORA.dotplot <- ORA.all %>% 
-    filter(Node == "Loxodonta_africana", FDR.Threshold %in% c("0.1", "0.2", "0.3"), Database == "Reactome") %>% 
-    graph.ORA.dotplot(., plotly=F)
-
-p.loxAfr.ORA.dotplot.increased <- ORA.all %>% 
-    filter(Node == "Loxodonta_africana", FDR.Threshold %in% c("0.1", "0.2", "0.3"), Database == "Reactome", Direction=="increased") %>% 
-    graph.ORA.dotplot(., plotly=T)
-```
-
-
-
-## Step-wise evolution of large, long-lived Afrotherians
+## Body size frequently and independently expands and contracts throughout _Atlantogenata_
 
 ```{r Figure 1, fig.cap="Figure 1: Body sizes rapidly and frequently expand in Eutherians, especially in Atlantogenata. __A)__ Tree of Eutherian species, colored by ln(Body Size) and with branch lengths set to the rate of change in body sizes, normalized by the square root of the root branch. Atlantogenata is highlighted at the bottom. __B)__ Zoom-in of (A) on Atlantogenata. Silhuetes for the African Elephant, West Indian Manatee, Cape Elephant Shrew, Lesser Hedgehog Tenrec, Cape Golden Mole, Nine-Banded Armadillo, and Hoffman's Two-Toed Sloth are colored by their extant body sizes, while clade labels are colored based on the common ancestor's estimated body size"}
 f1a <- p.tree
 f1b <- p.tree.atlantogenata
+
 f1 <- ggarrange(
   f1a, f1b, 
   nrow=1, ncol = 2, 
@@ -1095,7 +1113,7 @@ f1 <- ggarrange(
   common.legend = T, legend = "bottom")
 f1
 ```
-```{r Table 1}
+```{r Table 1, fig.cap="Table 1: Body Size and Confidence Intervals in _Atlantogenata_ estimated using StableTraits."}
 t.bodysize.atlantogenata.withNodes
 ```
 
@@ -1297,252 +1315,298 @@ ecnc.twogene.partialhits <-
 
   
 ```
-```{r Correlations between genome quality scores}
-# Get upper triangle of the correlation matrix
-get_upper_tri <- function(cormat){
-  cormat[lower.tri(cormat)]<- NA
-  return(cormat)
-}
-reorder_cormat <- function(cormat){
-# Use correlation between variables as distance
-dd <- as.dist((1-cormat)/2)
-hc <- hclust(dd)
-cormat <-cormat[hc$order, hc$order]
-}
-
-CEGMA <- full_join(CEGMA.qc, CEGMA.completeness, by="Genome")
-CEGMA.completeonly <- CEGMA %>% 
-  filter(Group == "Complete_all") %>% 
+```{r Correlations between genome quality scores (1)}
+CEGMA.completeness.clean <-
+  CEGMA.completeness %>%
+  filter(str_detect(Group, "_all")) %>%
+  select(-`Missing Proteins`) %>%
   rename(
-    Completeness = `%Completeness`,
-    totalLength = `Total length (nt)`,
-    meanSequenceLength = `Mean sequence length (nt)`,
-    L50 = `L50 sequence count`,
-    N50 = `N50 sequence length (nt)`,
-    Total = `#Total`, 
+    n.Prots = `#Prots`,
+    pc.Completeness = `%Completeness`,
+    n.Total = `#Total`,
     pc.Ortho = `%Ortho`
+  ) %>%
+  reshape2::melt(., id = c("Genome", "Group")) %>%
+  mutate(Group = Group %>% str_remove("_all")) %>%
+  unite("variable", variable, Group) %>%
+  pivot_wider(id_cols = Genome, names_from = variable, values_from = value)
+
+CEGMA <- full_join(CEGMA.qc, CEGMA.completeness.clean, by="Genome")
+
+geneCopyTable.summary <-
+  geneCopyTable %>%
+  mutate(
+    ECNC = ECNC %>% sapply(
+      .,
+      . %>% if_else(is.na(.), 0, .) %>%
+        sum(., ifelse(.>round(.), 0.01, 0)) %>%
+        round()
+    ),
+    Copy = Copy %>% sapply(. %>% if_else(is.na(.), 0, .)),
+    CN = if_else(ECNC<Copy, ECNC, Copy)
+  ) %>%
+  group_by(Genome) %>%
+  summarise(
+    # median.ECNC = median(ECNC),
+    mean.ECNC = mean(ECNC),
+    sd.ECNC = sd(ECNC),
+    # median.Copy = median(Copy),
+    mean.Copy = mean(Copy),
+    sd.Copy = sd(Copy),
+    # median.CN = median(CN),
+    mean.CN = mean(CN),
+    sd.CN = sd(CN),
   )
 
-GCT.CEGMA.all <- geneCopyTable %>% 
-  mutate(
-    ECNC = ECNC %>% sapply(
-        .,
-        . %>% if_else(is.na(.), 0, .) %>% 
-      sum(., ifelse(.>round(.), 0.01, 0)) %>% 
-      round()
-    ),
-    Copy = Copy %>% sapply(. %>% if_else(is.na(.), 0, .)),
-    CN = if_else(ECNC<Copy, ECNC, Copy)
-  )%>% 
-  inner_join(., CEGMA, by="Genome") %>% 
-  mutate_if(is.character, as.factor)%>% 
-  select(-Group)
+GCT.CEGMA <- geneCopyTable.summary %>%
+  inner_join(., CEGMA, by="Genome") %>%
+  mutate_if(is.character, as.factor)
 
-GCT.CEGMA.completeOnly <- geneCopyTable %>% 
-  mutate(
-    ECNC = ECNC %>% sapply(
-        .,
-        . %>% if_else(is.na(.), 0, .) %>% 
-      sum(., ifelse(.>round(.), 0.01, 0)) %>% 
-      round()
-    ),
-    Copy = Copy %>% sapply(. %>% if_else(is.na(.), 0, .)),
-    CN = if_else(ECNC<Copy, ECNC, Copy)
-  )%>% 
-  inner_join(., CEGMA.completeonly, by="Genome") %>% 
-  mutate_if(is.character, as.factor) %>% 
-  select(-Group)
-
-cor.GCT.CEGMA.completeOnly <- GCT.CEGMA.completeOnly %>% 
-  mutate_if(is.factor, as.numeric) %>% 
+cor.GCT.CEGMA <- GCT.CEGMA %>%
+  mutate_if(is.factor, as.numeric) %>%
   as.matrix %>%
   cor %>%
   reorder_cormat %>%
-  get_upper_tri %>% 
-  melt(., na.rm=T) 
-  # as.data.frame %>%
-  # rownames_to_column(var = 'var1') %>%
-  # gather(var2, value, -var1) %>% 
-  # mutate(var_order = paste(var1, var2) %>%
-  #          strsplit(split = ' ') %>%
-  #          map_chr(
-  #            ~ sort(.x) %>%
-  #              paste(collapse = ' ')
-  #          )
-  # ) %>%
-  # mutate(cnt = 1) %>%
-  # group_by(var_order) %>%
-  # mutate(cumsum = cumsum(cnt)) %>%
-  # filter(cumsum != 2) %>%
-  # ungroup %>%
-  # select(-var_order, -cnt, -cumsum)
+  # get_upper_tri %>%
+  get_lower_tri %>%
+  reshape2::melt(., na.rm=T)
 
-cor.GCT.CEGMA.completeOnly %>% filter(Var2 %in% c("ECNC", "Copy", "CN"), !Var1 %in% c("ECNC", "Copy", "CN"))
-p.cor.GCT.CEGMA.completeOnly <- cor.GCT.CEGMA.completeOnly %>% 
-  # filter(value>0) %>% 
+
+p.cor.GCT.CEGMA <- cor.GCT.CEGMA %>%
+  # filter(value>0) %>%
   ggplot(
-    aes(x=Var2, y=Var1, fill = value)
-    )+
- geom_tile(color = "white")+
- scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
-   midpoint = 0, limit = c(-1,1), space = "Lab", 
-    name="Pearson\nCorrelation") +
-  theme_minimal()+ # minimal theme
- theme(axis.text.x = element_text(angle = 45, vjust = 1, 
-    size = 12, hjust = 1))+
- coord_fixed()+ 
-# geom_text(aes(Var2, Var1, label = value), color = "black", size = 4) +
-theme(
-  axis.title.x = element_blank(),
-  axis.title.y = element_blank(),
-  panel.grid.major = element_blank(),
-  panel.border = element_blank(),
-  panel.background = element_blank(),
-  axis.ticks = element_blank(),
-  legend.justification = c(1, 0),
-  legend.position = c(0.6, 0.7),
-  legend.direction = "horizontal")+
-  guides(fill = guide_colorbar(barwidth = 7, barheight = 1,
-                title.position = "top", title.hjust = 0.5))
-
-# Best independent vars:
-#   Genome, N50, Mean Sequence Length, Completeness, #Total, %Ortho, Average
-# Note: Genome highly correlated with "sum length seq", which is HC w/ "N50"
-# Nothing correlates with Gene
-# 
+    # aes(x=Var2, y=Var1, fill = value)
+    aes(x=Var1, y=Var2, fill = value)
+  )+
+  geom_tile(color = "white")+
+  # scale_fill_gradient2(low = "blue", high = "red", mid = "white",
+  #   midpoint = 0, limit = c(-1,1), space = "Lab",
+  #    name="Pearson\nCorrelation") +
+  scale_fill_viridis_c() +
+  theme_minimal()+
+  coord_fixed()+
+  # coord_flip() +
+  # scale_x_discrete(position = "top") +
+  scale_x_discrete(#limits = rev(levels(cor.GCT.CEGMA$Var1)), 
+    position = "top") +
+  scale_y_discrete(position = "right") +
+  # scale_y_discrete(limits = rev(levels(cor.GCT.CEGMA$Var1)), position = "right") +
+  theme(
+    # axis.text.x = element_text(
+    #   angle = -45, vjust = 0,
+    #   size = 9, hjust = 0
+    #   ),
+    axis.text.x = element_text(
+      angle = -330, vjust = 0,
+      size = 9, hjust = 0
+    ),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    axis.ticks = element_blank(),
+    legend.justification = c(1, 1),
+    legend.position = c(0.4,0.7), #c(0.6, 0.7),
+    legend.direction = "horizontal")+
+  guides(fill = guide_colorbar(title="Pearson\nCorrelation",
+                               barwidth = 7, barheight = 1,
+                               title.position = "top", title.hjust = 0.5))
 ```
 ```{r Phylogenetic Correlations}
-CEGMA.completeonly.wGenome <- inner_join(
-  GCT.CEGMA.completeOnly, 
-  genomeTable.atlantogenata %>% select(label, BestGenome), 
-  by=c("Genome"="BestGenome")
+
+to_drop <-tree.Atlantogenata %>% as_tibble %>% filter(!BestGenome %in% (GCT.CEGMA %>% pull(Genome))) %>% pull(label)
+
+tree.GCT.CEGMA <- full_join(
+  tree.Atlantogenata %>% 
+    drop.tip(to_drop) %>% 
+    as_tibble %>% 
+    mutate(Genome = BestGenome),
+  GCT.CEGMA, 
+  by="Genome"
 ) %>% 
-  select(label, everything())
-missing.bsize.atl.CEGMA.completeonly <- bsize.Atlantogenata %>% 
-  as.tibble %>% 
-  filter(!label %in% CEGMA.completeonly.wGenome$label) %>% pull(label)
-bsize.atl <- bsize.Atlantogenata@phylo %>% 
-  drop.tip(missing.bsize.atl.CEGMA.completeonly)
+  as.treedata()
+GCT.CEGMA.wGenome <- tree.GCT.CEGMA %>% as_tibble
 
-bm<-corBrownian(1, bsize.atl)
-pl<-corPagel(1, bsize.atl)
 
-# CEGMA.completeonly.wGenome %<>% filter(Gene == "TP53")
-# rown <- CEGMA.completeonly.wGenome$label %>% unique
-# CEGMA.completeonly.wGenome %<>% mutate_if(is.character, . %>% as.factor %>%  as.numeric)%>% 
+# GCT.CEGMA.wGenome %<>% filter(Gene == "TP53")
+# rown <- GCT.CEGMA.wGenome$label %>% unique
+# GCT.CEGMA.wGenome %<>% mutate_if(is.character, . %>% as.factor %>%  as.numeric)%>%
 #   as.data.frame
-# rownames(CEGMA.completeonly.wGenome) <- rown
+# rownames(GCT.CEGMA.wGenome) <- rown
 ```
+```{r Phylogenetic Correlations: model building (1), warning=T, eval=F}
+training.table.tree.GCT.CEGMA <- tree.GCT.CEGMA %>%
+  as_tibble() %>%
+  filter(!is.na(mean.CN)) %>%
+  mutate_if(is.character, . %>% as.factor) %>%
+  mutate(label=as.character(label) %>% str_replace_all("\\.", " ")) %>%
+  mutate_if(is.factor, as.numeric) %>%
+  as.data.frame %>%
+  column_to_rownames("label")
+
+names(training.table.tree.GCT.CEGMA) %<>% make.names(unique = T) %>% str_replace_all("\\.+", ".")
 
 
-```{r Phylogenetic Correlations: model building}
-warning("TODO: Collapse RBHB Genes into Total, Duplicate, and Median CN")
-warning("TODO: CEGMA duplicate: multiply CEGMA %Ortho times #Total to get a Median CN")
-warning("TODO: Rename CEGMA things to CEGMA.[thing]")
-warning("TODO: I have a linear model for each gene regressing genome quality stats with gene copy numbers in a PGLS; figure out why this is useful and how to plot it.")
+phyloGCT.CEGMA <- tree.GCT.CEGMA@phylo %>% as.phylo()
 
-runGLS.bm <- function(df, pcor = bm){
-  # print(class(df))
-  # print(head(df))
-  bla <- gls(
-  CN~Genome + N50 + meanSequenceLength + Completeness + Total+ pc.Ortho + Average, 
-  data = df, 
-  correlation=pcor
-  ) 
-  # print(bla)
-  # print(class(bla))
-  return(bla)
-}
-tidyGLS <- function(df){
-  print(names(df))
-  print(class(df$results))
-  a <- tidy(df$results, conf.int=T)
-  print(a)
-  return(a)
-}
+bm.gct <-corBrownian(1, phyloGCT.CEGMA)
+pl.gct <-corPagel(1, phyloGCT.CEGMA)
 
-gls.CN.bm <- CEGMA.completeonly.wGenome %>% 
-  # filter(Gene %in% c("TP53", "LIF")) %>%
-  nest(-Gene) %>% 
-  mutate(
-    data = map(
-      data,
-      . %>%
-        mutate_if(is.character, . %>% as.factor) %>% 
-        mutate(label=as.character(label)) %>% 
-        mutate_if(is.factor, as.numeric) %>% 
-        as.data.frame %>% 
-        column_to_rownames("label")
-    ),
-    model = map(
-      data, 
-      possibly(
-        ~runGLS.bm(.),
-        otherwise = NA_real_
-      ),
-    ),
-    tidied = map(
-      model,
-      possibly(
-        .%>% tidy(., conf.int=T),
-        otherwise = NA_real_
-      )
-    )
+
+models.vars <- training.table.tree.GCT.CEGMA %>% 
+  select(
+    # -mean.Copy, 
+    # -mean.ECNC, 
+    # -mean.CN,
+    # -sd.ECNC, 
+    # -sd.Copy, 
+    # -sd.CN,
+    -X.of.sequences.containing.non.ACGTN.nt., -Base.composition.Other., -parent, -node, 
+    -Brownian, -Median, -X95.CI_Low, -X95.CI_High, -branch.length, -Species, 
+    -Species.strict, -Spc.short, -BestGenome, -highlight, -Base.composition.C.,
+    -Base.composition.A., -Base.composition.T., -Base.composition.G., 
+    -phyloPicUID, -Rate,-Orig_len, -Common.Name, -Longest.sequence.nt., 
+    -Shortest.sequence.nt., -Mean.sequence.length.nt., -Median.sequence.length.nt., 
+    -starts_with("X.of.sequences"), -starts_with("Sum.length")
   )
 
-gls.CN.bm.perGene.tidy <- gls.CN.bm %>% 
-  unnest(tidied) #%>%
-  # select(-model)
+models.mean.ECNC <- names(models.vars) %>% 
+  str_remove("mean.*|sd.*") %>% 
+  stringi::stri_omit_empty() %>% 
+  paste0("mean.ECNC ~ ", .) %>% 
+  set_names(., .) %>% 
+  sapply(
+    ., 
+    . %>% 
+      paste0(
+        "gls(", ., ", data = training.table.tree.GCT.CEGMA, correlation=bm.gct)"
+        ) %>% 
+      parse(text = .)
+    ) %>% 
+  lapply(eval)
 
-# gls.atl.1<-CEGMA.completeonly.wGenome %>% 
-#   mutate_if(is.character, . %>% as.factor) %>% 
-#   mutate(label=as.character(label)) %>% 
-#   mutate_if(is.factor, as.numeric) %>% 
-#   group_by(Gene) %>% 
-#   do(model = . %>% 
-#       as.data.frame %>% 
-#       column_to_rownames("label") %>% 
-#        gls(
-#   CN~Genome + N50 + meanSequenceLength + Completeness + Total+ pc.Ortho + Average, 
-#   data = ., 
-#   correlation=bm)
-#   ) %>% tidy(model)
-# gls.atl.2<-gls(
-#   CN~Genome+ N50 + meanSequenceLength + Completeness + Total+ pc.Ortho + Average,
-#   data=CEGMA.completeonly.wGenome %>% filter(Gene == "TP53") %>%
-#       mutate_if(is.character, . %>% as.factor) %>% 
-#       mutate(label=as.character(label)) %>% 
-#       mutate_if(is.factor, as.numeric) %>% 
-#       as.data.frame %>% 
-#       column_to_rownames("label"), 
-#   correlation=pl)
-# gls.atl.3<-gls(
-#   Copy~Genome+ N50 + meanSequenceLength + Completeness + Total+ pc.Ortho + Average,
-#   data=CEGMA.completeonly.wGenome %>% filter(Gene == "TP53") %>%
-#       mutate_if(is.character, . %>% as.factor) %>% 
-#       mutate(label=as.character(label)) %>% 
-#       mutate_if(is.factor, as.numeric) %>% 
-#       as.data.frame %>% 
-#       column_to_rownames("label"), 
-#   correlation=bm)
-# gls.atl.4<-gls(
-#   Copy~Genome+ N50 + meanSequenceLength + Completeness + Total+ pc.Ortho + Average,
-#   data=CEGMA.completeonly.wGenome %>% filter(Gene == "TP53") %>%
-#       mutate_if(is.character, . %>% as.factor) %>% 
-#       mutate(label=as.character(label)) %>% 
-#       mutate_if(is.factor, as.numeric) %>% 
-#       as.data.frame %>% 
-#       column_to_rownames("label"), 
-#   correlation=pl)
-# gls.atl.4 %>% summary
-# AIC(gls.atl.3, gls.atl.1,gls.atl.2,gls.atl.4)
+models.mean.CN <- names(models.vars) %>% 
+  str_remove("mean.*|sd.*") %>% 
+  stringi::stri_omit_empty() %>% 
+  paste0("mean.CN ~ ", .) %>% 
+  set_names(., .) %>% 
+  sapply(
+    ., 
+    . %>% 
+      paste0(
+        "gls(", ., ", data = training.table.tree.GCT.CEGMA, correlation=bm.gct)"
+        ) %>% 
+      parse(text = .)
+    ) %>% 
+  lapply(eval)
+
+models.mean.Copy <-names(models.vars) %>% 
+    str_remove("mean.*|sd.*") %>% 
+    stringi::stri_omit_empty() %>% 
+    paste0("mean.Copy ~ ", .) %>% 
+  set_names(., .) %>% 
+  sapply(
+    ., 
+    . %>% 
+      paste0(
+        "gls(", ., ", data = training.table.tree.GCT.CEGMA, correlation=bm.gct)"
+        ) %>% 
+      parse(text = .)
+    ) %>% 
+  lapply(eval)
+
+aic.models.mean.ECNC <- AIC(models.mean.ECNC[[1]], models.mean.ECNC[[2]], models.mean.ECNC[[3]], models.mean.ECNC[[4]], models.mean.ECNC[[5]], models.mean.ECNC[[6]], models.mean.ECNC[[7]], models.mean.ECNC[[8]], models.mean.ECNC[[9]], models.mean.ECNC[[10]], models.mean.ECNC[[11]], models.mean.ECNC[[12]], models.mean.ECNC[[13]], models.mean.ECNC[[14]], 
+    models.mean.ECNC[[15]], models.mean.ECNC[[16]], models.mean.ECNC[[17]], models.mean.ECNC[[18]]#,models.mean.ECNC[[19]], models.mean.ECNC[[20]], models.mean.ECNC[[21]]
+    ) %>% 
+  rownames_to_column("Model") %>% 
+  mutate(Model = names(models.mean.ECNC)) %>%
+  separate(Model, into = c("Y", "X"), sep="~") %>% 
+  arrange(AIC)
+aic.models.mean.Copy <- AIC(models.mean.Copy[[1]], models.mean.Copy[[2]], models.mean.Copy[[3]], models.mean.Copy[[4]], models.mean.Copy[[5]], models.mean.Copy[[6]], models.mean.Copy[[7]], models.mean.Copy[[8]], models.mean.Copy[[9]], models.mean.Copy[[10]], models.mean.Copy[[11]], models.mean.Copy[[12]], models.mean.Copy[[13]], models.mean.Copy[[14]], 
+    models.mean.Copy[[15]], models.mean.Copy[[16]], models.mean.Copy[[17]], models.mean.Copy[[18]]#,models.mean.Copy[[19]], models.mean.Copy[[20]], models.mean.Copy[[21]]
+    ) %>% 
+  rownames_to_column("Model") %>% 
+  mutate(Model = names(models.mean.Copy)) %>%
+  separate(Model, into = c("Y", "X"), sep="~") %>% 
+  arrange(AIC)
+aic.models.mean.CN <- AIC(models.mean.CN[[1]], models.mean.CN[[2]], models.mean.CN[[3]], models.mean.CN[[4]], models.mean.CN[[5]], models.mean.CN[[6]], models.mean.CN[[7]], models.mean.CN[[8]], models.mean.CN[[9]], models.mean.CN[[10]], models.mean.CN[[11]], models.mean.CN[[12]], models.mean.CN[[13]], models.mean.CN[[14]], 
+    models.mean.CN[[15]], models.mean.CN[[16]], models.mean.CN[[17]], models.mean.CN[[18]]#,models.mean.CN[[19]], models.mean.CN[[20]], models.mean.CN[[21]]
+    ) %>% 
+  rownames_to_column("Model") %>% 
+  mutate(Model = names(models.mean.CN)) %>%
+  separate(Model, into = c("Y", "X"), sep="~") %>% 
+  arrange(AIC)
 ```
+```{r Phylogenetic Correlations: model building (1 + lnsize), warning=T, eval=F}
+models.mean.ECNC.lnSize <- names(models.vars) %>% 
+  str_remove("mean.*|sd.*|lnSize") %>% 
+  stringi::stri_omit_empty() %>% 
+  paste0("mean.ECNC ~ lnSize + ", .) %>% 
+  set_names(., .) %>% 
+  sapply(
+    ., 
+    . %>% 
+      paste0(
+        "gls(", ., ", data = training.table.tree.GCT.CEGMA, correlation=bm.gct)"
+        ) %>% 
+      parse(text = .)
+    ) %>% 
+  lapply(eval)
 
+models.mean.CN.lnSize <- names(models.vars) %>% 
+  str_remove("mean.*|sd.*|lnSize") %>% 
+  stringi::stri_omit_empty() %>% 
+  paste0("mean.CN ~ lnSize + ", .) %>% 
+  set_names(., .) %>% 
+  sapply(
+    ., 
+    . %>% 
+      paste0(
+        "gls(", ., ", data = training.table.tree.GCT.CEGMA, correlation=bm.gct)"
+        ) %>% 
+      parse(text = .)
+    ) %>% 
+  lapply(eval)
 
-```{r LM Duplicates~Genome quality metrics}
-m1 <- lm(data = GCT.CEGMA.completeOnly, formula = Copy~Genome+ N50 + meanSequenceLength + Completeness + Total+ pc.Ortho + Average)
+models.mean.Copy.lnSize <- names(models.vars) %>% 
+  str_remove("mean.*|sd.*|lnSize") %>% 
+  stringi::stri_omit_empty() %>% 
+  paste0("mean.Copy ~ lnSize + ", .) %>% 
+  set_names(., .) %>% 
+  sapply(
+    ., 
+    . %>% 
+      paste0(
+        "gls(", ., ", data = training.table.tree.GCT.CEGMA, correlation=bm.gct)"
+        ) %>% 
+      parse(text = .)
+    ) %>% 
+  lapply(eval)
+
+aic.models.mean.ECNC.lnSize <- AIC(models.mean.ECNC.lnSize[[1]], models.mean.ECNC.lnSize[[2]], models.mean.ECNC.lnSize[[3]], models.mean.ECNC.lnSize[[4]], models.mean.ECNC.lnSize[[5]], models.mean.ECNC.lnSize[[6]], models.mean.ECNC.lnSize[[7]], models.mean.ECNC.lnSize[[8]], models.mean.ECNC.lnSize[[9]], models.mean.ECNC.lnSize[[10]], models.mean.ECNC.lnSize[[11]], models.mean.ECNC.lnSize[[12]], models.mean.ECNC.lnSize[[13]], models.mean.ECNC.lnSize[[14]], 
+    models.mean.ECNC.lnSize[[15]], models.mean.ECNC.lnSize[[16]], models.mean.ECNC.lnSize[[17]]#, models.mean.ECNC.lnSize[[18]],models.mean.ECNC.lnSize[[19]], models.mean.ECNC.lnSize[[20]]#, models.mean.ECNC.lnSize[[21]]
+    ) %>% 
+  rownames_to_column("Model") %>% 
+  mutate(Model = names(models.mean.ECNC.lnSize)) %>%
+  separate(Model, into = c("Y", "X"), sep="~") %>% 
+  arrange(AIC)
+aic.models.mean.Copy.lnSize <- AIC(models.mean.Copy.lnSize[[1]], models.mean.Copy.lnSize[[2]], models.mean.Copy.lnSize[[3]], models.mean.Copy.lnSize[[4]], models.mean.Copy.lnSize[[5]], models.mean.Copy.lnSize[[6]], models.mean.Copy.lnSize[[7]], models.mean.Copy.lnSize[[8]], models.mean.Copy.lnSize[[9]], models.mean.Copy.lnSize[[10]], models.mean.Copy.lnSize[[11]], models.mean.Copy.lnSize[[12]], models.mean.Copy.lnSize[[13]], models.mean.Copy.lnSize[[14]], 
+    models.mean.Copy.lnSize[[15]], models.mean.Copy.lnSize[[16]], models.mean.Copy.lnSize[[17]]#, models.mean.Copy.lnSize[[18]],models.mean.Copy.lnSize[[19]], models.mean.Copy.lnSize[[20]]#, models.mean.Copy.lnSize[[21]]
+    ) %>% 
+  rownames_to_column("Model") %>% 
+  mutate(Model = names(models.mean.Copy.lnSize)) %>%
+  separate(Model, into = c("Y", "X"), sep="~") %>% 
+  arrange(AIC)
+aic.models.mean.CN.lnSize <- AIC(models.mean.CN.lnSize[[1]], models.mean.CN.lnSize[[2]], models.mean.CN.lnSize[[3]], models.mean.CN.lnSize[[4]], models.mean.CN.lnSize[[5]], models.mean.CN.lnSize[[6]], models.mean.CN.lnSize[[7]], models.mean.CN.lnSize[[8]], models.mean.CN.lnSize[[9]], models.mean.CN.lnSize[[10]], models.mean.CN.lnSize[[11]], models.mean.CN.lnSize[[12]], models.mean.CN.lnSize[[13]], models.mean.CN.lnSize[[14]], 
+    models.mean.CN.lnSize[[15]], models.mean.CN.lnSize[[16]], models.mean.CN.lnSize[[17]]#, models.mean.CN.lnSize[[18]],models.mean.CN.lnSize[[19]], models.mean.CN.lnSize[[20]]#, models.mean.CN.lnSize[[21]]
+    ) %>% 
+  rownames_to_column("Model") %>% 
+  mutate(Model = names(models.mean.CN.lnSize)) %>%
+  separate(Model, into = c("Y", "X"), sep="~") %>% 
+  arrange(AIC)
+
 ```
-
 
 ```{r Figure 2C1, fig.cap="Figure 2 (Candidate 1): A Reciprocal Best-Hit BLAT pipeline for identifying gene copy number in other genomes. A) A graphic summary of the reciprocal best-hit strategy. B) Estimated Copy Number by Coverage. C) "}
 f2a <- image_read("../output/figs/RBHBDiagram.png") %>% image_ggplot()
@@ -1558,8 +1622,35 @@ f2b <- p.bodysize.atlantogenata
 f2.2 <- ggarrange(f2a, f2b, nrow=2, ncol=1, labels = "AUTO")
 f2.2
 ```
-```{r Table 2: ML model summary}
-warning("Table 2")
+```{r PREP Table 2: PGLS of Copy Number ~ Genomic Stats, eval=F}
+# if(knitr::is_latex_output()){
+t.GCT.CEGMA.gls <- quiet(stargazer(
+  models.mean.Copy,models.mean.ECNC, models.mean.CN,
+  type="latex",
+  title = "Gene Copy ~ various genomic variables",
+  style = "all"
+)  %>% 
+  c("\\newgeometry{margin=1cm}\n\\begin{landscape}", ., "\\end{landscape}\n\\restoregeometry") %>% 
+  paste0(collapse="\n")
+  )
+# } else if(knitr::is_html_output()){
+#   t.GCT.CEGMA.gls <- quiet(stargazer(
+#     c(models.mean.CN %>% unname, models.mean.Copy%>% unname, models.mean.ECNC%>% unname),
+#     type="html",
+#     title = "Gene Copy ~ various genomic variables",
+#     style = "all"
+#   ))
+# } else{
+#   t.GCT.CEGMA.gls <- quiet(stargazer(
+#     c(models.mean.CN %>% unname, models.mean.Copy%>% unname, models.mean.ECNC%>% unname),
+#     type="text",
+#     title = "Gene Copy ~ various genomic variables",
+#     style = "all"
+#   ))
+# }
+```
+```{r Table 2: ML model summary, warning=T}
+warning("TODO: Table 2 is done, but Stargazer has some weird bug stopping it from running...")
 ```
 
 Enhanced cancer suppression may have evolved through many mechanisms; among the most parsimonious is an increase in the copy number of genes with tumor suppressor functions. Previous studies focusing on candidate gene studies, for example, have identified increased copy number of the tumor suppressors _TP53_ and _LIF_ in elephants [@Abegglen2015; @Caulin2015; @Doherty2016; @Sulak2016; @Vazquez2018]. Therefore, in order to test whether this was a pervasive phenomena genome-wide in _Afrotherians_, we used a Reciprocal Best Hit BLAT (RBHB) approach to infer gene copy number in _Afrotherian_ and _Atlantogenatan_ genomes (Fig. 2A). Because RBHB-like approaches can over-estimate copy number when genes are fragmented  or incorrectly assembled across multiple scaffolds, we also inferred copy number using a complementary method that quantifies the ratio between observed and expected gene coverage per nucleotide (ECNC) (Supplementary Figure 1). By only including nucleotides from the query sequence that were observed in the target genome, we also correct for partial hits where some or all of the homologs of a gene have diverged from the human homolog. 
@@ -1572,9 +1663,10 @@ Next, in order to select genes and duplicates which were likely functional, we o
 
 We describe the number of genes that increased in each lineage in _Atlantogenata_ in Figure 2. Among the genes that increased in copy number in the elephant lineage are TP53 and LIF, as previously described. Furthermore, we identify `r warning("TODO: Finish this section")`
 
+<!--
 ## Retroduplication of EEF1A1 in the stem-lineage of Tehthytheria
 
-```{r Fig3, fig.cap="Retroduplication of Eukaryotic translation Elongation Factor 1 Alpha 1 (EEF1A1). A) Gene Copy Number of EEF1A1 in _Atlantogenata_. B) Expression of EEF1A1 copies in the West Indian Manatee and African Elephant"}
+```{r Fig3 prep}
 f3a <- p.ml.treedata.loxAfrHighlight.plus$EEF1A1
 # f3b <- 
 # f3c <- 
@@ -1584,23 +1676,122 @@ f3 <- ggarrange(
   # nrows=1, ncol=3
   labels="AUTO"
 )
+```
+
+
+```{r Fig3, fig.cap="Retroduplication of Eukaryotic translation Elongation Factor 1 Alpha 1 (EEF1A1). A) Gene Copy Number of EEF1A1 in _Atlantogenata_. B) Expression of EEF1A1 copies in the West Indian Manatee and African Elephant", warning=T}
 f3
 warning("Fig 3: EEF1A1")
 ```
 
 
-Previous studies have identified genes whose transgenic overexpression delays aging related phenotypes and extends lifespan. Overexpression of the eukaryotic translation elongation factor 1 alpha 1 (EEF1A1) gene, for example, extends lifespan in transgenic Drosophila. Like most mammalian genomes, we found that Afrotherian genomes encoded numerous EEF1A1 retrogenes (Fig. 3A). While the majority of these retrogenes have premature stop codons and insertions/deletions characteristic of pseudogenes, at least 13 Tehthytherian-specific EEF1A1 retrogenes have the potential to encode functional proteins (Fig. 3B). Unfortunately it is difficult to determine if these retrogenes are transcribed because they have relatively high sequence similarity (83-88%), suggesting evidence of transcription using RNA-Seq data is likely an artifact. Indeed, nearly all of the EEF1A1 retrogene transcripts assembled by StringTie were confined to their gene body and UTRs and thus lacked unique sequences. The EEF1A1RTG13 transcript, however, initiates within an upstream MLT1B retrovirus-like MaLR transposable element and includes unique 5?- and 3?-UTR sequences, indicating at least one EEF1A1 retrogene is transcribed (Fig. 3C).
+Previous studies have identified genes whose transgenic overexpression delays aging related phenotypes and extends lifespan. Overexpression of the eukaryotic translation elongation factor 1 alpha 1 (EEF1A1) gene, for example, extends lifespan in transgenic Drosophila. Like most mammalian genomes, we found that Afrotherian genomes encoded numerous EEF1A1 retrogenes (Fig. 3A). While the majority of these retrogenes have premature stop codons and insertions/deletions characteristic of pseudogenes, at least 13 Tehthytherian-specific EEF1A1 retrogenes have the potential to encode functional proteins (Fig. 3B). Unfortunately it is difficult to determine if these retrogenes are transcribed because they have relatively high sequence similarity (83-88%), suggesting evidence of transcription using RNA-Seq data is likely an artifact. Indeed, nearly all of the EEF1A1 retrogene transcripts assembled by StringTie were confined to their gene body and UTRs and thus lacked unique sequences. The EEF1A1RTG13 transcript, however, initiates within an upstream MLT1B retrovirus-like MaLR transposable element and includes unique 5?- and 3?-UTR sequences, indicating at least one EEF1A1 retrogene is transcribed (Fig. 3C). -->
 
 
 ## Duplications that occured recently in Probodiscea are enriched for tumor suppressor pathways
+
+```{r ORA.dotplots}
+p.loxAfr.ORA.dotplot <- ORA.all %>% 
+    filter(Node == "Loxodonta_africana", FDR.Threshold %in% c("0.1", "0.2", "0.3"), Database == "Reactome") %>% 
+    graph.ORA.dotplot(., plotly=knitr::is_html_output())
+
+p.loxAfr.ORA.dotplot.increased <- ORA.all %>% 
+    filter(Node == "Loxodonta_africana", FDR.Threshold %in% c("0.1", "0.2", "0.3"), Database == "Reactome", Direction=="increased") %>% 
+    graph.ORA.dotplot(., plotly=knitr::is_html_output())
+```
+
+```{r Fig 3, fig.pos="hold", fig.cap="Fig 3"}
+f3a <- p.loxAfr.ORA.dotplot
+f3b <- p.loxAfr.ORA.dotplot.increased
+
+f3 <- ggarrange(f3a, f3b, nrow=1, ncol=2, common.legend = T, legend = "bottom", label="AUTO")
+# f3
+f3a
+f3b
+```
 
 In order to infer the functional consequences of these gene duplications, we tested if duplicate genes were enriched in specific pathways relative to our initial query set of genes. We used `r warning("TODO: Finish this section")`
 
 
 ## Concerted duplication of TP53 and TP53-related genes towards _Probodiscea_
 
-```{r Fig4 }
-warning("Fig4")
+```{r Fig4 prep}
+
+    # "GTF2F1", #TP53 Transcriptional Regulation, Paenungulata
+    # "STK11", #REgulation of TP53, Paenungulata
+    # "COX5A", #TP53 transcriptional regulation, PRobodiscea
+    # "BRD7", # TP53 regulation, Tethytheria
+    # "TP53", #TP53 duplicates in Tethytheria
+    # "SIAH1", # p53 pathway, Ubiquitin mediated proteolysis, Tethytheria
+    # "CASP9", # miRNA regulation of TP53, Cell Death probably, Extant Elephants
+    # "PRDX1", # TP53 regulates metabol, LoxAfr & MamPri
+    # "LAMTOR5", # Metabolism and TP53, 2x in Atlantogenata but 5x in oryAfe, 4-6 in modern elephants
+    # "COX20" # TP53 Regulates Metabolic Genes, LoxAfr
+
+genesToHighlight.plus.TP53 <- genesToHighlight.plus$TP53
+
+loxAfr4.geneTPM.ORA.expressedDups.TP53 <- loxAfr4.geneTPM.ORA.expressedDups %>% 
+  filter(Gene %in% genesToHighlight.plus.TP53) %>% 
+  mutate(
+    Reactome.Pathway.Prime = Pathway %>% str_split(", ") %>% sapply(. %>% str_extract(., ".*[Tt]?[Pp]53.*")%>% stringi::stri_remove_empty_na() %>% paste(collapse =", ")),
+    id = str_remove(Locus, ".*_") %>% factor(., levels=sort(as.numeric(unique(.)))),
+    Gene = Gene %>% factor(., levels=genesToHighlight.plus$TP53)
+    ) %>% 
+  group_by(Locus) %>% 
+  summarize(Gene = unique(Gene), id=unique(id), TPM=max(TPM), Reactome.Pathway.Prime=unique(Reactome.Pathway.Prime)) %>% 
+  arrange(Gene, id)
+  
+
+# TP53.genes.plots <- genesToHighlight.plus.TP53 %>% 
+#   set_names(.,.) %>% 
+#   lapply(
+#     .,
+#     function(gene){
+#       list(
+#         "GeneCopyTree"=ml.treedata.loxAfrHighlight.plus[[gene]],
+#         "GeneCopyExpression"= 
+#       )
+#     }
+#   )
+
+p.tp53.genes.expression <- loxAfr4.geneTPM.ORA.expressedDups.TP53 %>% 
+  # filter(Gene == gene) %>% 
+  ggplot(
+    aes(
+      x=id, 
+      y=TPM, 
+      color=Reactome.Pathway.Prime
+    )
+  ) +
+  geom_point(
+    size=3
+  )+
+  geom_segment(
+    aes(
+      x=id,
+      xend=id,
+      y=0,
+      yend=TPM
+    )
+  )+
+  scale_y_sqrt()+
+  #scale_color_brewer(palette = "Dark2", name="Reactome Pathway")+
+  guides(color=guide_legend(nrow = 3))+
+  facet_grid(cols = vars(Gene), scales = "free_x") + 
+  theme_pubclean()+
+  labs(
+    x="Copy",
+    y="TPM (sqrt)"
+  ) + 
+  theme(legend.position="bottom")
+warning("TODO: 1. Color each facet a different color")
+warning("TODO: 2. Make a tree with stars at each node where one of these genes duplicated, color coded by genes")
+```
+
+
+```{r Fig4, warning=T}
+warning("TODO: Make Fig4")
+
 ```
 
 
@@ -1638,7 +1829,7 @@ rownames(dat.size.lifespan.Atlantogenata.withLife) <- dat.size.lifespan.Atlantog
 size.lifespan.Atlantogenata.lm <- gls(
   Lifespan ~ lnSize,
   data=dat.size.lifespan.Atlantogenata.withLife,
-  correlation = corPagel(1, tree.size.lifespan.Atlantogenata.withLife)
+  correlation = corBrownian(1, tree.size.lifespan.Atlantogenata.withLife)
 )
 
 tree.size.lifespan.Atlantogenata.noLife <-
@@ -1675,66 +1866,181 @@ dat.size.lifespan.Atlantogenata <- predict(
 
 tree.size.lifespan.Atlantogenata.full <- full_join(tree.size.lifespan.Atlantogenata, dat.size.lifespan.Atlantogenata, by='node') %>% as_tibble %>% select(parent, node, branch.length=branch.length.x, -label.y, label=label.x, -lnSize.y, lnSize=lnSize.x, -Lifespan.x, Lifespan=Lifespan.y) %>% as.treedata()
 
-# tree.size.lifespan.Atlantogenata.full %>% as.tibble %>% print(n=12351235123)
+# For cancer resistance:
+to_drop <-tree.size.lifespan.Atlantogenata.full %>% as_tibble %>% filter(!label %in% genomeTable.atlantogenata$label) %>% pull(label)
+tree.size.lifespan.Atlantogenata.genomes <- tree.size.lifespan.Atlantogenata.full %>% 
+  drop.tip(to_drop) %>% 
+  as_tibble() %>% 
+  mutate(label = label %>% sapply(function(l){ifelse(is.na(l), "Afroinsectivora", l)})) %>% 
+  as.treedata()
+  
+
 ```
 ```{r Estimated Cancer Risk Per Node}
-cancerSucceptibility.Atlantogenata <- tree.size.lifespan.Atlantogenata.full %>% 
+cancerSucceptibility.Atlantogenata.genomes <-  tree.size.lifespan.Atlantogenata.genomes %>% 
   as_tibble %>% 
   mutate(K1 = (Lifespan)^6 * exp(lnSize),
          lnK1 = 6*log(Lifespan) + lnSize)
-table.cancerSucceptibility.Atlantogenata <- cancerSucceptibility.Atlantogenata %>% 
-  # arrange(parent) %>% 
+
+table.cancerSucceptibility.Atlantogenata.genomes <- tree.size.lifespan.Atlantogenata.genomes %>% 
+  as_tibble%>% 
   mutate(
-  K2 = parent %>% 
+    Ancestor = label %>% 
+    sapply(
+        .,
+        function(n, d=cancerSucceptibility.Atlantogenata.genomes){
+            if(is.na(n)){return(NA)}
+            #print(n)
+            #print(length(n))
+            p.node <- d %>% filter(label==n) %>% pull(parent) %>% unique
+            d %>% filter(node == p.node) %>% pull(label) %>% unique %>% return
+            }
+            
+    ) %>% str_replace_all("\\.", " ") %>% str_replace("Root", "Atlantogenata"),
+    K1 = (Lifespan)^6 * exp(lnSize),
+    lnK1 = 6*log(Lifespan) + lnSize,
+    K2 = Ancestor %>% 
     sapply(
      .,
-     function(n, d=cancerSucceptibility.Atlantogenata){
+     function(n, d=cancerSucceptibility.Atlantogenata.genomes){
+       d %>% filter(label==n) %>% pull(K1) %>% unique
+     }
+    ),
+  lnK2 = Ancestor %>% 
+    sapply(
+     .,
+     function(n, d=cancerSucceptibility.Atlantogenata.genomes){
+       d %>% filter(label==n) %>% pull(lnK1) %>% unique
+     }
+    ),
+  CancerSucceptabilityChange = K1/K2,
+  log2CancerSucceptabilityChange = log2(K1)-log2(K2)
+)
+tree.cancerSucceptibility.Atlantogenata.genomes <- table.cancerSucceptibility.Atlantogenata.genomes %>% 
+  full_join(., genomeTable, by = "label") %>% 
+  mutate(highlight = sapply(seq_along(label), function(x, l=species.highlight, Label=label, PhyloPicUID=phyloPicUID){ifelse(Label[x]%in% names(l), PhyloPicUID[x], NA)})) %>% 
+  as.treedata() %>% 
+  drop.tip(tree.Atlantogenata %>% as_tibble %>% filter(!BestGenome %in% (GCT.CEGMA %>% pull(Genome))) %>% pull(label))
+##########################################################################################
+cancerSucceptibility.Atlantogenata.full <- tree.size.lifespan.Atlantogenata.full %>% 
+  as_tibble %>% 
+  mutate(K1 = (Lifespan)^6 * exp(lnSize),
+         lnK1 = 6*log(Lifespan) + lnSize)
+table.cancerSucceptibility.Atlantogenata <- cancerSucceptibility.Atlantogenata.full %>% 
+  # arrange(parent) %>% 
+  mutate(
+    Ancestor = label %>% 
+    sapply(
+        .,
+        function(n, d=cancerSucceptibility.Atlantogenata.full){
+            if(is.na(n)){return(NA)}
+            #print(n)
+            #print(length(n))
+            p.node <- d %>% filter(label==n) %>% pull(parent) %>% unique
+            d %>% filter(node == p.node) %>% pull(label) %>% unique %>% return
+            }
+            
+    ) %>% str_replace_all("\\.", " ") %>% str_replace("Root", "Atlantogenata"),
+    K2 = parent %>% 
+    sapply(
+     .,
+     function(n, d=cancerSucceptibility.Atlantogenata.full){
        d %>% filter(node==n) %>% pull(K1) %>% unique
      }
     ),
-  CancerSucceptabilityChange = K2/K1,
-  log2CancerSucceptabilityChange = log2(K2/K1)
+  lnK2 = parent %>% 
+    sapply(
+     .,
+     function(n, d=cancerSucceptibility.Atlantogenata.full){
+       d %>% filter(node==n) %>% pull(lnK1) %>% unique
+     }
+    ),
+  CancerSucceptabilityChange = K1/K2,
+  log2CancerSucceptabilityChange = log2(K1)-log2(K2)
 )
 tree.cancerSucceptibility.Atlantogenata <- table.cancerSucceptibility.Atlantogenata %>% 
+  full_join(., genomeTable.atlantogenata, by = "label") %>% 
+  mutate(highlight = sapply(seq_along(label), function(x, l=str_replace(species.highlight, " ", ".") %>% set_names(.,.), Label=label, PhyloPicUID=phyloPicUID){ifelse(Label[x]%in% names(l), PhyloPicUID[x], NA)})) %>% 
   as.treedata()
 ```
-
-```{r Fig 5, fig.cap=""}
-warning("TODO: Caption Fig 5")
-quiet <- function(x) { 
-  sink(tempfile()) 
-  on.exit(sink()) 
-  invisible(force(x)) 
-} 
+```{r Fig 5 prep: Scales}
 scale.log2CancerSucceptabilityChange <- table.cancerSucceptibility.Atlantogenata %>% 
   pull(log2CancerSucceptabilityChange) %>% 
   unique %>% 
   as.numeric() %>% 
   sort %>% 
   set_names(.,.)
-  
 scale.log2CancerSucceptabilityChange.min <- min(scale.log2CancerSucceptabilityChange)
 scale.log2CancerSucceptabilityChange.max <- scale.log2CancerSucceptabilityChange[length(scale.log2CancerSucceptabilityChange)]
 
-get.log2CancerSucceptabilityChange.color <- function(n){
-  scale = viridis::viridis(n=length(scale.log2CancerSucceptabilityChange)) %>% 
-    set_names(., as.character(scale.log2CancerSucceptabilityChange))
-  scale[as.character(n)]
+get.log2CancerSucceptabilityChange.color <- function(n, scale = scale.log2CancerSucceptabilityChange){
+  scale.colors = viridis::viridis(n=length(scale)) %>% 
+    set_names(., as.character(scale))
+  scale.colors[as.character(n)]
 }
+cancerSucceptibility.Atlantogenata.nodes <- table.cancerSucceptibility.Atlantogenata.genomes$node %>% as.list() %>%
+set_names(., table.cancerSucceptibility.Atlantogenata.genomes$label)
+```
 
-t.size.lifespan.Atlantogenata.lm <- quiet(stargazer(
-  size.lifespan.Atlantogenata.lm,
-  title = "ln(Lifespan) & ln(Body Size) Regression",
-  style = "all"
-))
 
-f5a <- tree.cancerSucceptibility.Atlantogenata %>% 
+```{r Fig 5 prep: Table 3}
+if(knitr::is_latex_output()){
+# size.lifespan.Atlantogenata.lm
+  t.size.lifespan.Atlantogenata.lm <- quiet(stargazer(
+    size.lifespan.Atlantogenata.lm,
+    type="latex",
+    title = "Phylogenetic Least Squares: ln(Lifespan) & ln(Body Size) Regression",
+    style = "all"
+  )) %>% paste0(collapse="\n")
+} else if(knitr::is_html_output()){
+  t.size.lifespan.Atlantogenata.lm <- quiet(stargazer(
+    size.lifespan.Atlantogenata.lm,
+    type="html",
+    title = "Phylogenetic Least Squares: ln(Lifespan) & ln(Body Size) Regression",
+    style = "all"
+  )) %>% paste0(collapse="\n")
+} else{
+  t.size.lifespan.Atlantogenata.lm <- quiet(stargazer(
+    size.lifespan.Atlantogenata.lm,
+    type="text",
+    title = "Phylogenetic Least Squares: ln(Lifespan) & ln(Body Size) Regression",
+    style = "all"
+  )) %>% paste0(collapse="\n")
+  t.size.lifespan.Atlantogenata.lm %>% cat
+}
+```
+
+
+```{r Fig 5 prep}
+f5a <- tree.cancerSucceptibility.Atlantogenata  %>% as_tibble %>% mutate(CancerSucceptabilityChange = as.numeric(CancerSucceptabilityChange)) %>% as.treedata %>% 
+  ggtree(
+    aes(color=log2CancerSucceptabilityChange),
+    continuous=T,
+    size = 1.5, 
+    yscale="log2CancerSucceptability"
+  ) + 
+  # geom_tiplab(aes(image=highlight, size=I(0.075)), geom="phylopic", color="black"
+  #             ) +
+  scale_color_viridis_c(limits=c(scale.log2CancerSucceptabilityChange.min, scale.log2CancerSucceptabilityChange.max), 
+                        guide = guide_colourbar(title="Log2 Cancer Succeptibility Change"))+
+  theme_minimal() +
+  theme(
+    legend.position="bottom",
+    panel.background = element_rect(fill = "darkgrey")
+  ) + 
+  xlab("Rate of Change, Body Size") +
+    ylab("Log2 Cancer Succeptibility Change")
+
+#############################################################################################
+#############################################################################################
+
+f5a2 <- tree.cancerSucceptibility.Atlantogenata  %>% 
   ggtree(
     aes(color=as.numeric(log2CancerSucceptabilityChange)),
     continuous=T,
     size = 1.5
   ) + 
-  # geom_tiplab(aes(image=highlight, size=I(0.1)), geom="phylopic", 
+  # geom_tiplab(aes(image=highlight, size=I(0.1)), geom="phylopic",
   #             show_guide=F, align = F, linesize = 0, offset= 100
   #             ) +
   geom_cladelabel(node=bsize.Atlantogenata.nodes$Proboscidae, label="Proboscidae", 
@@ -1772,26 +2078,89 @@ f5a <- tree.cancerSucceptibility.Atlantogenata %>%
     panel.background = element_rect(fill = "lightgrey")
   ) + 
   xlab("Rate of Change, Body Size")
-# f5b
+# f5a
 
 f5 <- ggarrange(
   f5a, 
   #nrow=2, ncol=1,
   labels="AUTO"
-  )
-
-cat(t.size.lifespan.Atlantogenata.lm, sep = "\n")
-f5
+)
 ```
 
-`r warning("TODO: internally add ")`
-The dramatic increase in body mass and lifespan in some Afrotherian lineages implies those lineages evolved reduced cancer risk. To infer the magnitude of these reductions we estimated differences in cancer risk between small bodied, short-lived species and large bodied, long-lived species as well as for reconstructed ancestral Afrotherians. Following [@Peto2015b] we estimate the intrinsic cancer risk as the product of risk associated with body mass and lifespan. Differences in cancer susceptibility due to body mass differences between species can be approximated simply as the fold difference in body mass ($D$) between species [@Peto2015]. The risk of developing cancer also increases in proportion to the sixth power of age and is approximated by the formula $Ct^6$, in which the proportionality constant C that determines susceptibility to cancer induction is multiplied by the sixth power of the age in years, $t$ [@ArmitageAndDoll1954; @Nordling1953; @Peto2015]. Thus we can estimate differences in the intrinsic cancer risk between species as $D(Ct^6)$. We inferred that susceptibility to cancer induction ($C$) was reduced 3.40x10^3-fold in the ancestor of Pseudoungulata, 7.20×10^3-fold in the ancestor of Paenungulata, 8.81x10^5-fold in the ancestor of Tehthytheria, 1.46x10^8-fold in the ancestor of Proboscidea, and 1.28x10^6-fold in the ancestor of Sirenia relative to the ancestral Afrotherian (Table 3). What biological mechanisms underlie the evolution of thousand- to hundred million-fold reductions in cancer susceptibility during the origins of Afrotherians, which are essential for large body size and long lifespan to evolve
+
+```{r Fig 5 prep: Table 4}
+t.cancersucc.atl <- table.cancerSucceptibility.Atlantogenata.genomes %>% 
+  # filter(label %in% ml.treedata.table$label) %>%  
+  # select(-parent, -node, -branch.length) %>%
+  select(
+    Node = label, 
+    lnSize,
+    `Est. Lifespan`=Lifespan,
+    `Est. Cancer Susceptibility (K1)` = K1,
+    `Est. Ancestral K2` = K2,
+    `Change in K (K2/K1)` = CancerSucceptabilityChange,
+    `log2 Fold Change` = log2CancerSucceptabilityChange
+  ) %>%
+  mutate_at(
+    vars(`Est. Cancer Susceptibility (K1)`, `Est. Ancestral K2`), 
+    . %>% formatC(., format = "e", digits = 2)
+            ) %>%
+  mutate(
+    `Est. Lifespan` = `Est. Lifespan` %>% round(2), 
+    `Change in K (K2/K1)` = `Change in K (K2/K1)` %>% round(2), 
+    `log2 Fold Change` = `log2 Fold Change` %>% round(2)
+  ) %>% 
+  mutate(
+    Ancestor = Node %>% 
+    sapply(
+        .,
+        function(n, d=table.cancerSucceptibility.Atlantogenata.genomes){
+            p.node <- d %>% filter(label==n) %>% pull(parent) %>% unique
+            d %>% filter(node == p.node) %>% pull(label) %>% unique %>% return
+        }
+    ) %>% str_replace_all("\\.", " ") %>% str_replace("Root", "Atlantogenata") %>% factor(., levels = c("Loxodontini", "Loxodonta africana","Loxodona", "Loxodonta cyclotis", "Palaeoloxodon antiquus", "Elephantidae", "Elephantina", "Elephas maximus", "Mammuthus", "Mammuthus primigenius", "Mammuthus columbi", "Proboscidea", "Mammut americanum", "Tethytheria", "Trichechus manatus", "Paenungulata", "Procavia capensis", "Pseudoungulata", "Orycteropus afer", "Macroscelidae", "Elephantulus edwardii", "Afrosoricida", "Chrysochloris asiatica", "Echinops telfairi", "Afrotheria", "Xenarthra", "Dasypus novemcinctus", "Choloepus hoffmanni", "Atlantogenata", "Afroinsectivora")),
+        Node = Node %>% str_replace_all("\\.", " ") %>% factor(., levels = c("Loxodontini", "Loxodonta africana","Loxodona", "Loxodonta cyclotis", "Palaeoloxodon antiquus", "Elephantidae", "Elephantina", "Elephas maximus", "Mammuthus", "Mammuthus primigenius", "Mammuthus columbi", "Proboscidea", "Mammut americanum", "Tethytheria", "Trichechus manatus", "Paenungulata", "Procavia capensis", "Pseudoungulata", "Orycteropus afer", "Macroscelidae", "Elephantulus edwardii", "Afrosorcida", "Chrysochloris asiatica", "Echinops telfairi", "Afrotheria", "Xenarthra", "Dasypus novemcinctus", "Choloepus hoffmanni", "Atlantogenata", "Afroinsectivora"))
+  ) %>%
+    arrange(Node) %>% 
+  knitr::kable(
+    ., 
+    longtable = TRUE, 
+    booktabs = TRUE,
+    caption = 'A table generated by the longtable package.'
+  )
+```
+```{r Fig 5, fig.cap="", warning=T}
+warning("TODO: Caption Fig 5")
+warning("TODO: de-comment geom_tiplab in f5a! Commented currently for offline usage!")
+f5
+```
+```{r Table 3, fig.cap="Table 3: Model Statistics for PGLS of Cancer Succeptibility"}
+t.size.lifespan.Atlantogenata.lm %>% cat
+```
+```{r Table 4, fig.cap="Table 4: Estimated Cancer Succeptibilty for nodes in Atlantogenata"}
+t.cancersucc.atl
+```
+
+The dramatic increase in body mass and lifespan in some Afrotherian lineages implies those lineages evolved reduced cancer risk. To infer the magnitude of these reductions we estimated differences in cancer risk between small bodied, short-lived species and large bodied, long-lived species as well as for reconstructed ancestral Afrotherians. Following [@Peto2015b] we estimate the intrinsic cancer risk as the product of risk associated with body mass and lifespan. Differences in cancer susceptibility $K$ due to body mass differences between species can be approximated simply as the fold difference in body mass ($D$) between species [@Peto2015]. The risk of developing cancer also increases in proportion to the sixth power of age and is approximated by the formula $Ct^6$, in which the proportionality constant C that determines susceptibility to cancer induction is multiplied by the sixth power of the age in years, $t$ [@ArmitageAndDoll1954; @Nordling1953; @Peto2015]. Thus we can estimate the intrinsic cancer risk for a species as $K \approx Dt^6$. 
+
+In order to estimate the intrinsic cancer risk of a species, we first obtained estimates for lifespans at ancestral nodes using PGLS and the model $ln(lifespan) = \beta_{1}corBrownian +\beta_{2}ln(Size) + \epsilon$ (Figure `r warning("make lifespan figure")`). With this information in hand, we calculated $K_{1}$ at all nodes, and then estimated the fold change in cancer succeptibility between an ancestral node and a given node as $\frac{K_{2}}{K_{1}}$ (__Table 4__).
+
+As shown in __Table 4__, cancer succeptibility skyrocketed at the initial divergence of Atlantogenata, followed by a generally upwards trend. At the common ancestor of Afrotheria there is an inital `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Afrotheria") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase in cancer risk. In parallel to Afrotheria, cancer succeptibility increases `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Xenarthra") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold in Xenarthra. However, cancer risk slowly deflates as size decreases as one moves along the tree towards extant species, such as in Hoffman's Two Toed Sloth (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Choloepus hoffmanii") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold change) and in the Nine-banded Armadillo (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Dasypus novemcinctus") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold change).
+
+Within Afrotheria, cancer succeptibility drops in Afrosorcida as species shrink (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Afrosorcida") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, then stagnates for the Cape Golden Mole) - but then rises `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Echinops telfairi") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold towards the Lesser Hedgehog Tenrec. In parallel, Afroinsectivora does not increase in cancer succeptibility, and decreases once more at the Cape Elephant Shrew (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephantulus edwardii") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold). The emergence of Pseudoungulata sees the next big leap in cancer succeptibility with a `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Pseudoungulata") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase. The Aardvark further increases `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Orycteropus afer") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, while we don't observe an increase at the common ancestor of Paenungulates. While the Rock Hyrax decreases in cancer succeptibility as expected (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Procavia capensis") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold), Tethytheria sees a sharp increase in cancer risk (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Tethytheria") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold). Within Tethytheria, the Manatee's cancer risk increases once more `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Trichechus manatus") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, while Proboscidae's cancer risk drops precipitously along with its body size (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Proboscidae") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold). Yet, within Proboscidae we see the biggest increases: right off the bat, we see that the cancer succeptibility of  Elephantidae and the American Mastodon skyrocket by `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephantidae") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold and `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Mammut americanum") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, respectively. Both Elephantina and Loxodontini in Elephantidae have a `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephantina") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase in cancer succeptibility. Within Elephantina, cancer susceptibility stays stable at Mammuthus and in the Colombian Mammoth, and slightly decreases in the Wooly Mammoth (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Mammuthus primigenius") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold). The three extant elephants - Asian Elephant in Elephantina, the African Savana Elephant in Loxodontini, and the African Forest Elephant in Loxodona, meanwhile, have parallel and similar decreases in both size and cancer succeptibility (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephas maximus") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-, `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Loxodonta africana") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-, and `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Loxodonta cyclotis") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, respectively). Neither the common ancestor of Loxodonta, nor the Straight-Tusked Mammoth see any further changes in cancer succeptibility. 
+
+
 
 # Discussion
 
-`r warning("TODO: Discuss Body Size & implications of acordioning of Body Size")`
-`r warning("TODO: Discuss Copy Numbers, specifically how rapidly some gene families expanded, and the issue of genome quality")`
-`r warning("TODO: Discuss effect of genome quality with CNs")`
+What biological mechanisms underlie the evolution of thousand- to hundred million- increases in cancer susceptibility during the origins of Afrotherians, which are essential for large body size and long lifespan to evolve
+
+`r warning("TODO: Body Size & implications of accordioning of Body Size")`
+`r warning("TODO: Next, discuss how the giant initial increases in cancer risk, and the lack of fully commensurate changes even in nodes that decrease in size, may explain why we see TSG duplicates conserved even in smaller species")`
+`r warning("TODO: Lifespan regression, and the possible impact of lacking other data. Key: We have no other data for most species, and would have to estimate them too.")`
+`r warning("TODO: Copy Numbers, specifically how rapidly some gene families expanded, and the issue of genome quality")`
+`r warning("TODO: Effect of genome quality with CNs.\nCHANGE: On second thought, after fixing the model, it doesn't seem any one metric affects CN too much, except for Genome (duh). Even Genome though has a much smaller impact than CEGMA stats, although those too don't explain things fully. Haven't included yet older genome models though, so this is TBD for now.")`
+`r warning("TODO: ")`
 `r warning("I placed this here, but its half-discussion, half-intro, so edit!")`
 Candidate gene studies, for example, have identified functional duplicates of the tumor suppressors TP53  and LIF in elephants. In a larger candidate gene study, Caulin et al. characterized the copy number of 830 known tumor-suppressor genes across 36 mammals and identified 382 putative duplicates, including duplicates in species with large body sizes and long life-spans. However, the probability of developing cancer is similar for small, short-lived mammals such as mice and for large, long-lived mammals such as elephants.
 
@@ -1810,12 +2179,10 @@ A genomic analysis of genetic changes associated with the evolution of enhanced 
 I would like to thank Olga Duchenko at the Aiden Lab, D.H. Vazquez for his indispensible support.
 
 # Conflicts of Interest
-The Authors have no conflicts of interest.
+The Authors have no conflicts of interest to report
 
-#
-
-
-
+# Funding Source
+We would like to thank the Department of Human Genetics at the University of Chicago for supporting this project.
 
 
 # SUPPLEMENTARY FIGURES
@@ -1857,10 +2224,9 @@ sf1
 p.ml.tree.increasing.geneCounts.withSize.withBL
 ```
 
-```{r, Supplementary Figure 3, fig.cap="Supplementary Figure 3: Full version of RecBlat strategy, but low quality"}
+```{r, Supplementary Figure 3, fig.cap="Supplementary Figure 3: Full version of RecBlat strategy, but low quality", warning=T}
 warning("TODO: Make HQ version of this figure")
-p.bodysize.atlantogenata
-
+f2.1
 ```
 
 ```{r, Supplementary Figure 4, fig.cap="Supplementary Figure 4: Dot and Line plot for Body Sizes and such"}
@@ -1868,18 +2234,48 @@ p.bodysize.atlantogenata
 ```
 
 ```{r Supplementary Figure 5, fig.cap="Supplementary Figure 5: All the Gene Copy Trees for interesting genes duplicated in LoxAfr4 (RIP any trees if this gets printed)"}
-p.ml.treedata.loxAfrHighlight.plus 
+p.ml.treedata.loxAfrHighlight.plus[1:10]
+warning("Don't print the full list, seriously, its like 600+ pages")
 ```
 
 ```{r Supplementary Figure 6, fig.cap="Supplementary Figure 6: Expression data for interesting genes duplicated in LoxAfr4"}
-plot.coolgenes
+# plot.coolgenes
 ```
 
 
 ```{r Supplementary Figure 7, fig.cap="Supplementary Figure 7: Correlation matrix heat map for genome quality metrics, ECNC, RBHB Copy, and Estimated Copy Number (lesser between ECNC and RBHB)"}
-p.cor.GCT.CEGMA.completeOnly
+p.cor.GCT.CEGMA
 ```
 
+```{r Supplementary Figure 8, fig.cap="Supplementary Figure 8: The time-calibrated Eutherian tree used as input for StableTraits", warning=T}
+# p.time.time.tree.Eutheria <-
+#   time.tree %>% 
+#   as_tibble %>% 
+#   mutate(time = branch.length) %>% 
+#   select(-parent, -node, -branch.length) %>% 
+#   full_join(., bsize.tree %>% as_tibble, by="label") %>% 
+#   as.treedata %>% 
+#   ggtree(
+#     branch.length = "time",
+#     aes(color = lnSize),
+#     layout="circular"
+#   ) %>% 
+#   ggtree::revts() + 
+#     geom_highlight(node = MRCA(time.tree, "Loxodonta.africana", "Dasypus.novemcinctus"), fill="goldenrod") + geom_cladelabel(node = MRCA(time.tree, "Loxodonta.africana", "Dasypus.novemcinctus"), label="Atlantogenata", align = F, offset = 2, offset.text = 2, geom = "label", fill="goldenrod") + 
+#   geom_highlight(node = MRCA(time.tree, "Myotis.lucifugus", "Pteropus.vampyrus"), fill="aquamarine") + geom_cladelabel(node = MRCA(time.tree, "Myotis.lucifugus", "Pteropus.vampyrus"), fill = "aquamarine", label="Chiroptera", align = F, offset = 2, offset.text = 3, hjust = 1, geom = "label") + 
+#     geom_highlight(node = MRCA(time.tree, "Cavia.porcellus", "Mus.musculus"), fill="firebrick1") + geom_cladelabel(node = MRCA(time.tree, "Cavia.porcellus", "Mus.musculus"), fill="firebrick1", label="Rodentia", align = F, offset = 2, offset.text = 3, hjust = 1, geom = "label") + 
+#   geom_highlight(node = MRCA(time.tree, "Gorilla.gorilla", "Otolemur.crassicaudatus"), fill="deepskyblue") + geom_cladelabel(node = MRCA(time.tree, "Gorilla.gorilla", "Otolemur.crassicaudatus"), fill="deepskyblue", label="Primata", align = F, offset = 2, offset.text = 3, hjust = 0, geom = "label") + 
+#   geom_highlight(node = MRCA(time.tree, "Balaena.mysticetus", "Tursiops.truncatus"), fill="darkseagreen1") + geom_cladelabel(node = MRCA(time.tree, "Balaena.mysticetus", "Tursiops.truncatus"), fill="darkseagreen1", label="Cetacea", align = F, offset = 2, offset.text = 2, hjust = 0, geom = "label") + 
+#   theme_tree()
+warning("TODO: this causes a segfault, find out why!")
+```
+
+
+# Supplementary data
+
+```{r Supplementary Table 1, fig.cap="Supplementary Table 1: Parameters from StableTraits", warning=T}
+warning("TODO: Read in Eutheria.progress and present it to the bold.")
+```
 
 
 # References {#references .unnumbered}

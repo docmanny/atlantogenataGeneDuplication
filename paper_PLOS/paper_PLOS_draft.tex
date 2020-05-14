@@ -173,6 +173,8 @@
 
 \usepackage{longtable}
 \usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{pdflscape}
 
 
 
@@ -357,20 +359,20 @@ Genes}\label{identification-of-duplicate-genes}}
 \emph{Reciprocal Best-Hit BLAT:} We developed a reciprocal best hit BLAT
 (RBHB) pipeline to quickly identify homologs and estimate gene copy
 numbers (\textbf{Figure 1A}). The Reciprocal Best Hit (RBH) search
-strategy is conceptually straightforward: 1) Given a gene of interest GA
-in a query genome A, one searches a target genome B for all possible
-matches to GA; 2) For each of these hits, one then performs the
-reciprocal search in the original query genome to identify the
-highest-scoring hit; 3) A hit in genome B is defined as a homolog of
-gene GA if and only if the original gene GA is the top reciprocal search
-hit in genome A. We selected BLAT {[}26{]} as our algorithm of choice,
-as this algorithm is sensitive to highly simliar (\textgreater{}90\%
-identity) sequences, thus identifying the highest-confidence homologs
-while minimizing many-to-one mapping problems when searching for
-multiple genes. RBH performs similar to other more complex methods of
-orthology prediction, and is particularly good at identifying incomplete
-genes that may be fragmented in low quality/poor assembled regions of
-the genome {[}{\textbf{???}},27{]}.
+strategy is conceptually straightforward: 1) Given a gene of interest
+\(G_A\) in a query genome \(A\), one searches a target genome \(B\) for
+all possible matches to \(G_A\); 2) For each of these hits, one then
+performs the reciprocal search in the original query genome to identify
+the highest-scoring hit; 3) A hit in genome \(B\) is defined as a
+homolog of gene \(G_A\) if and only if the original gene \(G_A\) is the
+top reciprocal search hit in genome \(A\). We selected BLAT {[}26{]} as
+our algorithm of choice, as this algorithm is sensitive to highly
+simliar (\textgreater{}90\% identity) sequences, thus identifying the
+highest-confidence homologs while minimizing many-to-one mapping
+problems when searching for multiple genes. RBH performs similar to
+other more complex methods of orthology prediction, and is particularly
+good at identifying incomplete genes that may be fragmented in low
+quality/poor assembled regions of the genome {[}{\textbf{???}},27{]}.
 
 \emph{Effective Copy Number By Coverage:} In lower-quality genomes, many
 genes are fragmented across multiple scaffolds, which results in BLAT
@@ -379,10 +381,15 @@ compensate for this, we came up with a novel statistic, Estimated Copy
 Number by Coverage (ECNC), which averages the number of times we see
 each nucleotides of a query sequence in a target genome over the total
 number of nucleotides of the query sequence found overall in each target
-genome (\textbf{Figure 1B}; Supplementary Figure 1). This allows us to
-correct for genes that have been fragmented across incomplete genomes,
-without underestimating the copy number of proteins that lack domains
-found in the human sequence.
+genome (Supplementary Figure 1). This allows us to correct for genes
+that have been fragmented across incomplete genomes, while also taking
+into account missing sequences from the human query in the target
+genome. Mathematically, this can be written as:\\
+\[ ECNC = \frac{\sum_{n=1}^{l} C_n}{\sum_{n=1}^{l} bool(C_n)}\] where
+\(n\) is a given nucleotide in the query, \(l\) is the total length of
+the query, \(C_n\) is the number of instances that \(n\) is present
+within a reciprocal best hit, and \(bool(C_n)\) is 1 if \(C_n > 0\) or 0
+if \(C_n = 0\).
 
 \emph{RecSearch Pipeline:} We created a custom Python pipeline for
 automating RBHB searches between a single reference genome and multiple
@@ -430,9 +437,7 @@ inclusion criteria. The ECNC cut off of 1.5 was selected empirically, as
 this value minimized the number of false positives seen in a test set of
 genes and genomes. The results of our initial search are summarized in
 Figure 1B. Overall, we identified {[}MEDIAN{]} genes across all species,
-or {[}\%HITS/QUERIES{]} of our starting query genes. As expected, there
-was a correlation between the number of hits identified in a species
-with the evolutionary distance relative to humans {[}Sup Figure 1{]}.
+or {[}\%HITS/QUERIES{]} of our starting query genes.
 
 \emph{Duplicate gene exclusion criteria:} We excluded genes from
 downstream analyses for which assignment of homology was uncertain,
@@ -442,6 +447,12 @@ proteins (17), zinc finger transcription factors (17), viral and
 repetitive-element-associated proteins (17) and any protein described as
 either ``Uncharacterized,'' ``Putative,'' or ``Fragment'' by UniProt in
 UP000005640 (17).
+
+\textbf{Orthogonal Genome Assessment using CEGMA} In order to determine
+the effect of genome quality on our results, we used the gVolante
+webserver and CEGMA to assess the quality and completeness of the
+genome. CEGMA was run using the default settings of {[}{]}, and the
+mammalian-specific core gene sets.
 
 \hypertarget{evidence-for-functionality-of-identified-genes}{%
 \subsection{Evidence for Functionality of Identified
@@ -504,46 +515,44 @@ Analysis}\label{pathway-enrichment-analysis}}
 To determine which pathways were associated with duplicated genes in
 each species and lineage, we used WEBGESTALT to perform
 overrepresentation analysis (ORA) of the duplicated gene lists relative
-to our initial query gene list. For the database of pathways used in the
-analysis, we used Reactome {[}{\textbf{???}}{]}, Wikipathways and
-Wikipathways\_cancer {[}{\textbf{???}}{]}, and KEGG
-{[}{\textbf{???}}{]}.
+to our initial query gene list {[}{\textbf{???}}{]}. For the database of
+pathways used in the analysis, we used Reactome {[}{\textbf{???}}{]},
+Wikipathways, and Wikipathways\_cancer {[}{\textbf{???}}{]}, and KEGG
+{[}{\textbf{???}}{]}. For the ORA, we used FDR for determining
+significance, and ran the analysis at FDR=0.1, FDR=0.2, FDR=0.3, and
+FDR=0.5.
+
+\hypertarget{lifespan-phylogenetic-least-square-regression-and-calculating-estimated-cancer-risk-thoughout-atlantogenata}{%
+\subsection{Lifespan Phylogenetic Least-Square Regression and
+Calculating Estimated Cancer Risk Thoughout
+Atlantogenata}\label{lifespan-phylogenetic-least-square-regression-and-calculating-estimated-cancer-risk-thoughout-atlantogenata}}
+
+In order to determine the cancer risk at each node, we used a simplified
+multistage cancer risk model for body size and lifespan
+{[}{\textbf{???}},{\textbf{??}},{\textbf{??}}{]}. We defined the
 
 \hypertarget{results}{%
 \section{Results}\label{results}}
 
-\begin{verbatim}
-## Warning: Tried to calculate with group_by(), but the calculation failed.
-## Falling back to ungrouped filter operation...
+\hypertarget{body-size-frequently-and-independently-expands-and-contracts-throughout-atlantogenata}{%
+\subsection{\texorpdfstring{Body size frequently and independently
+expands and contracts throughout
+\emph{Atlantogenata}}{Body size frequently and independently expands and contracts throughout Atlantogenata}}\label{body-size-frequently-and-independently-expands-and-contracts-throughout-atlantogenata}}
 
-## Warning: Tried to calculate with group_by(), but the calculation failed.
-## Falling back to ungrouped filter operation...
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in geom2trace.default(dots[[1L]][[3L]], dots[[2L]][[1L]], dots[[3L]][[1L]]): geom_GeomTextRepel() has yet to be implemented in plotly.
-##   If you'd like to see this geom implemented,
-##   Please open an issue with your example code at
-##   https://github.com/ropensci/plotly/issues
-
-## Warning in geom2trace.default(dots[[1L]][[3L]], dots[[2L]][[1L]], dots[[3L]][[1L]]): geom_GeomTextRepel() has yet to be implemented in plotly.
-##   If you'd like to see this geom implemented,
-##   Please open an issue with your example code at
-##   https://github.com/ropensci/plotly/issues
-
-## Warning in geom2trace.default(dots[[1L]][[3L]], dots[[2L]][[1L]], dots[[3L]][[1L]]): geom_GeomTextRepel() has yet to be implemented in plotly.
-##   If you'd like to see this geom implemented,
-##   Please open an issue with your example code at
-##   https://github.com/ropensci/plotly/issues
-\end{verbatim}
-
-\hypertarget{step-wise-evolution-of-large-long-lived-afrotherians}{%
-\subsection{Step-wise evolution of large, long-lived
-Afrotherians}\label{step-wise-evolution-of-large-long-lived-afrotherians}}
-
-\begin{verbatim}
-## Warning: Removed 120 rows containing missing values (geom_image).
-\end{verbatim}
+\begin{figure}
+\centering
+\includegraphics{paper_PLOS_draft_files/figure-latex/Figure 1-1.pdf}
+\caption{Figure 1: Body sizes rapidly and frequently expand in
+Eutherians, especially in Atlantogenata. \textbf{A)} Tree of Eutherian
+species, colored by ln(Body Size) and with branch lengths set to the
+rate of change in body sizes, normalized by the square root of the root
+branch. Atlantogenata is highlighted at the bottom. \textbf{B)} Zoom-in
+of (A) on Atlantogenata. Silhuetes for the African Elephant, West Indian
+Manatee, Cape Elephant Shrew, Lesser Hedgehog Tenrec, Cape Golden Mole,
+Nine-Banded Armadillo, and Hoffman's Two-Toed Sloth are colored by their
+extant body sizes, while clade labels are colored based on the common
+ancestor's estimated body size}
+\end{figure}
 
 \begin{longtable}[]{@{}lrrrr@{}}
 \caption{A table generated by the longtable package.}\tabularnewline
@@ -748,146 +757,12 @@ stem-lineage and Stellar's sea cow (Figure 1).
 origins of large bodied
 Afrotheirans}\label{pervasive-duplication-of-tumor-suppressors-during-the-origins-of-large-bodied-afrotheirans}}
 
-\begin{verbatim}
-## Warning: Column `Genome` joining factor and character vector, coercing into
-## character vector
-\end{verbatim}
+\includegraphics{paper_PLOS_draft_files/figure-latex/Figure 2C1-1.pdf}
+\includegraphics{paper_PLOS_draft_files/figure-latex/Figure 2C2-1.pdf}
 
 \begin{verbatim}
-## Warning in melt(., na.rm = T): The melt generic in data.table has been passed a
-## matrix and will attempt to redirect to the relevant reshape2 method; please note
-## that reshape2 is deprecated, and this redirection is now deprecated as well.
-## To continue using melt methods from reshape2 while both libraries are attached,
-## e.g. melt.list, you can prepend the namespace like reshape2::melt(.). In the
-## next version, this warning will become an error.
-\end{verbatim}
-
-\begin{verbatim}
-##                                        Var1 Var2        value
-## 1                                      Gene Copy  0.011177676
-## 2                                    Genome Copy -0.104365173
-## 3       Sum length of sequences > 10M  (nt) Copy -0.074960529
-## 4                     Longest sequence (nt) Copy -0.067231077
-## 5                  N50 sequence length (nt) Copy -0.050741921
-## 6                  Base composition (%) (A) Copy -0.001502967
-## 7                  Base composition (%) (T) Copy -0.001379093
-## 8                  Base composition (%) (G) Copy -0.043271156
-## 9                  Base composition (%) (C) Copy -0.042268177
-## 10             Base composition (%) (Other) Copy -0.050228064
-## 11 # of sequences containing non-ACGTN (nt) Copy -0.050621596
-## 12                Mean sequence length (nt) Copy -0.074983744
-## 13              Median sequence length (nt) Copy -0.074897040
-## 14                         Missing Proteins Copy -0.079692396
-## 15                                   #Prots Copy -0.101300994
-## 16                             Completeness Copy -0.101321644
-## 17                 Base composition (%) (N) Copy  0.019768158
-## 18                              totalLength Copy  0.067454870
-## 19       Sum length of sequences > 1M  (nt) Copy  0.051354838
-## 20               # of sequences > 100K (nt) Copy  0.056049593
-## 21                                      L50 Copy  0.082175611
-## 22               # of sequences >   1M (nt) Copy  0.074461957
-## 23               # of sequences >  10M (nt) Copy  0.075679451
-## 24                   Shortest sequence (nt) Copy -0.013216232
-## 25                           GC-content (%) Copy -0.064591581
-## 26                           # of sequences Copy  0.076630197
-## 27               # of sequences >   1K (nt) Copy  0.047474518
-## 28               # of sequences >  10K (nt) Copy  0.045583001
-## 29                                   #Total Copy  0.116391876
-## 30                                  Average Copy  0.124341009
-## 31                                   %Ortho Copy  0.120616153
-## 32                                     Gene ECNC  0.011137324
-## 33                                   Genome ECNC -0.090522003
-## 34      Sum length of sequences > 10M  (nt) ECNC -0.061380983
-## 35                    Longest sequence (nt) ECNC -0.053145168
-## 36                 N50 sequence length (nt) ECNC -0.040007282
-## 37                 Base composition (%) (A) ECNC  0.004626621
-## 38                 Base composition (%) (T) ECNC  0.004862588
-## 39                 Base composition (%) (G) ECNC -0.037787699
-## 40                 Base composition (%) (C) ECNC -0.037045693
-## 41             Base composition (%) (Other) ECNC -0.040274294
-## 42 # of sequences containing non-ACGTN (nt) ECNC -0.040587311
-## 43                Mean sequence length (nt) ECNC -0.061569667
-## 44              Median sequence length (nt) ECNC -0.060928944
-## 45                         Missing Proteins ECNC -0.062209031
-## 46                                   #Prots ECNC -0.084046941
-## 47                             Completeness ECNC -0.084067608
-## 48                 Base composition (%) (N) ECNC  0.013486259
-## 49                              totalLength ECNC  0.061175951
-## 50       Sum length of sequences > 1M  (nt) ECNC  0.046387082
-## 51               # of sequences > 100K (nt) ECNC  0.049326449
-## 52                                      L50 ECNC  0.070430706
-## 53               # of sequences >   1M (nt) ECNC  0.063725329
-## 54               # of sequences >  10M (nt) ECNC  0.062895861
-## 55                   Shortest sequence (nt) ECNC -0.012113794
-## 56                           GC-content (%) ECNC -0.066249117
-## 57                           # of sequences ECNC  0.070289641
-## 58               # of sequences >   1K (nt) ECNC  0.042151677
-## 59               # of sequences >  10K (nt) ECNC  0.041222984
-## 60                                   #Total ECNC  0.102797584
-## 61                                  Average ECNC  0.108543367
-## 62                                   %Ortho ECNC  0.104394790
-## 63                                     Gene   CN  0.013089940
-## 64                                   Genome   CN -0.092501845
-## 65      Sum length of sequences > 10M  (nt)   CN -0.061610123
-## 66                    Longest sequence (nt)   CN -0.052591263
-## 67                 N50 sequence length (nt)   CN -0.038770715
-## 68                 Base composition (%) (A)   CN  0.006139187
-## 69                 Base composition (%) (T)   CN  0.006354445
-## 70                 Base composition (%) (G)   CN -0.036741673
-## 71                 Base composition (%) (C)   CN -0.035971303
-## 72             Base composition (%) (Other)   CN -0.041544748
-## 73 # of sequences containing non-ACGTN (nt)   CN -0.041868348
-## 74                Mean sequence length (nt)   CN -0.063786387
-## 75              Median sequence length (nt)   CN -0.063541494
-## 76                         Missing Proteins   CN -0.063703014
-## 77                                   #Prots   CN -0.085286259
-## 78                             Completeness   CN -0.085306203
-## 79                 Base composition (%) (N)   CN  0.012122309
-## 80                              totalLength   CN  0.060342667
-## 81       Sum length of sequences > 1M  (nt)   CN  0.044889905
-## 82               # of sequences > 100K (nt)   CN  0.047874628
-## 83                                      L50   CN  0.069838784
-## 84               # of sequences >   1M (nt)   CN  0.062839574
-## 85               # of sequences >  10M (nt)   CN  0.062215472
-## 86                   Shortest sequence (nt)   CN -0.013168670
-## 87                           GC-content (%)   CN -0.066875760
-## 88                           # of sequences   CN  0.073563144
-## 89               # of sequences >   1K (nt)   CN  0.044231140
-## 90               # of sequences >  10K (nt)   CN  0.042436480
-## 91                                   #Total   CN  0.105113732
-## 92                                  Average   CN  0.110764419
-## 93                                   %Ortho   CN  0.106456398
-\end{verbatim}
-
-\includegraphics{paper_PLOS_draft_files/figure-latex/Correlations between genome quality scores-1.pdf}
-
-\begin{verbatim}
-## Warning: Column `Genome`/`BestGenome` joining factor and character vector,
-## coercing into character vector
-\end{verbatim}
-
-\begin{verbatim}
-## Warning: `as.tibble()` is deprecated as of tibble 2.0.0.
-## Please use `as_tibble()` instead.
-## The signature and semantics have changed, see `?as_tibble`.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_warnings()` to see where this warning was generated.
-\end{verbatim}
-
-\begin{verbatim}
-## Warning: Removed 1 rows containing missing values (geom_text).
-\end{verbatim}
-
-\begin{figure}
-\centering
-\includegraphics{paper_PLOS_draft_files/figure-latex/Figure 2-1.pdf}
-\caption{Figure 2: A Reciprocal Best-Hit BLAT pipeline for identifying
-gene copy number in other genomes. A) A graphic summary of the
-reciprocal best-hit strategy. B) Estimated Copy Number by Coverage. C)}
-\end{figure}
-
-\begin{verbatim}
-## Warning: Table 2
+## Warning: TODO: Table 2 is done, but Stargazer has some weird bug stopping it
+## from running...
 \end{verbatim}
 
 Enhanced cancer suppression may have evolved through many mechanisms;
@@ -903,7 +778,7 @@ RBHB-like approaches can over-estimate copy number when genes are
 fragmented or incorrectly assembled across multiple scaffolds, we also
 inferred copy number using a complementary method that quantifies the
 ratio between observed and expected gene coverage per nucleotide (ECNC)
-(Fig. 2B; Sup. Fig. 2A-D). By only including nucleotides from the query
+(Supplementary Figure 1). By only including nucleotides from the query
 sequence that were observed in the target genome, we also correct for
 partial hits where some or all of the homologs of a gene have diverged
 from the human homolog.
@@ -945,43 +820,222 @@ described. Furthermore, we identify
 enriched for tumor suppressor
 pathways}\label{duplications-that-occured-recently-in-probodiscea-are-enriched-for-tumor-suppressor-pathways}}
 
+\includegraphics{paper_PLOS_draft_files/figure-latex/Fig 3-1.pdf}
+\includegraphics{paper_PLOS_draft_files/figure-latex/Fig 3-2.pdf}
+
 In order to infer the functional consequences of these gene
 duplications, we tested if duplicate genes were enriched in specific
 pathways relative to our initial query set of genes. We used
 
-\hypertarget{retroduplication-of-eef1a1-in-the-stem-lineage-of-tehthytheria}{%
-\subsection{Retroduplication of EEF1A1 in the stem-lineage of
-Tehthytheria}\label{retroduplication-of-eef1a1-in-the-stem-lineage-of-tehthytheria}}
+\hypertarget{concerted-duplication-of-tp53-and-tp53-related-genes-towards-probodiscea}{%
+\subsection{\texorpdfstring{Concerted duplication of TP53 and
+TP53-related genes towards
+\emph{Probodiscea}}{Concerted duplication of TP53 and TP53-related genes towards Probodiscea}}\label{concerted-duplication-of-tp53-and-tp53-related-genes-towards-probodiscea}}
 
 \begin{verbatim}
-## Warning: Fig 3: EEF1A1
+## Warning: TODO: Make Fig4
 \end{verbatim}
 
-Previous studies have identified genes whose transgenic overexpression
-delays aging related phenotypes and extends lifespan. Overexpression of
-the eukaryotic translation elongation factor 1 alpha 1 (EEF1A1) gene,
-for example, extends lifespan in transgenic Drosophila. Like most
-mammalian genomes, we found that Afrotherian genomes encoded numerous
-EEF1A1 retrogenes (Fig. XA). While the majority of these retrogenes have
-premature stop codons and insertions/deletions characteristic of
-pseudogenes, at least 13 Tehthytherian-specific EEF1A1 retrogenes have
-the potential to encode functional proteins (Fig. XB). Unfortunately it
-is difficult to determine if these retrogenes are transcribed because
-they have relatively high sequence similarity (83-88\%), suggesting
-evidence of transcription using RNA-Seq data is likely an artifact.
-Indeed, nearly all of the EEF1A1 retrogene transcripts assembled by
-StringTie were confined to their gene body and UTRs and thus lacked
-unique sequences. The EEF1A1RTG13 transcript, however, initiates within
-an upstream MLT1B retrovirus-like MaLR transposable element and includes
-unique 5?- and 3?-UTR sequences, indicating at least one EEF1A1
-retrogene is transcribed (Fig. XC). EEF1A1
+\hypertarget{step-wise-reduction-of-intrinsic-cancer-risk-in-large-long-lived-afrotherians}{%
+\subsection{Step-wise reduction of intrinsic cancer risk in large,
+long-lived
+Afrotherians}\label{step-wise-reduction-of-intrinsic-cancer-risk-in-large-long-lived-afrotherians}}
+
+\begin{verbatim}
+## Warning: TODO: Caption Fig 5
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: TODO: de-comment geom_tiplab in f5a! Commented currently for offline
+## usage!
+\end{verbatim}
+
+\includegraphics{paper_PLOS_draft_files/figure-latex/Fig 5-1.pdf}
+
+\begin{verbatim}
+## 
+## % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard University. E-mail: hlavac at fas.harvard.edu
+## % Date and time: Wed, May 13, 2020 - 20:08:58
+## \begin{table}[!htbp] \centering 
+##   \caption{Phylogenetic Least Squares: ln(Lifespan) & ln(Body Size) Regression} 
+##   \label{} 
+## \begin{tabular}{@{\extracolsep{5pt}}lc} 
+## \\[-1.8ex]\hline 
+## \hline \\[-1.8ex] 
+##  & \multicolumn{1}{c}{\textit{Dependent variable:}} \\ 
+## \cline{2-2} 
+## \\[-1.8ex] & Lifespan \\ 
+## \hline \\[-1.8ex] 
+##  lnSize & 0.100 \\ 
+##   & (0.121) \\ 
+##   & t = 0.826 \\ 
+##   & p = 0.409 \\ 
+##   Constant & 1.943 \\ 
+##   & (1.385) \\ 
+##   & t = 1.403 \\ 
+##   & p = 0.161 \\ 
+##  \hline \\[-1.8ex] 
+## Observations & 28 \\ 
+## Log Likelihood & $-$39.636 \\ 
+## Akaike Inf. Crit. & 85.273 \\ 
+## Bayesian Inf. Crit. & 89.047 \\ 
+## \hline 
+## \hline \\[-1.8ex] 
+## \textit{Note:}  & \multicolumn{1}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+## \end{tabular} 
+## \end{table}
+\end{verbatim}
+
+\begin{longtable}[]{@{}lrrllrrl@{}}
+\caption{A table generated by the longtable package.}\tabularnewline
+\toprule
+Node & lnSize & Est. Lifespan & Est. Cancer Susceptibility (K1) & Est.
+Ancestral K2 & Change in K (K2/K1) & log2 Fold Change &
+Ancestor\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Node & lnSize & Est. Lifespan & Est. Cancer Susceptibility (K1) & Est.
+Ancestral K2 & Change in K (K2/K1) & log2 Fold Change &
+Ancestor\tabularnewline
+\midrule
+\endhead
+Loxodontini & 16 & 34.38 & 1.47e+16 & 2.97e+15 & 4.940000e+00 & 2.31 &
+Elephantidae\tabularnewline
+Loxodonta africana & 15 & 65.00 & 2.47e+17 & 1.47e+16 & 1.681000e+01 &
+4.07 & Loxodontini\tabularnewline
+Loxodona & 16 & 34.38 & 1.47e+16 & 1.47e+16 & 1.000000e+00 & 0.00 &
+Loxodontini\tabularnewline
+Loxodonta cyclotis & 15 & 31.12 & 2.97e+15 & 1.47e+16 & 2.000000e-01 &
+-2.31 & Loxodona\tabularnewline
+Palaeoloxodon antiquus & 16 & 34.38 & 1.47e+16 & 1.47e+16 & 1.000000e+00
+& 0.00 & Loxodona\tabularnewline
+Elephantidae & 15 & 31.12 & 2.97e+15 & 1.40e+07 & 2.125534e+08 & 27.66 &
+NA\tabularnewline
+Elephantina & 16 & 34.38 & 1.47e+16 & 2.97e+15 & 4.940000e+00 & 2.31 &
+Elephantidae\tabularnewline
+Elephas maximus & 15 & 65.50 & 2.58e+17 & 1.47e+16 & 1.760000e+01 & 4.14
+& Elephantina\tabularnewline
+Mammuthus & 16 & 34.38 & 1.47e+16 & 1.47e+16 & 1.000000e+00 & 0.00 &
+Elephantina\tabularnewline
+Mammuthus primigenius & 15 & 31.12 & 2.97e+15 & 1.47e+16 & 2.000000e-01
+& -2.31 & Mammuthus\tabularnewline
+Mammuthus columbi & 16 & 34.38 & 1.47e+16 & 1.47e+16 & 1.000000e+00 &
+0.00 & Mammuthus\tabularnewline
+Mammut americanum & 16 & 34.38 & 1.47e+16 & 1.40e+07 & 1.050567e+09 &
+29.97 & NA\tabularnewline
+Tethytheria & 13 & 25.49 & 1.21e+14 & 1.01e+12 & 1.207400e+02 & 6.92 &
+Paenungulata\tabularnewline
+Trichechus manatus & 13 & 69.00 & 4.77e+16 & 1.21e+14 & 3.929800e+02 &
+8.62 & Tethytheria\tabularnewline
+Paenungulata & 10 & 18.91 & 1.01e+12 & 1.01e+12 & 1.000000e+00 & 0.00 &
+Pseudoungulata\tabularnewline
+Procavia capensis & 8 & 14.80 & 3.13e+10 & 1.01e+12 & 3.000000e-02 &
+-5.01 & Paenungulata\tabularnewline
+Pseudoungulata & 10 & 18.91 & 1.01e+12 & 1.69e+09 & 5.967900e+02 & 9.22
+& Afroinsectivora\tabularnewline
+Orycteropus afer & 11 & 29.80 & 4.19e+13 & 1.01e+12 & 4.167000e+01 &
+5.38 & Pseudoungulata\tabularnewline
+Elephantulus edwardii & 4 & 10.40 & 6.90e+07 & 1.69e+09 & 4.000000e-02 &
+-4.61 & Afroinsectivora\tabularnewline
+Afrosorcida & 4 & 10.40 & 6.90e+07 & 1.69e+09 & 4.000000e-02 & -4.61 &
+Afrotheria\tabularnewline
+Chrysochloris asiatica & 4 & 10.40 & 6.90e+07 & 6.90e+07 & 1.000000e+00
+& 0.00 & NA\tabularnewline
+Echinops telfairi & 4 & 19.00 & 2.57e+09 & 6.90e+07 & 3.722000e+01 &
+5.22 & NA\tabularnewline
+Afrotheria & 6 & 12.69 & 1.69e+09 & 2.83e+06 & 5.967900e+02 & 9.22 &
+Atlantogenata\tabularnewline
+Xenarthra & 11 & 20.89 & 4.97e+12 & 2.83e+06 & 1.760358e+06 & 20.75 &
+Atlantogenata\tabularnewline
+Dasypus novemcinctus & 8 & 22.30 & 3.67e+11 & 4.97e+12 & 7.000000e-02 &
+-3.76 & Xenarthra\tabularnewline
+Choloepus hoffmanni & 8 & 41.00 & 1.42e+13 & 4.97e+12 & 2.850000e+00 &
+1.51 & Xenarthra\tabularnewline
+Atlantogenata & 2 & 8.52 & 2.83e+06 & 2.83e+06 & 1.000000e+00 & 0.00 &
+Atlantogenata\tabularnewline
+Afroinsectivora & 6 & 12.69 & 1.69e+09 & 1.69e+09 & 1.000000e+00 & 0.00
+& Afrotheria\tabularnewline
+NA & 3 & 9.41 & 1.40e+07 & 1.21e+14 & 0.000000e+00 & -23.05 &
+Tethytheria\tabularnewline
+\bottomrule
+\end{longtable}
+
+The dramatic increase in body mass and lifespan in some Afrotherian
+lineages implies those lineages evolved reduced cancer risk. To infer
+the magnitude of these reductions we estimated differences in cancer
+risk between small bodied, short-lived species and large bodied,
+long-lived species as well as for reconstructed ancestral Afrotherians.
+Following {[}{\textbf{???}}{]} we estimate the intrinsic cancer risk as
+the product of risk associated with body mass and lifespan. Differences
+in cancer susceptibility \(K\) due to body mass differences between
+species can be approximated simply as the fold difference in body mass
+(\(D\)) between species {[}{\textbf{???}}{]}. The risk of developing
+cancer also increases in proportion to the sixth power of age and is
+approximated by the formula \(Ct^6\), in which the proportionality
+constant C that determines susceptibility to cancer induction is
+multiplied by the sixth power of the age in years, \(t\)
+{[}{\textbf{???}},{\textbf{??}},{\textbf{??}}{]}. Thus we can estimate
+the intrinsic cancer risk for a species as \(K \approx Dt^6\).
+
+In order to estimate the intrinsic cancer risk of a species, we first
+obtained estimates for lifespans at ancestral nodes using PGLS and the
+model
+\(ln(lifespan) = \beta_{1}corBrownian +\beta_{2}ln(Size) + \epsilon\)
+(Figure ). With this information in hand, we calculated \(K_{1}\) at all
+nodes, and then estimated the fold change in cancer succeptibility
+between an ancestral node and a given node as \(\frac{K_{2}}{K_{1}}\)
+(\textbf{Table 4}).
+
+As shown in \textbf{Table 4}, cancer succeptibility skyrocketed at the
+initial divergence of Atlantogenata, followed by a generally upwards
+trend. At the common ancestor of Afrotheria there is an inital 9.22-fold
+increase in cancer risk. In parallel to Afrotheria, cancer
+succeptibility increases 20.75-fold in Xenarthra. However, cancer risk
+slowly deflates as size decreases as one moves along the tree towards
+extant species, such as in Hoffman's Two Toed Sloth (-fold change) and
+in the Nine-banded Armadillo (-fold change).
+
+Within Afrotheria, cancer succeptibility drops in Afrosorcida as species
+shrink (-4.61-fold, then stagnates for the Cape Golden Mole) - but then
+rises -fold towards the Lesser Hedgehog Tenrec. In parallel,
+Afroinsectivora does not increase in cancer succeptibility, and
+decreases once more at the Cape Elephant Shrew (-fold). The emergence of
+Pseudoungulata sees the next big leap in cancer succeptibility with a
+9.22-fold increase. The Aardvark further increases -fold, while we don't
+observe an increase at the common ancestor of Paenungulates. While the
+Rock Hyrax decreases in cancer succeptibility as expected (-fold),
+Tethytheria sees a sharp increase in cancer risk (6.92-fold). Within
+Tethytheria, the Manatee's cancer risk increases once more -fold, while
+Proboscidae's cancer risk drops precipitously along with its body size
+(-23.05-fold). Yet, within Proboscidae we see the biggest increases:
+right off the bat, we see that the cancer succeptibility of Elephantidae
+and the American Mastodon skyrocket by 27.66-fold and -fold,
+respectively. Both Elephantina and Loxodontini in Elephantidae have a
+2.31-fold increase in cancer succeptibility. Within Elephantina, cancer
+susceptibility stays stable at Mammuthus and in the Colombian Mammoth,
+and slightly decreases in the Wooly Mammoth (-fold). The three extant
+elephants - Asian Elephant in Elephantina, the African Savana Elephant
+in Loxodontini, and the African Forest Elephant in Loxodona, meanwhile,
+have parallel and similar decreases in both size and cancer
+succeptibility (-, -, and -fold, respectively). Neither the common
+ancestor of Loxodonta, nor the Straight-Tusked Mammoth see any further
+changes in cancer succeptibility.
+
+\hypertarget{discussion}{%
+\section{Discussion}\label{discussion}}
+
+What biological mechanisms underlie the evolution of thousand- to
+hundred million- increases in cancer susceptibility during the origins
+of Afrotherians, which are essential for large body size and long
+lifespan to evolve
 
 Candidate gene studies, for example, have identified functional
 duplicates of the tumor suppressors TP53 and LIF in elephants. In a
 larger candidate gene study, Caulin et al.~characterized the copy number
 of 830 known tumor-suppressor genes across 36 mammals and identified 382
 putative duplicates, including duplicates in species with large body
-sizes and long life-spans. however, the probability of developing cancer
+sizes and long life-spans. However, the probability of developing cancer
 is similar for small, short-lived mammals such as mice and for large,
 long-lived mammals such as elephants.
 
@@ -998,311 +1052,220 @@ reflects a general pattern of tumor suppressor duplication in the
 elephant lineage, unlike other lineages that resolved Peto?s paradox, or
 from the kinds of ascertainment biases common in candidate gene studies.
 
-\hypertarget{concerted-duplication-of-tp53-and-tp53-related-genes-towards-probodiscea}{%
-\subsection{\texorpdfstring{Concerted duplication of TP53 and
-TP53-related genes towards
-\emph{Probodiscea}}{Concerted duplication of TP53 and TP53-related genes towards Probodiscea}}\label{concerted-duplication-of-tp53-and-tp53-related-genes-towards-probodiscea}}
+\hypertarget{acknowledgements}{%
+\section{Acknowledgements}\label{acknowledgements}}
+
+I would like to thank Olga Duchenko at the Aiden Lab, D.H. Vazquez for
+his indispensible support.
+
+\hypertarget{conflicts-of-interest}{%
+\section{Conflicts of Interest}\label{conflicts-of-interest}}
+
+The Authors have no conflicts of interest to report
+
+\hypertarget{funding-source}{%
+\section{Funding Source}\label{funding-source}}
+
+We would like to thank the Department of Human Genetics at the
+University of Chicago for supporting this project.
+
+\hypertarget{supplementary-figures}{%
+\section{SUPPLEMENTARY FIGURES}\label{supplementary-figures}}
+
+\begin{figure}
+\centering
+\includegraphics{paper_PLOS_draft_files/figure-latex/Supplementary Figure 1-1.pdf}
+\caption{Supplementary Figure 1: Estimated Copy Number by Coverage
+(ECNC) consolidates fragmented genes while accounting for missing
+domains in homologs. \textbf{A)} A single, contiguous gene homolog in a
+target genome with 100\% query length coverage has an ECNC of 1.0.
+\textbf{B)} Two contiguous gene homologs, each with 100\% query length
+coverage have an ECNC of 2.0. \textbf{C)} A single gene homolog, split
+across multiple scaffolds and contigs in a fragmented target genome;
+BLAT identifies each fragment as a single hit. Per nucleotide of query
+sequence, there is only one corresponding nucleotide over all the hits,
+thus the ECNC is 1.0. \textbf{D)} Two gene homologs, one fragmented and
+one contiguous. 100\% of nucleotides in the query sequence are
+represented between all hits; however, every nucleotide in the query has
+two matching nucleotides in the target genome, thus the ECNC is 2.0.
+\textbf{E)} One true gene homolog in the target genome, plus multiple
+hits of a conserved domain that span 20\% of the query sequence. While
+100\% of the query sequence is represented in total, 20\% of the
+nucleotides have 4 hits. Thus, the ECNC for this gene is 1.45.
+\textbf{F)} Two real gene homologs; one hit is contiguous, one hit is
+fragmented in two, and the tail end of both sequences was not identified
+by BLAT due to sequence divergence. Only 75\% of the query sequence was
+covered in total between the hits, but for that 75\%, each nucleotide
+has two hits. As such, ECNC is equal to 2.0 for this gene.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{paper_PLOS_draft_files/figure-latex/Supplementary Figure 2-1.pdf}
+\caption{Supplementary Figure 2: Gene copy increases polarized along
+Atlantogenata, colored by ln(Body Size), with branch lengths equal to
+the change in gene copy number}
+\end{figure}
 
 \begin{verbatim}
-## Warning: Fig4
-\end{verbatim}
-
-\hypertarget{step-wise-reduction-of-intrinsic-cancer-risk-in-large-long-lived-afrotherians}{%
-\subsection{Step-wise reduction of intrinsic cancer risk in large,
-long-lived
-Afrotherians}\label{step-wise-reduction-of-intrinsic-cancer-risk-in-large-long-lived-afrotherians}}
-
-\begin{verbatim}
-## # A tibble: 253 x 6
-##     parent  node branch.length label                       lnSize Lifespan
-##      <int> <int>         <dbl> <chr>                        <dbl>    <dbl>
-##   1    135     1     40.1      Geogale.aurita                   2    1.72 
-##   2    140     2    122.       Limnogale.mergulus               5    2.30 
-##   3    140     3      0.135    Microgale.taiva                  2    1.72 
-##   4    139     4     33.5      Microgale.parvula                1    1.52 
-##   5    138     5      0.595    Microgale.brevicaudata           2    1.72 
-##   6    142     6      0.571    Microgale.cowani                 3    1.91 
-##   7    142     7      1.07     Microgale.jobihely               2    1.72 
-##   8    145     8      0.772    Microgale.longicaudata           2    1.72 
-##   9    145     9      0.173    Microgale.principula             2    1.72 
-##  10    144    10     34.3      Microgale.pusilla                1    1.52 
-##  11    143    11     61.4      Microgale.talazaci               4    1.76 
-##  12    136    12     22.8      Oryzorictes.hova                 4    2.11 
-##  13    147    13      7.75     Echinops.telfairi                4    2.94 
-##  14    147    14     12.5      Setifer.setosus                  6    2.65 
-##  15    148    15      4.68     Hemicentetes.semispinosus        5    0.993
-##  16    148    16     79.5      Tenrec.ecaudatus                 7    2.16 
-##  17    150    17      2.82     Micropotamogale.lamottei         4    2.11 
-##  18    150    18    103.       Potamogale.velox                 6    2.50 
-##  19    151    19     69.8      Protenrec.tricuspis              1    1.52 
-##  20    151    20      2.21     Dilambdogale.gheerbranti         2    1.72 
-##  21    157    21      0.454    Carpitalpa.arendsi               4    2.11 
-##  22    158    22      3.26     Neamblysomus.gunningi            4    2.11 
-##  23    158    23      5.72     Neamblysomus.julianae            3    1.91 
-##  24    162    24      0.976    Amblysomus.corriae               4    2.11 
-##  25    162    25      1.38     Amblysomus.robustus              4    2.11 
-##  26    161    26      0.524    Amblysomus.septentrionalis       4    2.11 
-##  27    160    27      0.0152   Amblysomus.hottentotus           4    2.11 
-##  28    159    28      3.79     Amblysomus.marleyi               4    2.11 
-##  29    163    29      0.321    Chlorotalpa.duthieae             3    1.91 
-##  30    163    30      0.0874   Chlorotalpa.sclateri             4    2.11 
-##  31    165    31     62.8      Chrysospalax.trevelyani          6    2.50 
-##  32    165    32      0.130    Chrysospalax.villosus            5    2.30 
-##  33    164    33     13.4      Calcochloris.obtusirostris       3    1.91 
-##  34    153    34      9.65     Eremitalpa.granti                3    1.91 
-##  35    167    35      3.34     Chrysochloris.asiatica           4    2.11 
-##  36    167    36      5.78     Cryptochloris.wintoni            3    1.91 
-##  37    166    37      0.333    Chrysochloris.stuhlmanni         4    2.11 
-##  38    175    38      0.926    Elephantulus.brachyrhynchus      4    2.11 
-##  39    175    39      0.118    Elephantulus.rufescens           4    2.07 
-##  40    176    40      1.15     Elephantulus.intufi              4    2.23 
-##  41    176    41      0.319    Elephantulus.rupestris           4    2.11 
-##  42    177    42      0.237    Elephantulus.edwardii            4    2.11 
-##  43    177    43      0.953    Elephantulus.myurus              4    2.11 
-##  44    179    44     10.5      Elephantulus.rozeti              4    1.97 
-##  45    179    45     24.6      Petrodromus.tetradactylus        5    2.30 
-##  46    178    46     14.2      Macroscelides.proboscideus       4    2.16 
-##  47    181    47      1.93     Elephantulus.fuscipes            4    2.11 
-##  48    182    48      0.678    Elephantulus.fuscus              4    2.11 
-##  49    182    49      1.10     Elephantulus.revoili             3    1.91 
-##  50    184    50      0.403    Rhynchocyon.chrysopygus          6    2.40 
-##  51    185    51      3.30     Rhynchocyon.cirnei               6    2.50 
-##  52    185    52      4.33     Rhynchocyon.udzungwensis         7    2.69 
-##  53    183    53      2.13     Rhynchocyon.petersi              6    2.50 
-##  54    170    54     15.9      Metoldobotes.sp..nov             6    2.50 
-##  55    186    55     11.8      Chambius.kasserinensis           4    2.11 
-##  56    186    56     11.6      Herodotius.pattersoni            5    2.30 
-##  57    188    57      6.59     Orycteropus.afer                11    3.39 
-##  58    188    58      0.569    Myorycteropus.africanus         10    3.27 
-##  59    194    59      1.86     Dendrohyrax.dorsalis             8    2.88 
-##  60    195    60      1.64     Heterohyrax.brucei               8    2.88 
-##  61    195    61      0.000068 Procavia.capensis                8    2.69 
-##  62    193    62      1.15     Thyrohyrax.domorictus            9    3.08 
-##  63    192    63      3.55     Thyrohyrax.meyeri                9    3.08 
-##  64    198    64     28.6      Thyrohyrax.litholagus           10    3.27 
-##  65    201    65      2.29     Pachyhyrax.crassidentatus       12    3.66 
-##  66    201    66      1.45     Bunohyrax.fajumensis            11    3.47 
-##  67    202    67      5.44     Geniohyus.mirus                 11    3.47 
-##  68    202    68     11.4      Bunohyrax.major                 12    3.66 
-##  69    203    69      0.235    Megalohyrax.eocaenus            12    3.66 
-##  70    203    70      7.21     Megalohyrax.sp..nov             13    3.86 
-##  71    207    71      0.0699   Titanohyrax.andrewsi            13    3.86 
-##  72    207    72     34.6      Titanohyrax.ultimus             14    4.05 
-##  73    206    73      0.0353   Titanohyrax.angustidens         12    3.66 
-##  74    205    74     13.7      Antilohyrax.pectidens           11    3.47 
-##  75    204    75      0.194    Afrohyrax.championi             11    3.47 
-##  76    209    76      2.90     Saghatherium.antiquum           10    3.27 
-##  77    209    77     15.0      Selenohyrax.chatrathi           11    3.47 
-##  78    208    78     15.8      Saghatherium.bowni               9    3.08 
-##  79    211    79      2.82     Seggeurius.amourensis            8    2.88 
-##  80    211    80      0.733    Microhyrax.lavocati              8    2.88 
-##  81    210    81     18.2      Dimaitherium.patnaiki           10    3.27 
-##  82    220    82      5.81     Elephas.maximus                 15    4.18 
-##  83    222    83      6.12     Elephas.antiquus.falconeri      12    3.66 
-##  84    222    84      1.90     Elephas.cypriotes               12    3.66 
-##  85    221    85      0.340    Elephas.maximus.asurus          16    4.44 
-##  86    223    86     16.0      Mammuthus.trogontherii          16    4.44 
-##  87    224    87      0.910    Mammuthus.columbi               16    4.44 
-##  88    224    88      2.17     Mammuthus.primigenius           15    4.24 
-##  89    225    89      1.28     Loxodonta.africana              15    4.17 
-##  90    227    90      0.0149   Palaeoloxodon.antiquus          16    4.44 
-##  91    227    91     12.8      Palaeoloxodon.namadicus         17    4.63 
-##  92    226    92      3.72     Loxodonta.cyclotis              15    4.24 
-##  93    228    93     15.3      Mammut.borsoni                  16    4.44 
-##  94    228    94      0.951    Mammut.americanum               16    4.44 
-##  95    216    95      3.64     Phiomia.spp                     14    4.05 
-##  96    230    96      0.0280   Omanitherium.dhofarensis        13    3.86 
-##  97    230    97      7.29     Arcanotherium.savagei           13    3.86 
-##  98    229    98     73.6      Barytherium.spp                 15    4.24 
-##  99    214    99      5.71     Moeritherium.spp                14    4.05 
-## 100    231   100    326.       Phosphatherium.escuilliei       10    3.27 
-## 101    232   101      2.29     Numidotherium.koholense         13    3.86 
-## 102    232   102      0.742    Daouitherium.rebouli            13    3.86 
-## 103    235   103      5.85     Dugong.dugon                    13    4.29 
-## 104    235   104    173.       Hydrodamalis.gigas              16    4.44 
-## 105    237   105      0.688    Trichechus.inunguis             13    3.69 
-## 106    237   106      1.39     Trichechus.manatus              13    4.23 
-## 107    236   107      0.574    Trichechus.senegalensis         13    3.86 
-## 108    238   108     13.6      Prorastomus.sirenoides          11    3.47 
-## 109    238   109     33.7      Protosiren.smithae              13    3.86 
-## 110    241   110      0.640    Choloepus.didactylus             9    3.61 
-## 111    241   111      0.316    Choloepus.hoffmanni              8    3.71 
-## 112    242   112      0.0297   Bradypus.torquatus               8    2.88 
-## 113    243   113      0.483    Bradypus.tridactylus             8    2.88 
-## 114    243   114      0.512    Bradypus.variegatus              8    2.88 
-## 115    245   115     10.4      Tamandua.tetradactyla            9    2.94 
-## 116    245   116     41.0      Myrmecophaga.tridactyla         10    3.43 
-## 117    244   117      2.15     Cyclopes.didactylus              9    3.08 
-## 118    249   118     15.0      Euphractus.sexcinctus            8    3.10 
-## 119    249   119      5.54     Zaedyus.pichiy                   7    2.53 
-## 120    250   120      0.0899   Chaetophractus.nationi           8    2.88 
-## 121    250   121      0.418    Chaetophractus.villosus          8    3.23 
-## 122    251   122    268.       Priodontes.maximus              11    2.71 
-## 123    252   123     16.0      Tolypeutes.matacus               7    3.61 
-## 124    252   124      0.248    Cabassous.centralis              8    2.88 
-## 125    253   125      4.05     Dasypus.hybridus                 7    2.69 
-## 126    253   126     74.1      Dasypus.kappleri                 9    3.08 
-## 127    253   127     14.7      Dasypus.novemcinctus             8    3.10 
-## 128    253   128     12.2      Dasypus.sabanicola               7    2.69 
-## 129    253   129      4.44     Dasypus.septemcinctus            7    2.82 
-## 130    130   130     NA        Atlantogenata                    2    1.72 
-## 131    130   131      0.000982 Afrotheria                       6    2.50 
-## 132    131   132     44.5      Afrosorcida                      4    2.11 
-## 133    132   133     11.8      <NA>                             4    2.11 
-## 134    133   134      0.420    <NA>                             4    2.11 
-## 135    134   135     10.1      <NA>                             3    1.91 
-## 136    135   136      0.373    <NA>                             3    1.91 
-## 137    136   137      2.96     <NA>                             3    1.91 
-## 138    137   138      2.69     <NA>                             3    1.91 
-## 139    138   139      0.450    <NA>                             2    1.72 
-## 140    139   140      3.36     <NA>                             3    1.91 
-## 141    137   141      0.153    <NA>                             3    1.91 
-## 142    141   142      0.116    <NA>                             2    1.72 
-## 143    141   143      0.222    <NA>                             2    1.72 
-## 144    143   144      0.771    <NA>                             2    1.72 
-## 145    144   145      0.109    <NA>                             3    1.91 
-## 146    134   146     38.5      <NA>                             5    2.30 
-## 147    146   147      1.81     <NA>                             3    1.91 
-## 148    146   148      5.26     <NA>                             3    1.91 
-## 149    133   149      4.28     <NA>                             3    1.91 
-## 150    149   150     52.3      <NA>                             5    2.30 
-## 151    149   151     15.6      <NA>                             3    1.91 
-## 152    132   152     12.0      <NA>                             4    2.11 
-## 153    152   153      0.0295   <NA>                             4    2.11 
-## 154    153   154      0.173    <NA>                             3    1.91 
-## 155    154   155      0.0141   <NA>                             3    1.91 
-## 156    155   156      0.107    <NA>                             4    2.11 
-## 157    156   157      0.00544  <NA>                             3    1.91 
-## 158    157   158      0.102    <NA>                             3    1.91 
-## 159    156   159      0.150    <NA>                             3    1.91 
-## 160    159   160      0.483    <NA>                             3    1.91 
-## 161    160   161      0.321    <NA>                             3    1.91 
-## 162    161   162      0.00743  <NA>                             4    2.11 
-## 163    155   163      2.12     <NA>                             3    1.91 
-## 164    154   164      0.774    <NA>                             4    2.11 
-## 165    164   165     18.6      <NA>                             5    2.30 
-## 166    152   166      0.260    <NA>                             3    1.91 
-## 167    166   167      0.155    <NA>                             3    1.91 
-## 168    131   168      0.00016  <NA>                             6    2.50 
-## 169    168   169      2.49     Macroscelidae                    5    2.30 
-## 170    169   170      0.105    <NA>                             5    2.30 
-## 171    170   171      4.23     <NA>                             5    2.30 
-## 172    171   172      6.20     <NA>                             3    1.91 
-## 173    172   173      0.977    <NA>                             3    1.91 
-## 174    173   174      0.448    <NA>                             4    2.11 
-## 175    174   175      0.349    <NA>                             4    2.11 
-## 176    174   176      0.176    <NA>                             4    2.11 
-## 177    173   177      1.62     <NA>                             4    2.11 
-## 178    172   178      0.155    <NA>                             3    1.91 
-## 179    178   179      0.180    <NA>                             4    2.11 
-## 180    171   180      0.100    <NA>                             5    2.30 
-## 181    180   181     11.2      <NA>                             3    1.91 
-## 182    181   182     12.0      <NA>                             3    1.91 
-## 183    180   183     30.6      <NA>                             3    1.91 
-## 184    183   184      2.34     <NA>                             3    1.91 
-## 185    184   185      0.0165   <NA>                             3    1.91 
-## 186    169   186      4.53     <NA>                             5    2.30 
-## 187    168   187    546.       Pseudoungulata                  10    3.27 
-## 188    187   188     12.9      <NA>                            10    3.27 
-## 189    187   189      4.42     Paenungulata                    10    3.27 
-## 190    189   190      6.90     <NA>                             5    2.30 
-## 191    190   191      1.47     <NA>                            10    3.27 
-## 192    191   192     17.9      <NA>                             9    3.08 
-## 193    192   193      0.00758  <NA>                             9    3.08 
-## 194    193   194     19.5      <NA>                             5    2.30 
-## 195    194   195      2.67     <NA>                             5    2.30 
-## 196    191   196      5.61     <NA>                             3    1.91 
-## 197    196   197      8.46     <NA>                             3    1.91 
-## 198    197   198      0.602    <NA>                            11    3.47 
-## 199    198   199      8.81     <NA>                            12    3.66 
-## 200    199   200      0.347    <NA>                             3    1.91 
-## 201    200   201      0.177    <NA>                            12    3.66 
-## 202    200   202      0.584    <NA>                             3    1.91 
-## 203    199   203      8.90     <NA>                            12    3.66 
-## 204    197   204      9.93     <NA>                            11    3.47 
-## 205    204   205      1.23     <NA>                            12    3.66 
-## 206    205   206     22.2      <NA>                             3    1.91 
-## 207    206   207     10.2      <NA>                            13    3.86 
-## 208    196   208      6.63     <NA>                             3    1.91 
-## 209    208   209      1.16     <NA>                            10    3.27 
-## 210    190   210     22.7      <NA>                             9    3.08 
-## 211    210   211      8.32     <NA>                             8    2.88 
-## 212    189   212    187.       Tethytheria                     13    3.86 
-## 213    212   213      3.40     <NA>                             3    1.91 
-## 214    213   214      6.37     <NA>                            13    3.86 
-## 215    214   215      1.15     <NA>                            14    4.05 
-## 216    215   216     13.4      <NA>                             3    1.91 
-## 217    216   217     30.3      Proboscidae                      3    1.91 
-## 218    217   218      2.21     Elephantidae                    15    4.24 
-## 219    218   219      0.0116   Elephantina                     16    4.44 
-## 220    219   220      0.128    <NA>                            15    4.24 
-## 221    220   221      0.369    <NA>                             3    1.91 
-## 222    221   222    400.       <NA>                             3    1.91 
-## 223    219   223      0.645    <NA>                             3    1.91 
-## 224    223   224      0.467    Mammuthus                       16    4.44 
-## 225    218   225      0.108    Loxodontini                     16    4.44 
-## 226    225   226      0.862    Loxodona                        16    4.44 
-## 227    226   227      6.09     <NA>                             3    1.91 
-## 228    217   228      9.63     <NA>                             3    1.91 
-## 229    215   229      0.197    <NA>                             3    1.91 
-## 230    229   230      2.47     <NA>                             3    1.91 
-## 231    213   231      0.128    <NA>                            13    3.86 
-## 232    231   232      0.268    <NA>                             3    1.91 
-## 233    212   233      0.309    <NA>                            12    3.66 
-## 234    233   234     16.4      <NA>                             3    1.91 
-## 235    234   235      0.530    <NA>                             3    1.91 
-## 236    234   236      0.134    <NA>                             3    1.91 
-## 237    236   237      0.145    <NA>                             3    1.91 
-## 238    233   238      3.59     <NA>                             3    1.91 
-## 239    130   239    125.       Xenarthra                       11    3.47 
-## 240    239   240     14.6      <NA>                             3    1.91 
-## 241    240   241      3.04     <NA>                             3    1.91 
-## 242    240   242      0.0660   <NA>                            11    3.47 
-## 243    242   243      0.112    <NA>                            11    3.47 
-## 244    239   244     15.1      <NA>                             3    1.91 
-## 245    244   245     21.7      <NA>                             9    3.08 
-## 246    239   246      0.958    <NA>                            10    3.27 
-## 247    246   247      0.0602   <NA>                             3    1.91 
-## 248    247   248      0.0914   <NA>                             3    1.91 
-## 249    248   249      0.000579 <NA>                             8    2.88 
-## 250    248   250      0.000908 <NA>                            11    3.47 
-## 251    247   251      0.217    <NA>                             3    1.91 
-## 252    251   252      0.0523   <NA>                            11    3.47 
-## 253    246   253      0.140    <NA>                             8    2.88
+## Warning: TODO: Make HQ version of this figure
 \end{verbatim}
 
 \begin{verbatim}
-## Warning: Fig5
+## Warning: Removed 1 rows containing missing values (geom_text).
 \end{verbatim}
 
-The dramatic increase in body mass and lifespan in some Afrotherian
-lineages implies those lineages evolved reduced cancer risk. To infer
-the magnitude of these reductions we estimated differences in cancer
-risk between small bodied, short-lived species and large bodied,
-long-lived species as well as for reconstructed ancestral Afrotherians.
-Following {[}{\textbf{???}}{]} we estimate the intrinsic cancer risk as
-the product of risk associated with body mass and lifespan. Differences
-in cancer susceptibility due to body mass differences between species
-can be approximated simply as the fold difference in body mass (\(D\))
-between species {[}{\textbf{???}}{]}. The risk of developing cancer also
-increases in proportion to the sixth power of age and is approximated by
-the formula \(Ct^6\), in which the proportionality constant C that
-determines susceptibility to cancer induction is multiplied by the sixth
-power of the age in years, \(t\)
-{[}{\textbf{???}},{\textbf{??}},{\textbf{??}}{]}. Thus we can estimate
-differences in the intrinsic cancer risk between species as \(D(Ct^6)\).
-We inferred that susceptibility to cancer induction (\(C\)) was reduced
-3.40x10\^{}3-fold in the ancestor of Pseudoungulata, 7.20×10\^{}3-fold
-in the ancestor of Paenungulata, 8.81x10\^{}5-fold in the ancestor of
-Tehthytheria, 1.46x10\^{}8-fold in the ancestor of Proboscidea, and
-1.28x10\^{}6-fold in the ancestor of Sirenia relative to the ancestral
-Afrotherian (Table 3). What biological mechanisms underlie the evolution
-of thousand- to hundred million-fold reductions in cancer susceptibility
-during the origins of Afrotherians, which are essential for large body
-size and long lifespan to evolve
+\begin{figure}
+\centering
+\includegraphics{paper_PLOS_draft_files/figure-latex/Supplementary Figure 3-1.pdf}
+\caption{Supplementary Figure 3: Full version of RecBlat strategy, but
+low quality}
+\end{figure}
 
-\hypertarget{other-figures}{%
-\section{OTHER FIGURES}\label{other-figures}}
+\begin{figure}
+\centering
+\includegraphics{paper_PLOS_draft_files/figure-latex/Supplementary Figure 4-1.pdf}
+\caption{Supplementary Figure 4: Dot and Line plot for Body Sizes and
+such}
+\end{figure}
+
+\begin{verbatim}
+## $RBX1
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{paper_PLOS_draft_files/figure-latex/Supplementary Figure 5-1.pdf}
+\caption{Supplementary Figure 5: All the Gene Copy Trees for interesting
+genes duplicated in LoxAfr4 (RIP any trees if this gets printed)}
+\end{figure}
+
+\begin{verbatim}
+## 
+## $LIN9
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{paper_PLOS_draft_files/figure-latex/Supplementary Figure 5-2.pdf}
+\caption{Supplementary Figure 5: All the Gene Copy Trees for interesting
+genes duplicated in LoxAfr4 (RIP any trees if this gets printed)}
+\end{figure}
+
+\begin{verbatim}
+## 
+## $MND1
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{paper_PLOS_draft_files/figure-latex/Supplementary Figure 5-3.pdf}
+\caption{Supplementary Figure 5: All the Gene Copy Trees for interesting
+genes duplicated in LoxAfr4 (RIP any trees if this gets printed)}
+\end{figure}
+
+\begin{verbatim}
+## 
+## $E2F2
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{paper_PLOS_draft_files/figure-latex/Supplementary Figure 5-4.pdf}
+\caption{Supplementary Figure 5: All the Gene Copy Trees for interesting
+genes duplicated in LoxAfr4 (RIP any trees if this gets printed)}
+\end{figure}
+
+\begin{verbatim}
+## 
+## $MAX
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{paper_PLOS_draft_files/figure-latex/Supplementary Figure 5-5.pdf}
+\caption{Supplementary Figure 5: All the Gene Copy Trees for interesting
+genes duplicated in LoxAfr4 (RIP any trees if this gets printed)}
+\end{figure}
+
+\begin{verbatim}
+## 
+## $SYCP3
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{paper_PLOS_draft_files/figure-latex/Supplementary Figure 5-6.pdf}
+\caption{Supplementary Figure 5: All the Gene Copy Trees for interesting
+genes duplicated in LoxAfr4 (RIP any trees if this gets printed)}
+\end{figure}
+
+\begin{verbatim}
+## 
+## $CDK1
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{paper_PLOS_draft_files/figure-latex/Supplementary Figure 5-7.pdf}
+\caption{Supplementary Figure 5: All the Gene Copy Trees for interesting
+genes duplicated in LoxAfr4 (RIP any trees if this gets printed)}
+\end{figure}
+
+\begin{verbatim}
+## 
+## $RNF168
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{paper_PLOS_draft_files/figure-latex/Supplementary Figure 5-8.pdf}
+\caption{Supplementary Figure 5: All the Gene Copy Trees for interesting
+genes duplicated in LoxAfr4 (RIP any trees if this gets printed)}
+\end{figure}
+
+\begin{verbatim}
+## 
+## $RBBP8
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{paper_PLOS_draft_files/figure-latex/Supplementary Figure 5-9.pdf}
+\caption{Supplementary Figure 5: All the Gene Copy Trees for interesting
+genes duplicated in LoxAfr4 (RIP any trees if this gets printed)}
+\end{figure}
+
+\begin{verbatim}
+## 
+## $MAD2L1
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{paper_PLOS_draft_files/figure-latex/Supplementary Figure 5-10.pdf}
+\caption{Supplementary Figure 5: All the Gene Copy Trees for interesting
+genes duplicated in LoxAfr4 (RIP any trees if this gets printed)}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{paper_PLOS_draft_files/figure-latex/Supplementary Figure 7-1.pdf}
+\caption{Supplementary Figure 7: Correlation matrix heat map for genome
+quality metrics, ECNC, RBHB Copy, and Estimated Copy Number (lesser
+between ECNC and RBHB)}
+\end{figure}
+
+\begin{verbatim}
+## Warning: TODO: this causes a segfault, find out why!
+\end{verbatim}
+
+\hypertarget{supplementary-data}{%
+\section{Supplementary data}\label{supplementary-data}}
+
+\begin{verbatim}
+## Warning: TODO: Read in Eutheria.progress and present it to the bold.
+\end{verbatim}
 
 \hypertarget{references}{%
 \section*{References}\label{references}}

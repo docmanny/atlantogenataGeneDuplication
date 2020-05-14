@@ -656,7 +656,7 @@ graph.ORA.dotplot <- function(ORA.df, plotly=F){
       # text=GeneList, 
       color=Class
     )) + 
-    geom_point(position = position_jitter(width = .02, height=.02, seed = NULL)) +
+    geom_point() + #position = position_jitter(width = .02, height=.02, seed = NULL)) +
     # guides(col=guide_legend())+
     # facet_wrap(~Database) + 
     gghighlight(Class != "Other", keep_scales = T, calculate_per_facet = T, use_direct_label = F, label_key = NULL)+
@@ -664,8 +664,10 @@ graph.ORA.dotplot <- function(ORA.df, plotly=F){
     scale_x_log10(guide=guide_axis(title="FDR (log)")) +
     scale_y_log10(guide=guide_axis(title="Enrichment Ratio (log)")) +
     #geom_text_repel(data=. %>% filter(FDR<=1e-4|Class %in% c("TP53 Pathway", "Senescence", "Cell Death Pathways")), nudge_y = 0.5, show.legend = F, force = 15, size=3) +
-    geom_text_repel(data=. %>% filter(FDR<=1e-4), nudge_y = 0.5, show.legend = F, force = 15, size=3) +
-    geom_text_repel(data=. %>% filter(EnrichRatio>=7), nudge_y = -0.2, force = 15, show.legend=F, size=3) + 
+    geom_text_repel(data=. %>% filter(FDR<=1e-4), nudge_y = 0.5,
+                    show.legend = F, force = 15, size=3)+#, position = position_jitter(width = .02, height=.02, seed = NULL)) +
+    geom_text_repel(data=. %>% filter(EnrichRatio>=7), nudge_y = -0.2, 
+                    force = 15, show.legend=F, size=3)+#, position = position_jitter(width = .02, height=.02, seed = NULL)) +
     # geom_text_repel(data=. %>% filter(Class %in% c("TP53 Pathway", "Senescence", "Cell Death Pathways")), nudge_y = 0.5, force = 10, show.legend=F) + 
     scale_color_d3(palette="category20") +
     theme_pubclean() + 
@@ -674,3 +676,64 @@ graph.ORA.dotplot <- function(ORA.df, plotly=F){
   if(plotly) {p %<>% ggplotly}
   return(p)
 }
+
+
+get_upper_tri <- function(cormat){
+  cormat[lower.tri(cormat)]<- NA
+  return(cormat)
+}
+
+get_lower_tri <- function(cormat){
+  cormat[upper.tri(cormat)]<- NA
+  return(cormat)
+}
+reorder_cormat <- function(cormat){
+  # Use correlation between variables as distance
+  dd <- as.dist((1-cormat)/2)
+  hc <- hclust(dd)
+  cormat <-cormat[hc$order, hc$order]
+}
+
+
+not.me <- function(attr1, attr2, threshold=5){
+  sapply(
+    seq_along(attr1),
+    function(n, a1=attr1, a2=attr2, t=threshold){
+      ifelse(a1[n] >= t, a2[n], NA)
+    }
+  )
+}
+yes.me <- function(attr1, attr2, threshold=5){
+  sapply(
+    seq_along(attr1),
+    function(n, a1=attr1, a2=attr2, t=threshold){
+      ifelse(a1[n] < t, a2[n], NA)
+    }
+  )
+}
+
+# runGLS <- function(df, pcor = bm){
+#   # print(class(df))
+#   # print(head(df))
+#   bla <- gls(
+#     media.CN ~ Genome + N50 + meanSequenceLength + Completeness + Total+ pc.Ortho + Average + , 
+#     data = df, 
+#     correlation=pcor
+#   ) 
+#   # print(bla)
+#   # print(class(bla))
+#   return(bla)
+# }
+tidyGLS <- function(df){
+  # print(names(df))
+  # print(class(df$results))
+  a <- tidy(df, conf.int=T)
+  print(a)
+  return(a)
+}
+
+quiet <- function(x) { 
+  sink(tempfile()) 
+  on.exit(sink()) 
+  invisible(force(x)) 
+} 

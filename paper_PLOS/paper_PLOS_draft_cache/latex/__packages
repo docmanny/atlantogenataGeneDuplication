@@ -25,3 +25,6 @@ magick
 gghighlight
 geiger
 nlme
+broom.mixed
+stargazer
+rmarkdown

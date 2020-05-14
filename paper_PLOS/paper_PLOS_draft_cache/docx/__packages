@@ -1,10 +1,4 @@
 base
-methods
-datasets
-utils
-grDevices
-graphics
-stats
 data.table
 tidyverse
 ggplot2
@@ -33,3 +27,5 @@ magick
 gghighlight
 broom.mixed
 stargazer
+rmarkdown
+rticles
