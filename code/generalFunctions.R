@@ -699,7 +699,7 @@ reorder_cormat <- function(cormat){
 }
 
 
-not.me <- function(attr1, attr2, threshold=5){
+not.me <- function(attr1, attr2, threshold=4){
   sapply(
     seq_along(attr1),
     function(n, a1=attr1, a2=attr2, t=threshold){
@@ -707,7 +707,7 @@ not.me <- function(attr1, attr2, threshold=5){
     }
   )
 }
-yes.me <- function(attr1, attr2, threshold=5){
+yes.me <- function(attr1, attr2, threshold=4){
   sapply(
     seq_along(attr1),
     function(n, a1=attr1, a2=attr2, t=threshold){
@@ -716,6 +716,47 @@ yes.me <- function(attr1, attr2, threshold=5){
   )
 }
 
+colorado <- function(src, boulder) {                        # From https://stackoverflow.com/a/39695859, pun is too good to change
+  if (!is.factor(src)) src <- factor(src)                   # make sure it's a factor
+  src_levels <- levels(src)                                 # retrieve the levels in their order
+  brave <- boulder %in% src_levels                          # make sure everything we want to make bold is actually in the factor levels
+  if (all(brave)) {                                         # if so
+    b_pos <- purrr::map_int(boulder, ~which(.==src_levels)) # then find out where they are
+    b_vec <- rep("plain", length(src_levels))               # make'm all plain first
+    b_vec[b_pos] <- "bold"                                  # make our targets bold
+    b_vec                                                   # return the new vector
+  } else {
+    stop("All elements of 'boulder' must be in src")
+  }
+}
+
+highlightTextSize <- function(src, boulder, sizes=c(4,8)) {
+  if (!is.factor(src)) src <- factor(src)                 
+  src_levels <- levels(src)                               
+  brave <- boulder %in% src_levels                        
+  if (all(brave)) {                                       
+    b_pos <- purrr::map_int(boulder, ~which(.==src_levels))
+    b_vec <- rep(sizes[1], length(src_levels))            
+    b_vec[b_pos] <- sizes[2]                              
+    b_vec                                                   
+  } else {
+    stop("All elements of 'boulder' must be in src")
+  }
+}
+
+highlightTextColor <- function(src, boulder, color=c("grey","black")) {
+  if (!is.factor(src)) src <- factor(src)                 
+  src_levels <- levels(src)                               
+  brave <- boulder %in% src_levels                        
+  if (all(brave)) {                                       
+    b_pos <- purrr::map_int(boulder, ~which(.==src_levels))
+    b_vec <- rep(color[1], length(src_levels))            
+    b_vec[b_pos] <- color[2]                              
+    b_vec                                                   
+  } else {
+    stop("All elements of 'boulder' must be in src")
+  }
+}
 # runGLS <- function(df, pcor = bm){
 #   # print(class(df))
 #   # print(head(df))
