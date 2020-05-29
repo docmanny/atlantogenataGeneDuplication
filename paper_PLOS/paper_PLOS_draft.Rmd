@@ -579,7 +579,7 @@ p.tree.atlantogenata <-
   theme_tree2() +
   xlab("Rate of Change, (Body Size, sqrt)") + 
   theme(
-    legend.position="right",
+    legend.position="bottom",
     # panel.background = element_rect(fill = "lightgrey"),
     text = element_text(face = "plain", 
                         colour = "black", lineheight = 0.9, 
@@ -1216,8 +1216,6 @@ To trace the evolutionary history of body mass and lifespan in Afrotherians, we 
 
 Similar to previous studies of Afrotherian body size [@ElliotAndMooers2014; @PuttickAndThomas2015], we found that the body mass of the Afrotherian ancestor was inferred to be small (0.26kg, 95% CI: 0.31-3.01kg) and that substantial accelerations in the rate of body mass evolution occurred coincident with a `r text.ratio.nodeByMRCA.ancNode("Loxodonta.africana", "Orycteropus.afer")` in body mass in the stem-lineage of _Pseudoungulata_ (`r text.bodysize.ancNode.byMRCA("Loxodonta.africana", "Orycteropus.afer")`), a `r text.ratio.nodeByMRCA.ancNode("Loxodonta.africana", "Procavia.capensis")` in body mass in the stem-lineage of _Paenungulata_ (`r text.bodysize.ancNode.byMRCA("Loxodonta.africana", "Procavia.capensis")`), a `r text.ratio.nodeByMRCA.ancNode("Loxodonta.africana", "Trichechus.manatus")` in body mass in the stem-lineage of _Tehthytheria_ (`r text.bodysize.ancNode.byMRCA("Loxodonta.africana", "Trichechus.manatus")`), and a `r text.ratio.nodeByMRCA.ancNode("Loxodonta.africana", "Mammut.americanum")` in body mass in the stem-lineage of _Proboscidea_ (`r text.bodysize.ancNode.byMRCA("Loxodonta.africana", "Mammut.americanum")`) (Figure 1B,C). The ancestral _Hyracoidea_ was inferred to be relatively small `r text.bodysize.ancNode.byMRCA.CI("Microhyrax.lavocati", "Procavia.capensis")`, and rate accelerations were coincident with independent body mass increases in large hyraxes such as _Titanohyrax andrewsi_ `r text.bodysize.byLabel("Titanohyrax.andrewsi")`; `r text.ratio.nodeByMRCA.ancNode(nodeA="Titanohyrax.andrewsi","Orycteropus.afer")`. While the body mass of the ancestral _Sirenian_ was inferred to be large `r text.bodysize.ancNode.byMRCA.CI("Trichechus.manatus", "Prorastomus.sirenoides")`, a rate acceleration occurred coincident with a `r text.ratio.node.ancnode.atLabel("Hydrodamalis.gigas")` in body mass in Stellar's sea cow. Rate accelerations also occurred coincident with `r text.ratio.nodeByMRCA.ancNode("Elephas.antiquus falconeri", "Elephas.cypriotes")` in body mass in the stem-lineage of the dwarf elephants _Elephas (Palaeoloxodon) antiquus falconeri_ and _Elephas cypriotes_. These data suggest that gigantism in _Afrotherians_ evolved step-wise, from small to medium bodies in the _Pseudoungulata_ stem-lineage, medium to large bodies in the _Tehthytherian_ stem-lineage and extinct hyraxes, and from large to exceptionally large bodies independently in the _Proboscidean_ stem-lineage and Stellar's sea cow (Figure 1). 
 
-`r knitr::knit_exit()`
-
 ## Step-wise reduction of intrinsic cancer risk in large, long-lived Afrotherians
 
 ```{r Lifespan Regression Atlantogenata}
@@ -1407,7 +1405,7 @@ cancerSucceptibility.Atlantogenata.nodes <- table.cancerSucceptibility.Atlantoge
 set_names(., table.cancerSucceptibility.Atlantogenata.genomes$label)
 ```
 
-```{r Fig2 Prep Table}
+```{r Fig2 Prep Table, eval=F}
 if(knitr::is_latex_output()){
 # size.lifespan.Atlantogenata.lm
   t.size.lifespan.Atlantogenata.lm <- quiet(stargazer(
@@ -1461,46 +1459,57 @@ f2a <- tree.cancerSucceptibility.Atlantogenata %>% as_tibble %>% filter(!is.na(n
   ggtree(
     aes(color=as.numeric(log2CancerSucceptabilityChange)),
     continuous=T,
-    size = 1.5
+    size = 1
   ) + 
-  geom_tiplab(aes(image=highlight, size=I(0.1)), geom="phylopic",
-              show_guide=F, align = F, linesize = 0, offset= 100
+  geom_tiplab(aes(image=phyloPicUID, size=I(0.1)), geom="phylopic",
+              show_guide=F, align = F, linesize = 0, offset= 5
               ) +
   geom_cladelabel(node=bsize.Atlantogenata.nodes$Proboscidea, label="Proboscidea", 
-                  fontsize = 4, align = T, offset = 10, angle=0, barsize = 1, 
-                  offset.text = 0,
+                  fontsize = 2, align = T, offset = 45, angle=0, barsize = 1,
+                  offset.text = 5,
                   color = table.cancerSucceptibility.Atlantogenata %>% filter(label=="Proboscidea") %>% pull(log2CancerSucceptabilityChange) %>% as.numeric %>% get.log2CancerSucceptabilityChange.color
                   ) +
-  geom_cladelabel(node=bsize.Atlantogenata.nodes$Tethytheria, label="Tethytheria", 
-                  fontsize = 4, align = T, offset = 5, angle=0, barsize = 1, 
-                  offset.text = 5, color = table.cancerSucceptibility.Atlantogenata %>% filter(label=="Tethytheria") %>% pull(log2CancerSucceptabilityChange) %>% as.numeric %>% get.log2CancerSucceptabilityChange.color
+  geom_cladelabel(node=bsize.Atlantogenata.nodes$Tethytheria, label="\nTethytheria", 
+                  fontsize = 2, align = T, offset = 40, angle=0, barsize = 1, 
+                  offset.text = 5, 
+                  color = table.cancerSucceptibility.Atlantogenata %>% filter(label=="Tethytheria") %>% pull(log2CancerSucceptabilityChange) %>% as.numeric %>% get.log2CancerSucceptabilityChange.color
                   ) +
-  geom_cladelabel(node=bsize.Atlantogenata.nodes$Paenungulata, label="Paenungulata", 
-                  fontsize = 4, align = T, angle=0, barsize = 1, offset.text = 10, 
+  geom_cladelabel(node=bsize.Atlantogenata.nodes$Paenungulata, label="\n\nPaenungulata", 
+                  fontsize = 2, align = T, angle=0, barsize = 1, offset.text = 5, offset=35,
                   color = table.cancerSucceptibility.Atlantogenata %>% filter(label=="Paenungulata") %>% pull(log2CancerSucceptabilityChange) %>% as.numeric %>% get.log2CancerSucceptabilityChange.color
                   ) +
   geom_cladelabel(node=bsize.Atlantogenata.nodes$Afrosoricida, label="Afrosoricida",
-                  fontsize = 4, align = T, angle=0, barsize = 1,offset.text = 10,
+                  fontsize = 2, align = T, angle=0, barsize = 1, offset.text=5,offset=35,
                   color=table.cancerSucceptibility.Atlantogenata %>% filter(label=="Afrosoricida") %>% pull(log2CancerSucceptabilityChange) %>% as.numeric %>% get.log2CancerSucceptabilityChange.color
                   ) +
     geom_cladelabel(node=bsize.Atlantogenata.nodes$Macroscelidae, 
                     label="Macroscelidae", 
-                    fontsize = 4, align = T, angle=0, barsize = 1,offset.text = 10,
+                    fontsize = 2, align = T, angle=0, barsize = 1,offset.text=5,offset=35,
                     color=table.cancerSucceptibility.Atlantogenata %>% filter(label=="Macroscelidae") %>% pull(log2CancerSucceptabilityChange) %>% as.numeric %>% get.log2CancerSucceptabilityChange.color
                     ) +
   geom_cladelabel(node=bsize.Atlantogenata.nodes$Xenarthra, label="Xenarthra", 
-                  fontsize = 4, align = T, angle=0, barsize = 1,offset.text = 10,
+                  fontsize = 2, align = T, angle=0, barsize = 1,offset.text=5,offset=35,
                   color=table.cancerSucceptibility.Atlantogenata %>% filter(label=="Xenarthra") %>% pull(log2CancerSucceptabilityChange) %>% as.numeric %>% get.log2CancerSucceptabilityChange.color
-                  ) +
+                  ) + 
   scale_color_viridis_c(limits=c(scale.log2CancerSucceptabilityChange.min, scale.log2CancerSucceptabilityChange.max), 
-                        guide = guide_colourbar(title="Log2 Cancer Susceptibility Change"))+
-  xlim(0,300) +
-  theme_tree2() + 
+                        guide = guide_colourbar(title="Log2 Cancer Susceptibility Change", title.position = "top", title.hjust = 0.5))+
+  xlim(0,275) +
+  theme_tree2()  + 
   theme(
-    legend.position="right",
-    panel.background = element_rect(fill = "lightgrey")
+    legend.position="bottom",
+    panel.background = element_rect(fill = "lightgrey"),
+    axis.text.x = element_text(size = 4, 
+                               colour = "black", face = "bold"),
+    axis.title = element_text(size = 6, 
+                              colour = "black", face = "bold"),
+    plot.title = element_text(size = 6, 
+                              colour = "black", lineheight = 1, face = "bold"), 
+    legend.title = element_text(size = 6, 
+                                face = "bold", colour = "black"), 
+    legend.text = element_text(size = 6, 
+                               face = "plain", colour = "black")
   ) + 
-  xlab("|Log2CancerSucceptabilityChange|")
+  xlab("| Log2 Cancer Succeptibility Change |")
 # f5a
 
 f2 <- ggarrange(
@@ -1544,6 +1553,7 @@ t.cancersucc.atl <- table.cancerSucceptibility.Atlantogenata.genomes %>%
         Node = Node %>% str_replace_all("\\.", " ") %>% factor(., levels = c("Loxodontini", "Loxodonta africana","Loxodona", "Loxodonta cyclotis", "Palaeoloxodon antiquus", "Elephantidae", "Elephantina", "Elephas maximus", "Mammuthus", "Mammuthus primigenius", "Mammuthus columbi", "Proboscidea", "Mammut americanum", "Tethytheria", "Trichechus manatus", "Paenungulata", "Procavia capensis", "Pseudoungulata", "Orycteropus afer", "Macroscelidae", "Elephantulus edwardii", "Afrosoricida", "Chrysochloris asiatica", "Echinops telfairi", "Afrotheria", "Xenarthra", "Dasypus novemcinctus", "Choloepus hoffmanni", "Atlantogenata", "Afroinsectivora"))
   ) %>%
     arrange(Node) %>% 
+  select(Node, `Est. Lifespan`, K1, K2, `Change in K`, `log2 Change`) %>% 
   knitr::kable(
     ., 
     longtable = TRUE, 
@@ -1551,23 +1561,24 @@ t.cancersucc.atl <- table.cancerSucceptibility.Atlantogenata.genomes %>%
     caption = 'Estimated Cancer Succeptibilty for nodes in Atlantogenata'
   )
 ```
-```{r Figure2, fig.cap="Cancer succecptibility across Atlantogenata"}
+```{r Figure2, fig.cap="Cancer succecptibility across Atlantogenata", out.width="6in", fig.asp=1}
 f2
 ```
 
-```{r Table 1}
+```{r Table 2}
 t.cancersucc.atl
 ```
 
 The dramatic increase in body mass and lifespan in some Afrotherian lineages implies those lineages evolved reduced cancer risk. To infer the magnitude of these reductions we estimated differences in cancer risk between small bodied, short-lived species and large bodied, long-lived species as well as for reconstructed ancestral Afrotherians. Following [@Peto:20151c2] we estimate the intrinsic cancer risk as the product of risk associated with body mass and lifespan. Differences in cancer susceptibility $K$ due to body mass differences between species can be approximated simply as the fold difference in body mass ($D$) between species [@Peto:20151c2]. The risk of developing cancer also increases in proportion to the sixth power of age and is approximated by the formula $Ct^6$, in which the proportionality constant C that determines susceptibility to cancer induction is multiplied by the sixth power of the age in years, $t$ [@ArmitageAndDoll1954; @Nordling1953; @Peto:20151c2]. Thus we can estimate the intrinsic cancer risk for a species as $K \approx Dt^6$. 
 
-In order to estimate the intrinsic cancer risk of a species, we first obtained estimates for lifespans at ancestral nodes using PGLS and the model $ln(lifespan) = \beta_{1}corBrownian +\beta_{2}ln(Size) + \epsilon$ (Figure `r warning("make lifespan figure")`). With this information in hand, we calculated $K_{1}$ at all nodes, and then estimated the fold change in cancer susceptibility between an ancestral node and a given node as $\frac{K_{2}}{K_{1}}$ (__Table 4__). As body size and phylogeny are the strongest predictors of lifespan, we find that this regression is sufficiently robust without further metabolic or other covariates for our purposes herein.
+In order to estimate the intrinsic cancer risk of a species, we first obtained estimates for lifespans at ancestral nodes using PGLS and the model $ln(lifespan) = \beta_{1}corBrownian +\beta_{2}ln(Size) + \epsilon$ (Table 2). With this information in hand, we calculated $K_{1}$ at all nodes, and then estimated the fold change in cancer susceptibility between an ancestral node and a given node as $\frac{K_{2}}{K_{1}}$ (__Table 4__). As body size and phylogeny are the strongest predictors of lifespan, we find that this regression is sufficiently robust without further metabolic or other covariates for our purposes herein.
 
-As shown in __Table 4__, cancer susceptibility skyrocketed at the initial divergence of Atlantogenata, followed by a generally upwards trend. At the common ancestor of Afrotheria there is an initial `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Afrotheria") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase in cancer risk. In parallel to Afrotheria, cancer susceptibility increases `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Xenarthra") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold in Xenarthra. However, cancer risk slowly deflates as size decreases as one moves along the tree towards extant species, such as in Hoffman's Two Toed Sloth (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Choloepus hoffmanni") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold change) and in the Nine-banded Armadillo (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Dasypus novemcinctus") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold change).
+As shown in __Table 2__, cancer susceptibility skyrocketed at the initial divergence of Atlantogenata, followed by a generally upwards trend. At the common ancestor of Afrotheria there is an initial `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Afrotheria") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase in cancer risk. In parallel to Afrotheria, cancer susceptibility increases `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Xenarthra") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold in Xenarthra. However, cancer risk slowly deflates as size decreases as one moves along the tree towards extant species, such as in Hoffman's Two Toed Sloth (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Choloepus hoffmanni") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold change) and in the Nine-banded Armadillo (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Dasypus novemcinctus") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold change).
 
 Within Afrotheria, cancer susceptibility drops in Afrosoricida as species shrink (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Afrosoricida") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, then stagnates for the Cape Golden Mole) - but then rises `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Echinops telfairi") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold towards the Lesser Hedgehog Tenrec. In parallel, Afroinsectivora does not increase in cancer susceptibility, and decreases once more at the Cape Elephant Shrew (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephantulus edwardii") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold). The emergence of Pseudoungulata sees the next big leap in cancer susceptibility with a `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Pseudoungulata") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase. The Aardvark further increases `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Orycteropus afer") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, while we don't observe an increase at the common ancestor of Paenungulates. While the Rock Hyrax decreases in cancer susceptibility as expected (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Procavia capensis") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold), Tethytheria sees a sharp increase in cancer risk (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Tethytheria") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold). Within Tethytheria, the Manatee's cancer risk increases once more `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Trichechus manatus") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, while Proboscidea's cancer risk drops precipitously along with its body size (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Proboscidea") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold). Yet, within Proboscidea we see the biggest increases: right off the bat, we see that the cancer susceptibility of  Elephantidae and the American Mastodon skyrocket by `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephantidae") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold and `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Mammut americanum") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, respectively. Both Elephantina and Loxodontini in Elephantidae have a `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephantina") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase in cancer susceptibility. Within Elephantina, cancer susceptibility stays stable at Mammuthus and in the Colombian Mammoth, and slightly decreases in the Wooly Mammoth (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Mammuthus primigenius") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold). The three extant elephants - Asian Elephant in Elephantina, the African Savana Elephant in Loxodontini, and the African Forest Elephant in Loxodona, meanwhile, have parallel and similar decreases in both size and cancer susceptibility (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephas maximus") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-, `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Loxodonta africana") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-, and `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Loxodonta cyclotis") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, respectively). Neither the common ancestor of Loxodonta, nor the Straight-Tusked Mammoth see any further changes in cancer susceptibility. 
 
 
+`r knitr::knit_exit()`
 
 
 
