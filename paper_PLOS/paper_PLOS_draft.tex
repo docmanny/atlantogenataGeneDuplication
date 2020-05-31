@@ -32,7 +32,6 @@
 % use microtype if available
 \IfFileExists{microtype.sty}{\usepackage{microtype}}{}
 \bibliographystyle{elsarticle-harv}
-\usepackage{longtable}
 \ifxetex
   \usepackage[setpagesize=false, % page size defined by xetex
               unicode=false, % unicode breaks when used with xetex
@@ -60,6 +59,20 @@
 \usepackage{booktabs}
 \usepackage{geometry}
 \usepackage{pdflscape}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 
 
 
@@ -108,7 +121,12 @@ evolution of large bodied Atlantogenatans}
   
  \end{frontmatter}
 
-)
+\begin{figure}
+
+\includegraphics[width=6in]{paper_PLOS_draft_files/figure-latex/Figure0-1} \hfill{}
+
+\caption{Atlantogenatans with sequenced genomes, body sizes, and known lifespans [@PuttickAndThomas2015; @HAGR]}\label{fig:Figure0}
+\end{figure}
 
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
@@ -489,77 +507,52 @@ Afrotherians}\label{step-wise-reduction-of-intrinsic-cancer-risk-in-large-long-l
 \caption{Cancer succecptibility across Atlantogenata}\label{fig:Figure2}
 \end{figure}
 
-\begin{longtable}[]{@{}lrlllr@{}}
-\caption{Estimated Cancer Succeptibilty for nodes in
-Atlantogenata}\tabularnewline
+\begin{table}
+
+\caption{\label{tab:Fig2 Prep Table 1}Estimated Cancer Succeptibilty for nodes in Atlantogenata}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{lrlllr}
 \toprule
-Node & Est. Lifespan & K1 & K2 & Change in K & log2
-Change\tabularnewline
+Node & Est. Lifespan & K1 & K2 & Change in K & log2 Change\\
 \midrule
-\endfirsthead
-\toprule
-Node & Est. Lifespan & K1 & K2 & Change in K & log2
-Change\tabularnewline
-\midrule
-\endhead
-Loxodontini & 34.38 & 1.47e+16 & 2.97e+15 & 4.94e+00 &
-2.31\tabularnewline
-Loxodonta africana & 65.00 & 2.47e+17 & 1.47e+16 & 1.68e+01 &
-4.07\tabularnewline
-Loxodona & 34.38 & 1.47e+16 & 1.47e+16 & 1.00e+00 & 0.00\tabularnewline
-Loxodonta cyclotis & 31.12 & 2.97e+15 & 1.47e+16 & 2.02e-01 &
--2.31\tabularnewline
-Palaeoloxodon antiquus & 34.38 & 1.47e+16 & 1.47e+16 & 1.00e+00 &
-0.00\tabularnewline
-Elephantidae & 31.12 & 2.97e+15 & 1.40e+07 & 2.13e+08 &
-27.66\tabularnewline
-Elephantina & 34.38 & 1.47e+16 & 2.97e+15 & 4.94e+00 &
-2.31\tabularnewline
-Elephas maximus & 65.50 & 2.58e+17 & 1.47e+16 & 1.76e+01 &
-4.14\tabularnewline
-Mammuthus & 34.38 & 1.47e+16 & 1.47e+16 & 1.00e+00 & 0.00\tabularnewline
-Mammuthus primigenius & 31.12 & 2.97e+15 & 1.47e+16 & 2.02e-01 &
--2.31\tabularnewline
-Mammuthus columbi & 34.38 & 1.47e+16 & 1.47e+16 & 1.00e+00 &
-0.00\tabularnewline
-Proboscidea & 9.41 & 1.40e+07 & 1.21e+14 & 1.15e-07 &
--23.05\tabularnewline
-Mammut americanum & 34.38 & 1.47e+16 & 1.40e+07 & 1.05e+09 &
-29.97\tabularnewline
-Tethytheria & 25.49 & 1.21e+14 & 1.01e+12 & 1.21e+02 &
-6.92\tabularnewline
-Trichechus manatus & 69.00 & 4.77e+16 & 1.21e+14 & 3.93e+02 &
-8.62\tabularnewline
-Paenungulata & 18.91 & 1.01e+12 & 1.01e+12 & 1.00e+00 &
-0.00\tabularnewline
-Procavia capensis & 14.80 & 3.13e+10 & 1.01e+12 & 3.11e-02 &
--5.01\tabularnewline
-Pseudoungulata & 18.91 & 1.01e+12 & 1.69e+09 & 5.97e+02 &
-9.22\tabularnewline
-Orycteropus afer & 29.80 & 4.19e+13 & 1.01e+12 & 4.17e+01 &
-5.38\tabularnewline
-Elephantulus edwardii & 10.40 & 6.90e+07 & 1.69e+09 & 4.09e-02 &
--4.61\tabularnewline
-Afrosoricida & 10.40 & 6.90e+07 & 1.69e+09 & 4.09e-02 &
--4.61\tabularnewline
-Chrysochloris asiatica & 10.40 & 6.90e+07 & 6.90e+07 & 1.00e+00 &
-0.00\tabularnewline
-Echinops telfairi & 19.00 & 2.57e+09 & 6.90e+07 & 3.72e+01 &
-5.22\tabularnewline
-Afrotheria & 12.69 & 1.69e+09 & 2.83e+06 & 5.97e+02 &
-9.22\tabularnewline
-Xenarthra & 20.89 & 4.97e+12 & 2.83e+06 & 1.76e+06 &
-20.75\tabularnewline
-Dasypus novemcinctus & 22.30 & 3.67e+11 & 4.97e+12 & 7.37e-02 &
--3.76\tabularnewline
-Choloepus hoffmanni & 41.00 & 1.42e+13 & 4.97e+12 & 2.85e+00 &
-1.51\tabularnewline
-Atlantogenata & 8.52 & 2.83e+06 & 2.83e+06 & 1.00e+00 &
-0.00\tabularnewline
-Afroinsectivora & 12.69 & 1.69e+09 & 1.69e+09 & 1.00e+00 &
-0.00\tabularnewline
+Loxodontini & 34.38 & 1.47e+16 & 2.97e+15 & 4.94e+00 & 2.31\\
+Loxodonta africana & 65.00 & 2.47e+17 & 1.47e+16 & 1.68e+01 & 4.07\\
+Loxodona & 34.38 & 1.47e+16 & 1.47e+16 & 1.00e+00 & 0.00\\
+Loxodonta cyclotis & 31.12 & 2.97e+15 & 1.47e+16 & 2.02e-01 & -2.31\\
+Palaeoloxodon antiquus & 34.38 & 1.47e+16 & 1.47e+16 & 1.00e+00 & 0.00\\
+\addlinespace
+Elephantidae & 31.12 & 2.97e+15 & 1.40e+07 & 2.13e+08 & 27.66\\
+Elephantina & 34.38 & 1.47e+16 & 2.97e+15 & 4.94e+00 & 2.31\\
+Elephas maximus & 65.50 & 2.58e+17 & 1.47e+16 & 1.76e+01 & 4.14\\
+Mammuthus & 34.38 & 1.47e+16 & 1.47e+16 & 1.00e+00 & 0.00\\
+Mammuthus primigenius & 31.12 & 2.97e+15 & 1.47e+16 & 2.02e-01 & -2.31\\
+\addlinespace
+Mammuthus columbi & 34.38 & 1.47e+16 & 1.47e+16 & 1.00e+00 & 0.00\\
+Proboscidea & 9.41 & 1.40e+07 & 1.21e+14 & 1.15e-07 & -23.05\\
+Mammut americanum & 34.38 & 1.47e+16 & 1.40e+07 & 1.05e+09 & 29.97\\
+Tethytheria & 25.49 & 1.21e+14 & 1.01e+12 & 1.21e+02 & 6.92\\
+Trichechus manatus & 69.00 & 4.77e+16 & 1.21e+14 & 3.93e+02 & 8.62\\
+\addlinespace
+Paenungulata & 18.91 & 1.01e+12 & 1.01e+12 & 1.00e+00 & 0.00\\
+Procavia capensis & 14.80 & 3.13e+10 & 1.01e+12 & 3.11e-02 & -5.01\\
+Pseudoungulata & 18.91 & 1.01e+12 & 1.69e+09 & 5.97e+02 & 9.22\\
+Orycteropus afer & 29.80 & 4.19e+13 & 1.01e+12 & 4.17e+01 & 5.38\\
+Elephantulus edwardii & 10.40 & 6.90e+07 & 1.69e+09 & 4.09e-02 & -4.61\\
+\addlinespace
+Afrosoricida & 10.40 & 6.90e+07 & 1.69e+09 & 4.09e-02 & -4.61\\
+Chrysochloris asiatica & 10.40 & 6.90e+07 & 6.90e+07 & 1.00e+00 & 0.00\\
+Echinops telfairi & 19.00 & 2.57e+09 & 6.90e+07 & 3.72e+01 & 5.22\\
+Afrotheria & 12.69 & 1.69e+09 & 2.83e+06 & 5.97e+02 & 9.22\\
+Xenarthra & 20.89 & 4.97e+12 & 2.83e+06 & 1.76e+06 & 20.75\\
+\addlinespace
+Dasypus novemcinctus & 22.30 & 3.67e+11 & 4.97e+12 & 7.37e-02 & -3.76\\
+Choloepus hoffmanni & 41.00 & 1.42e+13 & 4.97e+12 & 2.85e+00 & 1.51\\
+Atlantogenata & 8.52 & 2.83e+06 & 2.83e+06 & 1.00e+00 & 0.00\\
+Afroinsectivora & 12.69 & 1.69e+09 & 1.69e+09 & 1.00e+00 & 0.00\\
 \bottomrule
-\end{longtable}
+\end{tabular}}
+\end{table}
 
 The dramatic increase in body mass and lifespan in some Afrotherian
 lineages implies those lineages evolved reduced cancer risk. To infer
@@ -626,10 +619,235 @@ nor the Straight-Tusked Mammoth see any further changes in cancer
 susceptibility.
 
 \hypertarget{identification-and-evolutionary-history-of-gene-duplications}{%
-\subsection*{Identification and evolutionary history of gene
+\subsection{Identification and evolutionary history of gene
 duplications}\label{identification-and-evolutionary-history-of-gene-duplications}}
-\addcontentsline{toc}{subsection}{Identification and evolutionary
-history of gene duplications}
+
+\begin{table}
+
+\caption{\label{tab:Figure3 Prep Genome Table}Summary of duplications in Atlantogenata}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{lllrrllr}
+\toprule
+Species & Common Name & Size (g) & \#Hits & \#Duplicated & \% Genes Found & \% Hits Duplicated & Mean ECNC/Hit\\
+\midrule
+Choloepus hoffmanni & Hoffmans Two-Toed Sloth & 4.3e+03 & 14082 & 3204 & 78.19\% & 22.75\% & 0.98\\
+Chrysochloris asiatica & Cape Golden Mole & 49 & 13547 & 2716 & 75.22\% & 20.05\% & 0.99\\
+Dasypus novemcinctus & Nine-Banded Armadillo & 4.8e+03 & 13819 & 2605 & 76.73\% & 18.85\% & 0.98\\
+Echinops telfairi & Lesser Hedgehog Tenrec & 87 & 12903 & 1670 & 71.64\% & 12.94\% & 0.99\\
+Elephantulus edwardii & Cape Elephant Shrew & 49 & 12884 & 3048 & 71.53\% & 23.66\% & 0.99\\
+\addlinespace
+Elephas maximus & Asian Elephant & 3.3e+06 & 14073 & 907 & 78.14\% & 6.44\% & 1.00\\
+Loxodonta africana & African Savanna Elephant & 4.6e+06 & 14051 & 940 & 78.01\% & 6.69\% & 1.00\\
+Loxodonta cyclotis & African Forest Elephant & 4.7e+06 & 14065 & 900 & 78.09\% & 6.40\% & 1.00\\
+Mammut americanum & American Mastodon & 6e+06 & 13840 & 737 & 76.84\% & 5.33\% & 1.00\\
+Mammuthus columbi & Columbian Mammoth & 6.6e+06 & 13059 & 426 & 72.51\% & 3.26\% & 1.00\\
+\addlinespace
+Mammuthus primigenius & Woolly Mammoth & 4.3e+06 & 13935 & 723 & 77.37\% & 5.19\% & 1.00\\
+Orycteropus afer & Aardvark & 5.3e+04 & 13880 & 1083 & 77.06\% & 7.80\% & 0.99\\
+Palaeoloxodon antiquus & Straight Tusked Elephant & 1e+07 & 13969 & 745 & 77.56\% & 5.33\% & 1.00\\
+Procavia capensis & Rock Hyrax & 3e+03 & 13672 & 788 & 75.91\% & 5.76\% & 1.00\\
+Trichechus manatus & Manatee & 6.9e+05 & 14092 & 1046 & 78.24\% & 7.42\% & 1.00\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{figure}
+
+\includegraphics[width=6in,height=7in]{paper_PLOS_draft_files/figure-latex/Figure3-1} \hfill{}
+
+\caption{Gene duplications occur readily throughout Atlantogenata. A) A table summarizing duplication events in Atlantogenata. B) A tree of the species in Atlantogenata with genomes, with the number of genes that underwent an increase in copy number overlayed at each node.}\label{fig:Figure3}
+\end{figure}
+
+Enhanced cancer suppression may have evolved through many mechanisms;
+among the most parsimonious is an increase in the copy number of genes
+with tumor suppressor functions. Previous studies focusing on candidate
+gene studies, for example, have identified increased copy number of the
+tumor suppressors \emph{TP53} and \emph{LIF} in elephants
+{[}12,21--24{]}. Therefore, in order to test whether this was pervasive
+genome-wide in \emph{Afrotherians}, we used a Reciprocal Best Hit BLAT
+(RBHB) approach to infer gene copy number in \emph{Afrotherian} and
+\emph{Atlantogenatan} genomes (Fig. 2A, Supplementary Figure 1). Because
+RBHB-like approaches can over-estimate copy number when genes are
+fragmented or incorrectly assembled across multiple scaffolds, we also
+inferred copy number using a complementary method that quantifies the
+ratio between observed and expected gene coverage per nucleotide (ECNC)
+(Supplementary Figure 1). By only including nucleotides from the query
+sequence that were observed in the target genome, we also correct for
+partial hits where some or all of the homologs of a gene have diverged
+from the human homolog.
+
+As our sequence database included various protein transcripts for each
+gene, in order to obtain gene-level copy number information and
+eliminate any many-to-one mappings of hits, we labeled each exon of
+every reciprocal best hit (RBH) with the gene corresponding to the query
+transcript and merged all overlapping exons; next, we eliminated any
+many-to-one exons that resulted from the previous step. Finally, we
+reassembled the gene loci based on the original transcript starts and
+ends, and the collapsed exon data, obtaining the full sequence of each
+RBH locus. Genes were considered to be duplicated if its copy number via
+RBHB was greater than or equal to 2, and the maximum ECNC among all
+transcripts prior to filtering was greater than or equal to 1.50 in
+order to account for partial hits that may be due to incomplete
+coverage.
+
+Once we applied these criteria to the results, we obtained the results
+shown in Figure 2A. Our approach positively identified an average of NA
+of the queries we searched. We observed that the percentage of
+duplicated genes in non-Pseudoungulatan genomes was significantly
+higher: while these genomes had duplicates percentages ranging anywhere
+from 3.26\% to 7.80\%, outgroup species' duplication rates ranged from
+12.94\% to 23.66\%.
+
+\begin{figure}
+
+{\centering \includegraphics[width=5in,height=5in]{paper_PLOS_draft_files/figure-latex/Figure4-1} 
+
+}
+
+\caption{Correlations between genome quality metrics and ECNC metrics}\label{fig:Figure4}
+\end{figure}
+
+Given the preliminary status of the genomes for \emph{Chrysochloris
+asiatica} and \emph{Elephantulus edwardii}; and the fact that more
+revisions have been performed for Paenungulatan genomes; we hypothesized
+that genome quality may be confounding the results we've observed. We
+used \texttt{CEGMA} and the \texttt{gVolante} server {[}31,32{]} to
+assess the quality of all our genomes, to see if any of these metrics
+correlated with our metrics of gene counts and copy number. As shown in
+Figure 3, mean ECNC, mean Copy Number, and mean CN (the lesser of Copy
+Number and ECNC per gene) correlate moderately strongly with genomic
+quality metrics related to the length and assembly quality, like LD50
+and the number of scaffolds and contigs with a length above either 100K
+or 1M, supporting our hypothesis that increases in copy number correlate
+.
+
+In order to determine when in the phylogeny our identified duplications
+occurred, we used maximum likelihood to reconstruct ancestral gene copy
+numbers across the phylogeny. We encoded the copy number of each gene as
+a discrete trait ranging from 0 (``?'') to 31+, and then ran the
+ancestral gene copy number reconstruction using the phylogenetics suite
+\texttt{IQTREE}, which rapidly tests and runs the best evolutionary
+model for a given trait of interest. Importantly, \texttt{IQTREE} can be
+set to only output states where the likelihood of the state is greater
+than a certain threshold. Setting the threshold to 0.8, we obtained the
+results shown in Figure 2B.
+
+Gene duplications events occured readily thoughout \emph{Atlantogenata}
+(Figure 2B). Among the genes that increased in copy number in the
+elephant lineage are TP53 and LIF, as previously described; however, we
+find that these two genes represent a fraction of the 940 genes that are
+duplicated in the African Elephant overall, which accumulated over
+various steps through their evolution. While the extinct elephantids
+have acceptable genome quality metrics according to CEGMA, they are
+nonetheless missing a significant number of sequences; this may
+contribute to the low number of duplicated genes that occured in
+internal nodes. The number of duplicates that occur at each branch is
+also proportional to the density of the sampling of the clade overall,
+as would be expected. In branches, such as \emph{Afrosoricida}, where
+the number of species is relatively minuscule compared to the size of
+the clade, we see many significantly larger numbers of duplications
+private to these species.
+
+\hypertarget{duplications-that-occurred-recently-in-probodiscea-are-enriched-for-tumor-suppressor-pathways}{%
+\subsection{Duplications that occurred recently in Probodiscea are
+enriched for tumor suppressor
+pathways}\label{duplications-that-occurred-recently-in-probodiscea-are-enriched-for-tumor-suppressor-pathways}}
+
+\begin{table}
+
+\caption{\label{tab:Branches which experienced an increase in size}Number of pathways overrepresented among duplicated genes at different FDRs.}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{llrrrr}
+\toprule
+Ancestor & Node & Pathways at FDR<0.1 & Pathways at FDR<0.2 & Pathways at FDR<0.3 & Pathways at FDR<0.5\\
+\midrule
+Afroinsectivora & Elephantulus edwardii & 252 & 37 & 30 & 87\\
+Afrosoricida & Chrysochloris asiatica & 90 & 48 & 43 & 105\\
+Afrosoricida & Echinops telfairi & 0 & 2 & 0 & 31\\
+Afrotheria & Afroinsectivora & 0 & 0 & 0 & 33\\
+Loxodontini & Loxodonta africana & 6 & 0 & 1 & 0\\
+\addlinespace
+Paenungulata & Tethytheria & 0 & 0 & 0 & 2\\
+Proboscidea & Mammut americanum & 0 & 0 & 0 & 6\\
+Pseudoungulata & Orycteropus afer & 27 & 67 & 29 & 67\\
+Tethytheria & Proboscidea & 0 & 3 & 0 & 3\\
+Tethytheria & Trichechus manatus & 4 & 0 & 0 & 2\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{figure}
+
+\includegraphics[width=6in,height=4in]{paper_PLOS_draft_files/figure-latex/Figure5-1} \hfill{}
+
+\caption{Overrepresentation Analysis of Duplicated Genes in Atlantogenata using Reactome Pathways.}\label{fig:Figure5}
+\end{figure}
+
+Our initial hypothesis was that genes which duplicated in lineages that
+experienced a growth in size would be enriched for membership in tumor
+suppressor pathways. Thus, we used WebGestalt and its Overrepresentation
+Analysis (ORA) functionality to determine what pathways were enriched in
+our duplicated gene sets in each branch relative to our initial query
+set. For our database, we used Reactome for our primary analysis, but
+additionally used the KEGG, Panther, Wikipathways, and
+Wikipathways\_cancer databases using WebGestalt ORA. Going through the
+tree, at no FDR\textless{}0.5 is there any significant pathway
+representation for genes that increased in the branches leading to , or
+\emph{Paenungulata}; furthermore, there are no significant pathway
+enrichments at FDR\textless{}0.5 for genes whose copy number did not
+change between branches (copy-number-stable) for , or \emph{Afrotheria}.
+Note that because \emph{Xenarthra} was selected as the outgroup, it is
+not possible to polarize the changes in their gene copy numbers along
+the tree.
+
+For the other branches, the number of pathways that came up as
+significantly enriched at each FDR is shown in Figure 3A (Supplementary
+Figure 3). For the species with high duplication rates and
+lower-quality, highly-fragmented genomes, such as with
+\emph{Chrysochloris asiatica} (20.05\% duplicated hits) and
+\emph{Elephantulus edwardii} (23.66\% duplicated hits), it is
+unsurprising that there is a proportionally large number of pathway
+enrichments. In the case of these two species, their many pathway
+enrichments also span an incredible range of processes at every level of
+biology; this, in combination with the high number of copy numbers
+identified for these genes, further suggests a need for improvement and
+refinement in these genomes. In the cell cycle pathways called as
+significant in the genomes of these two species plus \emph{Orycteropus
+afer} and \emph{Echinops telfairi}, the duplicated genes included in
+these sets are from the same gene families, such as the APC subunit
+family; the proteosome subunit families; and the protein phosphatase 2
+family, among others. It is highly possible that these results reflect
+true expansions of these gene families, especially in the higher-quality
+\emph{Orycteropus afer} genome; however, it is also possible that it
+simply reflects artificial duplication events, and so require further
+study.
+
+The pathway enrichments for genes whose copy number either did not
+change, or whose copy number increased, between \emph{Loxodona} and the
+African Elephant are shown in Figure 3B and 3C, respectively. Among the
+few enriched pathways in the African Elephant, we see that that two
+tumor suppression pathways - APC Complex-related pathways, and ``TP53
+Regulates Metabolic Genes''- appear not only in the case of stable
+genes, but also in the set of newly duplicated genes. The other pathways
+we see in the set of recently-duplicated genes include
+``Functionalization of Compounds'' and its daughter pathway
+``Xenobiotics''. Genes in these pathways serve to add functional groups
+to lipophylic compounds which would otherwise not be reactive in the
+cell, and are types of metabolic pathways. In the stable set we see
+enrichment of pathways such as ``Neuronal Systems'' and ``Axon
+Guidance,'' which fit in well with what is known about elephant biology
+and evolution {[}47{]}. Overall in elephants, we see enrichments within
+duplicated genes for pathways involved in what makes an elephant an
+elephant - including tumor suppressor pathways.
+
+\hypertarget{concerted-duplication-of-tp53-and-tp53-related-genes-towards-probodiscea}{%
+\subsection*{\texorpdfstring{Concerted duplication of TP53 and
+TP53-related genes towards
+\emph{Probodiscea}}{Concerted duplication of TP53 and TP53-related genes towards Probodiscea}}\label{concerted-duplication-of-tp53-and-tp53-related-genes-towards-probodiscea}}
+\addcontentsline{toc}{subsection}{Concerted duplication of TP53 and
+TP53-related genes towards \emph{Probodiscea}}
 
 \hypertarget{refs}{}
 \leavevmode\hypertarget{ref-Green2011}{}%
@@ -897,6 +1115,13 @@ doi:\href{https://doi.org/10.1038/bjc.1954.1}{10.1038/bjc.1954.1}
 46. Nordling CO. A New Theory on the Cancer-inducing Mechanism. British
 Journal of Cancer. 1953;7: 68--72.
 doi:\href{https://doi.org/10.1038/bjc.1953.8}{10.1038/bjc.1953.8}
+
+\leavevmode\hypertarget{ref-Goodman2009}{}%
+47. Goodman M, Sterner KN, Islam M, Uddin M, Sherwood CC, Hof PR, et al.
+Phylogenomic analyses reveal convergent patterns of adaptive evolution
+in elephant and human ancestries. Proceedings of the National Academy of
+Sciences. 2009;106: 20824--20829.
+doi:\href{https://doi.org/10.1073/pnas.0911239106}{10.1073/pnas.0911239106}
 
 
 \end{document}

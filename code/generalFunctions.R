@@ -675,7 +675,22 @@ graph.ORA.dotplot <- function(ORA.df, plotly=F){
     # geom_text_repel(data=. %>% filter(Class %in% c("TP53 Pathway", "Senescence", "Cell Death Pathways")), nudge_y = 0.5, force = 10, show.legend=F) + 
     scale_color_d3(palette="category20") +
     theme_pubclean() + 
-    theme(legend.position = "bottom")+
+    labs_pubr() + 
+    theme(
+      text = element_text(face = "plain", 
+                          colour = "black", lineheight = 0.9, 
+                          hjust = 0.5, vjust = 0.5, angle = 0, margin = margin(), 
+                          debug = FALSE), 
+      axis.text = element_text(size = 6, 
+                               colour = "black", face = "bold"),
+      axis.title = element_text(size = 8, 
+                                colour = "black", face = "bold"),
+      plot.title = element_text(size = 8, 
+                                colour = "black", lineheight = 1, face = "bold"), 
+      legend.text = element_text(size = 6, 
+                                 face = "plain", colour = "black"),
+      legend.position = "bottom"
+    ) +
     guides(color=guide_legend(title="Cell Cycle Pathway", title.position = "bottom", title.hjust = 0.5), size = guide_legend(title="Size (log)", title.position = "bottom", title.hjust = 0.5)) 
   if(plotly) {p %<>% ggplotly}
   return(p)
