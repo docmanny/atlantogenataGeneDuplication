@@ -12,7 +12,9 @@ address:
 - address: Department of Biological Sciences, 551 Cooke Hall, Buffalo NY, 14260
   code: "SUNY Buffalo"
 output:
-  rticles::elsevier_article:
+  bookdown::pdf_book:
+    base_format: rticles::elsevier_article
+    number_sections: yes
     includes:
       in_header: preamble.tex
   pdf_document: default
@@ -50,8 +52,8 @@ abstract: "Cancer is an intrinsic disease of multicellular organisms. Within a s
 
 <!--_Text based on plos sample manuscript, see [http://journals.plos.org/ploscompbiol/s/latex](http://journals.plos.org/ploscompbiol/s/latex)_-->
 
-    ```{r Libraries and functions, include = F}
-knitr::opts_chunk$set(eval=T, echo=F, message = F, warning = F, # fig.width=6, 
+```{r Libraries and functions, include = F}
+knitr::opts_chunk$set(eval=T, echo=F, message = F, warning = F, out.width="6in",
                       fig.retina = 2, fig.align = "left", dpi = 300)
 
 if(basename(getwd()) != "paper_PLOS") setwd("paper_PLOS")
@@ -431,24 +433,6 @@ tree.Atlantogenata <- tree.Atlantogenata.table %>% as.treedata()
 ```{r Body Size Table}
 st.core <- st.Atlantogenata %>% as_tibble %>% filter(label %in% c(genomeTable.atlantogenata$label%>% str_replace_all("\\.", " "), st.innerNodes$label)) %>% pull(label)
 
-t.bodysize.atlantogenata.withNodes <- st.Atlantogenata %>% 
-  as_tibble() %>% 
-  filter(!is.na(label)) %>%
-  select(
-    `Node`=label, 
-    `Size (log(g))`=Median, 
-    `95% CI (Low)` = `95%CI_Low`, 
-    `95% CI (High)` = `95%CI_High`,  
-    `Rate (sqrt)`=sqrt.rate
-  ) %>%
-  mutate_at(vars(-`Node`, ), . %>% as.numeric %>% round(2)) %>% 
-  kable(
-    ., 
-    longtable = TRUE, 
-    booktabs = TRUE,
-    caption = 'All body size estimates for _Atlantogenata_.'
-  )
-
 p.bodysize.atlantogenata <- st.Atlantogenata %>% 
   as_tibble() %>% 
   filter(label %in% st.core) %>% 
@@ -806,7 +790,7 @@ p.ml.tree.increasing.geneCounts.withSize.withBL <- ml.tree.increasing.geneCounts
 # p.ml.tree.increasing.geneCounts.withSize.withBL
 ```
 
-```{r Figure0Prep}
+```{r Figure1Prep}
 
 groups.atlantogenata <- list(
   # "Atlantogenata",
@@ -886,34 +870,31 @@ time.tree.atlantogenata.genomeSpecies %>%
 atlantogenata.tree.size.lifespan %<>% facet_widths(c(2,1,1))
 
 ```
-```{r Figure0, fig.cap="Atlantogenatans with sequenced genomes, body sizes, and known lifespans [@PuttickAndThomas2015; @HAGR]",  out.width="6in", fig.asp=1.3}
-atlantogenata.tree.size.lifespan
-```
 
 
 # Introduction
 
-One of the major constraints on the evolution of large body sizes in animals is an increased risk of developing cancer. If all cells in all organisms have a similar risk of malignant transformation and equivalent cancer suppression mechanisms, organism with many cells should have a higher prevalence of cancer than organisms with fewer cells.  Consistent with this expectation there is a strong positive correlation between body size and cancer incidence within species, for example, human cancer incidence increases with increasing adult height [@Green2011; @Nunney:20181c2] and cancer incidence is positively correlated with body size in dogs [@Dobson2013; @Dorn1968]. There is no correlation, however, between body size and cancer risk between species. This lack of correlation is often referred to as ‘Peto’s Paradox’ [@Caulin2011; @Leroi2003; @Peto1975]. While it is clear that a resolution to Peto’s Paradox must involve the evolution of enhanced cancer protection alongside increases in body size and lifespan, the specific genetic, molecular, and cellular mechanisms that underlie this resistance have proven elusive. [c.f. @Ashur-Fabian2004; @Seluanov2008; @Gorbunova2012; @Tian2013; @Sulak2015]. 
+Among the major constraints on the evolution of large body sizes (and long life-spans) in animals is an increased risk of developing cancer. If all cells in all organisms have a similar risk of malignant transformation and equivalent cancer suppression mechanisms, organism with many cells should have a higher prevalence of cancer than organisms with fewer cells, particularly because large and small animals have similar cell sizes (@Savage2007). Consistent with this expectation there is a strong positive correlation between body size and cancer incidence within species, for example, cancer incidence increases with increasing adult height in humans [@Green2011; @Nunney:20181c2] and in dogs [@Dobson2013; @Dorn1968]. There is no correlation, however, between body size and cancer risk _between_ species; this lack of correlation is often referred to as ‘Peto’s Paradox’ [@Caulin2011; @Leroi2003; @Peto1975]. The ultimate resolution to Peto’s Paradox is obvious: large bodied and long-lived species evolved enhanced cancer protection mechanisms. However, identifiying the specific genetic, molecular, and cellular mechanisms that underlie the evolution of augmented cancer protection has been difficult [c.f. @Ashur-Fabian2004; @Seluanov2008; @Gorbunova2012; @Tian2013; @Sulak2015]. 
 
-Among the challenges for discovering how animals evolved enhanced cancer protection mechanisms is identifying lineages in which large bodied species are nested within species with small body sizes. Afrotherian mammals are generally small-bodied, similarly to the prediced common ancestor of Eutherian mammals. For example, maximum adult weights are ~70g in golden moles, ~120g in tenrecs, ~170g in elephant shrews, ~3kg in hyraxes, and 60kg in aardvarks [@HAGR]. However, while these extant species are relatively small, the fossil evidence demonstrates that their ancestral lineages reached enormous sizes. For example, while extant hyraxes are relatively small, the extinct Titanohyrax is estimated to have weighted up to ~1300kg [@Schwartz1995]. The largest members of Afrotheria, too, are dwarfed by the size of their recent ancestors: extant cows manatees are large bodied (~322-480kg) but are relatively small compared to the extinct Stellar’s sea cow which is estimated to have weight 8000-10000kg [@Scheffer1972]. Similarly African (4,800kg) and Asian elephants (3,200kg) are the largest living elephant species, but are dwarfed by the truly gigantic extinct Proboscideans such as Deinotherium (~132,000kg), Mammut borsoni (110,000kg), and the Asian straight-tusked elephant (~220,000kg), the largest known land mammal [@Larramendi:20151c2]. These large-bodied Afrotherian lineages are nested within small bodied species (Fig. 1) [@OLeary2013a; @Springer2013; @OLeary2013b; @PuttickAndThomas2015], indicating that gigantism independently evolved in hyraxes, sea cows, and elephants (Paenungulates). Thus, Paenungulates are an excellent model system in which to explore the mechanisms that underlie the evolution of large body sizes and augmented cancer resistance. 
+Among the challenges for discovering how animals evolved enhanced cancer protection mechanisms is identifying lineages in which large bodied species are nested within species with small body sizes. _Afrotherian_ mammals are generally small-bodied, but also include the largest extant land mammals. For example, maximum adult weights are ~70g in golden moles, ~120g in tenrecs, ~170g in elephant shrews, ~3kg in hyraxes, and 60kg in aardvarks [@HAGR]. While extant hyraxes are relatively small, the extinct Titanohyrax is estimated to have weighted up to ~1300kg [@Schwartz1995]. The largest members of _Afrotheria_, too, are dwarfed by the size of their recent ancestors: extant cows manatees are large bodied (~322-480kg) but are relatively small compared to the extinct Stellar’s sea cow which is estimated to have weight 8000-10000kg [@Scheffer1972]. Similarly African (4,800kg) and Asian elephants (3,200kg) are the largest living elephant species, but are dwarfed by the truly gigantic extinct Proboscideans such as Deinotherium (~132,000kg), Mammut borsoni (110,000kg), and the Asian straight-tusked elephant (~220,000kg), the largest known land mammal [@Larramendi:20151c2]. Remarkably, these large-bodied _Afrotherian_ lineages are nested within small bodied species (__Figure \@ref(fig:Figure-intro)__) [@OLeary2013a; @Springer2013; @OLeary2013b; @PuttickAndThomas2015], indicating that gigantism independently evolved in hyraxes, sea cows, and elephants (_Paenungulata_). Thus, Paenungulates are an excellent model system in which to explore the mechanisms that underlie the evolution of large body sizes and augmented cancer resistance. 
 
-Although many mechanisms can potentially resolve Peto’s paradox, among the most parsimonious routes to enhanced cancer resistance is through an increased copy number of tumor suppressors. Such an example has been seen in the case of candidate genes such as _TP53_ and _LIF_ [@Abegglen:JAMA2015; @Sulak2015; @Vazquez2018] as well as in studies involving a limited set of candidate genes [@Caulin2015; @Doherty2016]. As these studies focus on _a priori_ gene sets, however, it remains unknown whether this is a general, genome-wide trend in Afrotherian genomes; and whether such a general trend is associated with the recent increases in body size – and therefore expected cancer risk – in these species. 
+Although many mechanisms can potentially resolve Peto’s paradox, among the most parsimonious routes to enhanced cancer resistance is through an increased copy number of tumor suppressors. Indeed, candidate genes studies have found that the elephant genome encodes duplicate such as _TP53_ and _LIF_ [@Abegglen:JAMA2015; @Sulak2015; @Vazquez2018] as well as other genes with putative tumor suppressive functions [@Caulin2015; @Doherty2016]. As these studies focus on _a priori_ gene sets, however, it remains unknown whether this is a general, genome-wide trend in _Afrotherian_ genomes; and whether such a general trend is associated with the recent increases in body size – and therefore expected cancer risk – in these species. 
 
-Here, we trace the evolution of body mass and gene copy number variation in Afrotherians in order to investigate whether gene duplications are enriched in large, long-lived species for genes involved in known tumor suppression pathways. Our estimates of the evolution of body mass, similarly to previous studies [@OLeary2013a; @Springer2013; @OLeary2013b; @PuttickAndThomas2015], show that large body masses evolved in a step-wise manner, with major increases in body mass in the Pseudoungulata (17kg), Paenungulata (25kg), Tethytheria (296kg), and Proboscidea (4,100kg) stem-lineages. Furthermore, we see that the ancestral body size increases in Hydracoidia and Sirenia were independent events. To study the evolution of gene copy number, we used a genome-wide Reciprocal Best BLAT Hit (RBBH) method to identify gene duplications in Afrotherian genomes, and used maximum likelihood (treating copy number as a discrete trait) to infer the lineages in which those duplications occurred. We found gene duplications in lineages with increased body mass were enriched in functions related to tumor suppression, including regulation of the cell cycle, DNA damage repair, and regulation of apoptosis. These data suggest that duplication of tumor suppressors played a role in the evolution of large, long-lived in Afrotherians.
+Here, we trace the evolution of body mass and gene copy number variation in across _Afrotherian_ genomes in order to investigate whether duplication of tumors suppresor is common in large, long-lived Proboscideans. Our estimates of the evolution of body mass, similarly to previous studies [@OLeary2013a; @Springer2013; @OLeary2013b; @PuttickAndThomas2015], show that large body masses evolved in a step-wise manner, with major increases in body mass in the _Pseudoungulata_ (17kg), _Paenungulata_ (25kg), _Tethytheria_ (296kg), and _Proboscidea_ (4,100kg) stem-lineages. To explore whether duplication of tumor suppressor genes occurred coincident with the evolution of large body sizes, we used a genome-wide Reciprocal Best BLAT Hit (RBBH) strategy to identify gene duplications, and used maximum likelihood to infer the lineages in which those duplications occurred. Unexpectedly, we found that duplication of tumor suppressor genes was common in all Afrotherians, both large and small. These data suggest that duplication of tumor suppressor genes is pervasive in Afrotherians and proceeded the evolution of species with very large body sizes.
 
 
 # Methods
 
 ## Ancestral Body Size Reconstruction
 
-We built a time-calibrated supertree of Eutherian mammals by combining the time-calibrated molecular phylogeny of Bininda-Emonds _et al._ [-@Bininda-Emonds2008] with the time-calibrated total evidence Afrotherian phylogeny from Puttick and Thomas [@PuttickAndThomas2015]. While the Bininda-Emonds _et al._ [-@Bininda-Emonds2008] phylogeny includes 1,679 species, only 34 are Afrotherian, and no fossil data are included. The inclusion of fossil data from extinct species is essential to ensure that ancestral state reconstructions of body mass are not biased by only including extant species. This can lead to inaccurate reconstructions, for example, if lineages convergently evolved large body masses from a small bodied ancestor. In contrast, the total evidence Afrotherian phylogeny of Puttick and Thomas [-@PuttickAndThomas2015] includes 77 extant species and fossil data from 39 extinct species. Therefore we replaced the Afrotherian clade in the Bininda-Emonds _et al._ [-@Bininda-Emonds2008] phylogeny with the Afrotherian phylogeny of Puttick and Thomas [-@PuttickAndThomas2015] using Mesquite. Next, we jointly estimated rates of body mass evolution and reconstructed ancestral states using a generalization of the Brownian motion model that relaxes assumptions of neutrality and gradualism by considering increments to evolving characters to be drawn from a heavy-tailed stable distribution (the "Stable Model") [@ElliotAndMooers2014]. The stable model allows for occasional large jumps in traits and has previously been shown to out-perform other models of body mass evolution, including standard Brownian motion models, Ornstein–Uhlenbeck models, early burst maximum likelihood models, and heterogeneous multi-rate models [@ElliotAndMooers2014].
+We built a time-calibrated supertree of Eutherian mammals by combining the time-calibrated molecular phylogeny of Bininda-Emonds _et al._ [-@Bininda-Emonds2008] with the time-calibrated total evidence Afrotherian phylogeny from Puttick and Thomas [@PuttickAndThomas2015]. While the Bininda-Emonds _et al._ [-@Bininda-Emonds2008] phylogeny includes 1,679 species, only 34 are Afrotherian, and no fossil data are included. The inclusion of fossil data from extinct species is essential to ensure that ancestral state reconstructions of body mass are not biased by only including extant species. This can lead to inaccurate reconstructions, for example, if lineages convergently evolved large body masses from a small bodied ancestor. In contrast, the total evidence Afrotherian phylogeny of Puttick and Thomas [-@PuttickAndThomas2015] includes 77 extant species and fossil data from 39 extinct species. Therefore we replaced the Afrotherian clade in the Bininda-Emonds _et al._ [-@Bininda-Emonds2008] phylogeny with the Afrotherian phylogeny of Puttick and Thomas [-@PuttickAndThomas2015] using Mesquite. Next, we jointly estimated rates of body mass evolution and reconstructed ancestral states using a generalization of the Brownian motion model that relaxes assumptions of neutrality and gradualism by considering increments to evolving characters to be drawn from a heavy-tailed stable distribution (the "Stable Model") implemented in StableTraits [@ElliotAndMooers2014]. The stable model allows for occasional large jumps in traits and has previously been shown to out-perform other models of body mass evolution, including standard Brownian motion models, Ornstein–Uhlenbeck models, early burst maximum likelihood models, and heterogeneous multi-rate models [@ElliotAndMooers2014].
 
 
 ## Identification of Duplicate Genes
 
-__Reciprocal Best-Hit BLAT:__ We developed a reciprocal best hit BLAT (RBHB) pipeline to identify putative homologs and estimate gene copy numbers across species (__Figure 1A__). The Reciprocal Best Hit (RBH) search strategy is conceptually straightforward: 1) Given a gene of interest $G_A$ in a query genome $A$, one searches a target genome $B$ for all possible matches to $G_A$; 2) For each of these hits, one then performs the reciprocal search in the original query genome to identify the highest-scoring hit; 3) A hit in genome $B$ is defined as a homolog of gene $G_A$ if and only if the original gene $G_A$ is the top reciprocal search hit in genome $A$. We selected BLAT [@blat] as our algorithm of choice, as this algorithm is sensitive to highly simliar (>90% identity) sequences, thus identifying the highest-confidence homologs while minimizing many-to-one mapping problems when searching for multiple genes. RBH performs similar to other more complex methods of orthology prediction, and is particularly good at identifying incomplete genes that may be fragmented in low quality/poor assembled regions of the genome [@AltenhoffAndDessimoz2009; @SalichosAndRokas2011]. 
+__Reciprocal Best-Hit BLAT:__ We developed a reciprocal best hit BLAT (RBHB) pipeline to identify putative homologs and estimate gene copy number across species (\@ref(fig:Figure-RBHBStrategy)). The Reciprocal Best Hit (RBH) search strategy is conceptually straightforward: 1) Given a gene of interest $G_A$ in a query genome $A$, one searches a target genome $B$ for all possible matches to $G_A$; 2) For each of these hits, one then performs the reciprocal search in the original query genome to identify the highest-scoring hit; 3) A hit in genome $B$ is defined as a homolog of gene $G_A$ if and only if the original gene $G_A$ is the top reciprocal search hit in genome $A$. We selected BLAT [@blat] as our algorithm of choice, as this algorithm is sensitive to highly simliar (>90% identity) sequences, thus identifying the highest-confidence homologs while minimizing many-to-one mapping problems when searching for multiple genes. RBH performs similar to other more complex methods of orthology prediction, and is particularly good at identifying incomplete genes that may be fragmented in low quality/poor assembled regions of the genome [@AltenhoffAndDessimoz2009; @SalichosAndRokas2011]. 
 
-__Effective Copy Number By Coverage:__ In lower-quality genomes, many genes are fragmented across multiple scaffolds, which results in BLAT calling multiple hits when in reality there is only one gene. To compensate for this, we came up with a novel statistic, Estimated Copy Number by Coverage (ECNC), which averages the number of times we see each nucleotides of a query sequence in a target genome over the total number of nucleotides of the query sequence found overall in each target genome (Supplementary Figure 1). This allows us to correct for genes that have been fragmented across incomplete genomes, while also taking into account missing sequences from the human query in the target genome. Mathematically, this can be written as:  
+__Effective Copy Number By Coverage:__ In lower-quality genomes, many genes are fragmented across multiple scaffolds, which results in BLAT calling multiple hits when in reality there is only one gene. To compensate for this, we came up with a novel statistic, Estimated Copy Number by Coverage (ECNC), which averages the number of times we see each nucleotides of a query sequence in a target genome over the total number of nucleotides of the query sequence found overall in each target genome (__Figure \@ref(fig:Figure-ECNC)__). This allows us to correct for genes that have been fragmented across incomplete genomes, while also taking into account missing sequences from the human query in the target genome. Mathematically, this can be written as:  
 $$ ECNC = \frac{\sum_{n=1}^{l} C_n}{\sum_{n=1}^{l} bool(C_n)}$$
 where $n$ is a given nucleotide in the query, $l$ is the total length of the query, $C_n$ is the number of instances that $n$ is present within a reciprocal best hit, and $bool(C_n)$ is 1 if $C_n > 0$ or 0 if $C_n = 0$.  
 ```{r RBHB Stats}
@@ -933,20 +914,20 @@ median.DuplicatedGenesPerGenome <- duplicatedGenesPerGenome %>% pull(Duplicated)
 ```
 __RecSearch Pipeline:__ We created a custom Python pipeline for automating RBHB searches between a single reference genome and multiple target genomes using a list of query sequences from the reference genome. For the query sequences in our search, we used the hg38 Proteome provided by UniProt [Accession #UP000005640; @uniprot], which is a comprehensive set of protein sequences curated from a combination of predicted and validated protein sequences generated by the UniProt Consortium. In order to refine our search, we omitted protein sequences originating from long, noncoding RNA loci (e.g. LINC genes); poorly-studied genes from predicted open reading frames (C-ORFs); and sequences with highly repetitive sequences such as zinc fingers, protocadherins, and transposon-containing genes, as these were prone to high levels of false positive hits. 
 
-After filtering out problematic protein queries (see "Query gene inclusion criteria"), we then used our pipeline (Figure 1A) to search for all copies of our `r n.GenesSearched` query genes in publicly available Afrotherian genomes, including African savannah elephant (_Loxodonta africana_: loxAfr3, loxAfr4, loxAfrC), African forest elephant (_Loxodonta cyclotis_: loxCycF), Asian Elephant (_Elephas maximus_: eleMaxD), Woolly Mammoth (_Mammuthus primigenius_: mamPriV), Colombian mammoth (_Mammuthus columbi_: mamColU), American mastodon (_Mammut americanum_: mamAmeI), Rock Hyrax (_Procavia capensis_: proCap1, proCap2, proCap2_HiC), West Indian Manatee (_Trichechus manatus latirostris_: triManLat1, triManLat1_HiC), Aardvark (_Orycteropus afer_: oryAfe1, oryAfe1_HiC), Lesser Hedgehog Tenrec (_Echinops telfairi_: echTel2), Nine-banded armadillo (_Dasypus novemcinctus_: dasNov3), Hoffman's two-toed sloth (_Choloepus hoffmannii_: choHof1, choHof2, choHof2_HiC), Cape golden mole (_Chrysochloris asiatica_: chrAsi1), and Cape elephant shrew (_Elephantulus edwardii_: eleEdw1). For many of these species, we covered multiple assemblies in order to test the effects of assembly size and quality on our hits. 
+After filtering out problematic protein queries (see below), we then used our pipeline to search for all copies of our `r n.GenesSearched` query genes in publicly available _Afrotherian_ genomes (\@ref(tab:Table-Genomes)), including African savannah elephant (_Loxodonta africana_: loxAfr3, loxAfr4, loxAfrC), African forest elephant (_Loxodonta cyclotis_: loxCycF), Asian Elephant (_Elephas maximus_: eleMaxD), Woolly Mammoth (_Mammuthus primigenius_: mamPriV), Colombian mammoth (_Mammuthus columbi_: mamColU), American mastodon (_Mammut americanum_: mamAmeI), Rock Hyrax (_Procavia capensis_: proCap1, proCap2, proCap2_HiC), West Indian Manatee (_Trichechus manatus latirostris_: triManLat1, triManLat1_HiC), Aardvark (_Orycteropus afer_: oryAfe1, oryAfe1_HiC), Lesser Hedgehog Tenrec (_Echinops telfairi_: echTel2), Nine-banded armadillo (_Dasypus novemcinctus_: dasNov3), Hoffman's two-toed sloth (_Choloepus hoffmannii_: choHof1, choHof2, choHof2_HiC), Cape golden mole (_Chrysochloris asiatica_: chrAsi1), and Cape elephant shrew (_Elephantulus edwardii_: eleEdw1). 
 
-__Query gene inclusion criteria:__ To assemble our query list, we first removed all unnamed genes from UP000005640. Next, we excluded genes from downstream analyses for which assignment of homology was uncertain, including uncharacterized ORFs (`r query.binTable %>% filter(C.ORF) %>% nrow`), LOC (`r query.binTable %>% filter(LOC) %>% nrow`), HLA genes (`r query.binTable %>% filter(HLA) %>% nrow`), replication dependent histones (`r query.binTable %>% filter(Histone) %>% nrow`), odorant receptors (`r query.binTable %>% filter(OlfactoryReceptor) %>% nrow`), ribosomal proteins (`r query.binTable %>% filter(Riboprotein) %>% nrow`), zinc finger transcription factors (`r query.binTable %>% filter(ZincFinger) %>% nrow`), viral and repetitive-element-associated proteins (`r query.binTable %>% filter(Viral) %>% nrow`) and any protein described as either "Uncharacterized," "Putative," or "Fragment" by UniProt in UP000005640 (`r query.binTable %>% filter(Fragment | Uncharacterized | Putative) %>% nrow`), leaving us with a final set of `r n.TranscriptsSearched` query protein sequences, corresponding to `r n.GenesSearched` genes.
+__Query gene inclusion criteria:__ To assemble our query list, we first removed all unnamed genes from UP000005640. Next, we excluded genes from downstream analyses for which assignment of homology was uncertain, including uncharacterized ORFs (`r query.binTable %>% filter(C.ORF) %>% nrow` genes), LOC (`r query.binTable %>% filter(LOC) %>% nrow` genes), HLA genes (`r query.binTable %>% filter(HLA) %>% nrow` genes), replication dependent histones (`r query.binTable %>% filter(Histone) %>% nrow` genes), odorant receptors (`r query.binTable %>% filter(OlfactoryReceptor) %>% nrow` genes), ribosomal proteins (`r query.binTable %>% filter(Riboprotein) %>% nrow` genes), zinc finger transcription factors (`r query.binTable %>% filter(ZincFinger) %>% nrow` genes), viral and repetitive-element-associated proteins (`r query.binTable %>% filter(Viral) %>% nrow` genes) and any protein described as either "Uncharacterized," "Putative," or "Fragment" by UniProt in UP000005640 (`r query.binTable %>% filter(Fragment | Uncharacterized | Putative) %>% nrow` genes), leaving us with a final set of `r n.TranscriptsSearched` query protein isoforms, corresponding to `r n.GenesSearched` genes.
 
-__Duplication gene inclusion criteria:__ In order to condense transcript-level hits into single gene loci, and to resolve many-to-one genome mappings, we removed exons where transcripts from different genes overlapped, and merged overlapping transcripts of the same gene into a single gene locus call. The resulting gene-level copy number table was then combined with the maximum ECNC values observed for each gene in order to call gene duplications. We called a gene duplicated if its copy number was two or more, and if the maximum ECNC value of all the gene transcripts searched was 1.5 or greater; previous studies have shown that incomplete duplications can encode functional genes [@Sulak2015; @Vazquez2018], therefore partial gene duplications were included provided they passed additional inclusion criteria. The ECNC cut off of 1.5 was selected empirically, as this value minimized the number of false positives seen in a test set of genes and genomes. The results of our initial search are summarized in Figure 1B`r warning('TODO: Check if this is still the case')`. Overall, we identified `r median.genesPerGenome` genes across all species, or `r median.genesPerGenome %>% divide_by(n.GenesSearched) %>% multiply_by(100) %>% round(digit=1) %>% paste0(.,"%")` of our starting query genes. 
+__Duplication gene inclusion criteria:__ In order to condense transcript-level hits into single gene loci, and to resolve many-to-one genome mappings, we removed exons where transcripts from different genes overlapped, and merged overlapping transcripts of the same gene into a single gene locus call. The resulting gene-level copy number table was then combined with the maximum ECNC values observed for each gene in order to call gene duplications. We called a gene duplicated if its copy number was two or more, and if the maximum ECNC value of all the gene transcripts searched was 1.5 or greater; previous studies have shown that incomplete duplications can encode functional genes [@Sulak2015; @Vazquez2018], therefore partial gene duplications were included provided they passed additional inclusion criteria (see below). The ECNC cut off of 1.5 was selected empirically, as this value minimized the number of false positives seen in a test set of genes and genomes. The results of our initial search are summarized in Figure \@ref(fig:Figure-GeneDup-Cladogram). Overall, we identified `r median.genesPerGenome` genes across all species, or `r median.genesPerGenome %>% divide_by(n.GenesSearched) %>% multiply_by(100) %>% round(digit=1) %>% paste0(.,"%")` of our starting query genes. 
 
 __Genome Quality Assessment using CEGMA:__ In order to determine the effect of genome quality on our results, we used the gVolante webserver and CEGMA to assess the quality and completeness of the genome [@gVolante; @CEGMA]. CEGMA was run using the default settings for mammals ("Cut-off length for sequence statistics and composition" = 1;"CEGMA max intron length" = 100000; "CEGMA gene flanks" = 10000, "Selected reference gene set" = CVG). For each genome, we generated a correlation matrix using the aforementioned genome quality scores, and either the mean Copy Number or mean ECNC for all hits in the genome.
 
 
-## Evidence for Functionality of Identified Genes
+## Evidence for Functionality of Gene Duplicates
 
 To validate and filter out duplicate gene calls, we intersected our results with either gene prediction or transcriptomic evidence as a proxy for functionality.
 
-__Transcriptome Assembly:__ For the African Savana Elephant, Asian Elephant, West Indian Manatee, and Nine-Banded Armadillo, we generated _de novo_ transcriptomes using publically-available RNA-sequencing data from NCBI SRA (Supplementary Table 1). We mapped reads to all genomes available for each species, and assembled transcripts using HISAT2 and StringTie, respectively [@HISAT; @StringTie; @Tuxedo]. RNA-sequencing data was not available for Cape Golden Mole, Cape Elephant Shrew, Rock Hyrax, Aardvark, or the Lesser Hedgehog Tenrec. 
+__Transcriptome Assembly:__ For the African Savana Elephant, Asian Elephant, West Indian Manatee, and Nine-Banded Armadillo, we generated _de novo_ transcriptomes using publically-available RNA-sequencing data from NCBI SRA (\@ref(tab:Table-SRAData)). We mapped reads to all genomes available for each species, and assembled transcripts using HISAT2 and StringTie, respectively [@HISAT; @StringTie; @Tuxedo]. RNA-sequencing data was not available for Cape Golden Mole, Cape Elephant Shrew, Rock Hyrax, Aardvark, or the Lesser Hedgehog Tenrec. 
 
 __Gene Prediction:__ We obtained tracks for genes predicted using GenScan for all the genomes available via UCSC Genome Browser: African savannah elephant (loxAfr3), Rock Hyrax (proCap1), West Indian Manatee (triManLat1), Aardvark (oryAfe1), Lesser Hedgehog Tenrec (echTel2), Nine-banded armadillo (dasNov3), Hoffman's Two-Toed Sloth (choHof1), Cape golden mole (chrAsi1), and Cape Elephant Shrew (eleEdw1); gene prediction tracks for higher-quality assemblies were not available. 
 
@@ -955,18 +936,16 @@ __Evidenced Duplicate Criteria:__ We intersected our records of duplicate hits i
  
 ## Reconstruction of Ancestral Copy Numbers
 
-We implemented a maximum likelihood method for determining the ancestral copy numbers of genes in _Atlantogenata_ using IQ-Tree. For this analysis, we used an unrooted species tree including only the aforementioned _Atlantogenata_ species. We generated PHYLIP files containing the copy number of each gene in the highest quality genome for each species, encoding genes on a scale from 1-31+ copies as 1-9, A-V; and encoding a gene's copy number as uncetain ("?") when we did not identify it in the genome. We used the included tree-searching and model-testing functionality in IQ-Tree to determine the most likely topology for the species tree, and to obtain the most likely model for copy number changes in the genome. The most likely model for the evolution of copy number was inferred to be a Jukes-Cantor type model for morphological data with equal state frequencies, allowing for a proportion of invariable sites, and using a discrete Gamma model with 4 rate categories. ("MK+FQ+I+G4"). We defined the ancestral state of a node if it had greater than an 80% posterior probability. 
+We encoded the copy number of each gene for each species as a discrete trait ranging from 0 (one gene copy) to 31 (for 32+ gene copies) and used IQ-TREE to select the best-fitting model of character evolution [@IQTREE; @UFBoot2; @ModelFinder; @PMSF; @Schrempf2019], which was inferred to be a Jukes-Cantor type model for morphological data (MK) with equal character state frequencies (FQ) and rate heterogeneity across sites approximated by including a class of invariable sites (I) plus a discrete Gamma model with four rate categories (G4). Next we inferred gene duplication and loss events with the empirical Bayesian ancestral state reconstruction (ASR) method implemented in IQ-TREE [@IQTREE; @UFBoot2; @ModelFinder; @PMSF; @Schrempf2019], the best fitting model of character evolution (MK+FQ+GR+I) [@Soubrier2012; @Yang1995], and the unrooted species tree for Atlantogenata. We considered ancestral state reconstructions to be reliable if they had Bayeisan Posterior Probability (BPP) ?0.80; less reliable reconstructions were excluded for pathway analyses.
 
 
 ## Pathway Enrichment Analysis
 
-To determine which pathways were associated with duplicated genes in each species and lineage, we used WEBGESTALT to perform overrepresentation analysis (ORA) of the duplicated gene lists relative to our initial query gene list [@WebGestalt2019]. For the database of pathways used in the analysis, we used Reactome [@Reactome], Wikipathways, [@Wikipathways], and KEGG [@KEGG]. For the ORA, we used FDR for determining significance, and ran the analysis at FDR=0.1, FDR=0.2, FDR=0.3, and FDR=0.5.
+To determine if gene duplications were enriched in particular biological pathways, we used the WEB-based Gene SeT AnaLysis Toolkit (WEBGESTALT)[@WebGestalt2019] to perform overrepresentation analysis (ORA); pathway databases included Reactome [@Reactome], Wikipathways, [@Wikipathways], and KEGG [@KEGG]. Gene duplicates in each lineage were used as the foreground gene set, and the initial query set was used as the background gene set. Statistical significance of enriched terms was assessed with a hypergeometric test, and controlled for multiple testing using the Benjamini-Hochberg false discovery rate (FDR); each analysis was run at FDR=0.1, FDR=0.2, FDR=0.3, and FDR=0.5. In order to determine an empirical false positive rate for term enrichment, we randomly sampled 1000-10,000 genes from our background set 1000 times, and ran the aforementioned analyses to see which terms were likely to randomly appear; there were no terms which appeared at FDR $\leq$ 0.3. 
 
-## Lifespan Phylogenetic Least-Square Regression and Calculating Estimated Cancer Risk Thoughout Atlantogenata
+## Estimating the Evolution of Cancer Risk
 
-In order to determine the cancer risk $K$ at each node, we first needed to calcultate ancestral lifespans at each node. To do so, we used a Phylogenetic Generalized Least-Square Regression (PGLS) [@Felsenstein1985; @MartinsAndHansen1997] to calculate estimated ancestral lifespans across _Atlantogenata_ using our estimates for body size at each node.
-
-Next, we used a simplified multistage cancer risk model for body size $D$ and lifespan $t$: $K \approx Dt^6$ [@Armitage:19851c2; @Armitage:20041c2; @Peto:20151c2; @Peto1975]. To determine the change in $K$ between nodes, we obtained the ratio between the cancer risk $K_{1}$ at any given node, and the cancer risk $K_{2}$ at its ancestral node, using the equation $\frac{K_{2}}{K_{1}} \approx \frac{D_{1}t_{1}^6}{D_{2}t_{2}^6}$. Finally, to simplify comparisons, we calculated the fold change cancer risk between a node and its ancestor as $\log_{2}(\frac{K_{2}}{K_{1}})$. 
+The dramatic increase in body mass and lifespan in some Afrotherian lineages implies those lineages must have also evolved reduced cancer risk. To infer the magnitude of these reductions we estimated differences in intrinsic cancer risk across extant and ancestral Afrotherians. Following Peto [@Peto:20151c2] we estimate the intrinsic cancer risk as the product of risk associated with body mass and lifespan. In order to determine the intrinsic cancer risk ($K$) across species and at ancestral nodes (see below), we first needed to estimate ancestral lifespans at each node. We used Phylogenetic Generalized Least-Square Regression (PGLS) [@Felsenstein1985; @MartinsAndHansen1997] implemented in the R package `ape` to calculate estimated ancestral lifespans across _Atlantogenata_ using our estimates for body size at each node. In order to estimate the intrinsic cancer risk of a species, we first inferred lifespans at ancestral nodes using PGLS and the model $ln(lifespan) = \beta_{1}corBrowninan + \beta_{2}ln(size) + \epsilon$. Next, we calculated $K_{1}$ at all nodes, and then estimated the fold change in cancer susceptibility between ancestral and descendant nodes (Figure \@ref(fig:Figure-CancerSuscept), Table \@ref(tab:Table-CancerSuscept)).A Next, in oder to calculate $K_{1}$ at all nodes, we used a simplified multistage cancer risk model for body size $D$ and lifespan $t$: $K \approx Dt^6$ [@Armitage:19851c2; @Armitage:20041c2; @Peto:20151c2; @Peto1975]. The fold change in cancer risk between a node and its ancestor was then defined as $\log_{2}(\frac{K_{2}}{K_{1}})$. 
 
 
 # Results
@@ -979,10 +958,11 @@ ORA.TSG.list <- ORA.all %>% filter(Direction=="increased") %>%
     ., . %>%
   filter(str_detect(Pathway, "APC|[Cc]yclin|[Cc]ell [Cc]ycle|Ubiq|NER|ROS|DNA|G1|[Mm]eiotic|Checkpoint|[Ss]tress|ptosis|[Cc]ancer|[Dd]eath|[Pp]53|[Cc][Dd][CcKk]|AKT|Ras|[Rr]epair|ATM")) %>%
   separate_rows(Genes, sep=";") %>% 
-  group_by(Pathway) %>% 
+  # group_by(Pathway) %>% 
+    group_by(Pathway, Database) %>% 
   summarize_all(. %>% unique %>% toString) %>% 
   ungroup %>% 
-    select(Node, RBHB, Pathway, Genes, FDR.Threshold) %>% 
+    select(Node, RBHB, Database, Pathway, Genes, FDR.Threshold) %>% 
     distinct %>% 
     mutate(
       N.Genes = Genes %>% str_split(", ") %>% sapply(length),
@@ -996,10 +976,11 @@ ORA.TSG.list.all <- ORA.all%>%
     ., . %>% 
   filter(str_detect(Pathway, "APC|[Cc]yclin|[Cc]ell [Cc]ycle|Ubiq|NER|ROS|DNA|G1|[Mm]eiotic|Checkpoint|[Ss]tress|ptosis|[Cc]ancer|[Dd]eath|[Pp]53|[Cc][Dd][CcKk]|AKT|Ras|[Rr]epair|ATM")) %>%
   separate_rows(Genes, sep=";") %>% 
-  group_by(Pathway) %>% 
+  # group_by(Pathway) %>% 
+    group_by(Pathway, Database) %>% 
   summarize_all(. %>% unique %>% toString) %>% 
   ungroup %>% 
-    select(Node, RBHB, Pathway, Genes, FDR.Threshold) %>% 
+    select(Node, RBHB, Database, Pathway, Genes, FDR.Threshold) %>% 
     distinct %>% 
     mutate(
       N.Genes = Genes %>% str_split(", ") %>% sapply(length),
@@ -1015,7 +996,7 @@ loxAfr.duplicated <- geneCopyTable %>%
 
 genes.loxAfr.TSG.any <- ORA.TSG.list.all$Loxodonta_africana %>% 
   separate_rows(Genes, sep=", ") %>% 
-  group_by(Genes) %>% 
+  group_by(Genes, Database) %>% 
   summarize_all(. %>% unique %>% toString) %>% 
   ungroup %>% 
   rename(Gene = Genes) %>% 
@@ -1285,37 +1266,11 @@ plot.coolgenes <- loxAfr4.geneTPM.ORA.expressedDups %>%
 
 ```
 
-## Body size frequently and independently expands and contracts throughout _Atlantogenata_
+## Step-wise evolution of body size in _Afrotherians_
 
-```{r Figure1, fig.cap="Body sizes rapidly and frequently expand in Eutherians, especially in Atlantogenata. **A)** Tree of Eutherian species, colored by ln(Body Size) and with branch lengths set to the rate of change in body sizes, normalized by the square root of the root branch. Atlantogenata is highlighted at the bottom. **B)** Zoom-in of (**A**) on Atlantogenata. Silhuetes for the African Elephant, West Indian Manatee, Cape Elephant Shrew, Lesser Hedgehog Tenrec, Cape Golden Mole, Nine-Banded Armadillo, and Hoffman's Two-Toed Sloth are colored by their extant body sizes, while clade labels are colored based on the common ancestor's estimated body size. **C)** Confidence interval plot for representative species and ancestral nodes.", out.width="6in", fig.asp=1}
-f1a <- p.tree
-f1b <- p.tree.atlantogenata
-f1c <- p.bodysize.atlantogenata
-# tree.Atlantogenata %>% tree_subset(., MRCA(.,"Loxodonta.africana", "Elephantulus.edwardii"), levels_back=3) %>% ggtree(aes(color=lnSize)) + geom_tiplab() +scale_color_viridis_c() +
-#   geom_point2(aes(subset=(node==MRCA(tree.Atlantogenata, "Loxodonta.africana", MRCA(tree.Atlantogenata, "Loxodonta.africana", "Mammut.americanum"))), color=lnSize))# Paenungulates, simple view
-#   # geom_point2(aes(subset=(node== MRCA(tree.Atlantogenata, "Loxodonta.africana", "Echinops.telfairi")), color=lnSize))# Paenungulates, simple view
-f1ab <- ggarrange(
-  f1a, f1b, 
-  nrow=1, ncol = 2, 
-  labels="AUTO",
-  widths = c(1,2),
-  font.label = list(size=6, face="bold")
-  )
-f1 <-
-  ggarrange(
-  ggplotify::as.ggplot(f1ab),
-  f1c,
-  nrow=2, ncol=1,
-  labels = c("", "C"),
-  font.label = list(size=6, face="bold")
-)
-f1
-```
+<!-- To trace the evolutionary history of body mass and lifespan in Afrotherians, we built a time-calibrated supertree of Eutherian mammals combining 1,679 species from Bininda-Emonds et al [@Bininda-Emonds2008] with a total evidence Afrotherian phylogeny including 77 extant and fossil data from 39 extinct species [@PuttickAndThomas2015]. Fossil data from extinct species were included to ensure that ancestral state reconstructions of body mass in Afrotherians were not biased by only including extant species, which can lead to inaccurate reconstructions, for example, if lineages multiple lineages evolved large body masses from a small bodied ancestor. We jointly estimated rates of body mass evolution and reconstructed ancestral states using a generalization of a Brownian model of character evolution, which allows for occasional large jumps in traits (stable model) and out performs standard Brownian motion and Ornstein-Uhlenbeck models of character evolution [@ElliotAndMooers2014].  -->
 
-
-To trace the evolutionary history of body mass and lifespan in Afrotherians, we built a time-calibrated supertree of Eutherian mammals combining 1,679 species from Bininda-Emonds et al [@Bininda-Emonds2008] with a total evidence Afrotherian phylogeny including 77 extant and fossil data from 39 extinct species [@PuttickAndThomas2015]. Fossil data from extinct species were included to ensure that ancestral state reconstructions of body mass in Afrotherians were not biased by only including extant species, which can lead to inaccurate reconstructions, for example, if lineages multiple lineages evolved large body masses from a small bodied ancestor. We jointly estimated rates of body mass evolution and reconstructed ancestral states using a generalization of a Brownian model of character evolution, which allows for occasional large jumps in traits (stable model) and out performs standard Brownian motion and Ornstein-Uhlenbeck models of character evolution [@ElliotAndMooers2014]. 
-
-Similar to previous studies of Afrotherian body size [@ElliotAndMooers2014; @PuttickAndThomas2015], we found that the body mass of the Afrotherian ancestor was inferred to be small (0.26kg, 95% CI: 0.31-3.01kg) and that substantial accelerations in the rate of body mass evolution occurred coincident with a `r text.ratio.nodeByMRCA.ancNode("Loxodonta.africana", "Orycteropus.afer")` in body mass in the stem-lineage of _Pseudoungulata_ (`r text.bodysize.ancNode.byMRCA("Loxodonta.africana", "Orycteropus.afer")`), a `r text.ratio.nodeByMRCA.ancNode("Loxodonta.africana", "Procavia.capensis")` in body mass in the stem-lineage of _Paenungulata_ (`r text.bodysize.ancNode.byMRCA("Loxodonta.africana", "Procavia.capensis")`), a `r text.ratio.nodeByMRCA.ancNode("Loxodonta.africana", "Trichechus.manatus")` in body mass in the stem-lineage of _Tehthytheria_ (`r text.bodysize.ancNode.byMRCA("Loxodonta.africana", "Trichechus.manatus")`), and a `r text.ratio.nodeByMRCA.ancNode("Loxodonta.africana", "Mammut.americanum")` in body mass in the stem-lineage of _Proboscidea_ (`r text.bodysize.ancNode.byMRCA("Loxodonta.africana", "Mammut.americanum")`) (Figure 1B,C). The ancestral _Hyracoidea_ was inferred to be relatively small `r text.bodysize.ancNode.byMRCA.CI("Microhyrax.lavocati", "Procavia.capensis")`, and rate accelerations were coincident with independent body mass increases in large hyraxes such as _Titanohyrax andrewsi_ `r text.bodysize.byLabel("Titanohyrax.andrewsi")`; `r text.ratio.nodeByMRCA.ancNode(nodeA="Titanohyrax.andrewsi","Orycteropus.afer")`. While the body mass of the ancestral _Sirenian_ was inferred to be large `r text.bodysize.ancNode.byMRCA.CI("Trichechus.manatus", "Prorastomus.sirenoides")`, a rate acceleration occurred coincident with a `r text.ratio.node.ancnode.atLabel("Hydrodamalis.gigas")` in body mass in Stellar's sea cow. Rate accelerations also occurred coincident with `r text.ratio.nodeByMRCA.ancNode("Elephas.antiquus falconeri", "Elephas.cypriotes")` in body mass in the stem-lineage of the dwarf elephants _Elephas (Palaeoloxodon) antiquus falconeri_ and _Elephas cypriotes_. These data suggest that gigantism in _Afrotherians_ evolved step-wise, from small to medium bodies in the _Pseudoungulata_ stem-lineage, medium to large bodies in the _Tehthytherian_ stem-lineage and extinct hyraxes, and from large to exceptionally large bodies independently in the _Proboscidean_ stem-lineage and Stellar's sea cow (Figure 1). 
+Similar to previous studies of Afrotherian body size [@ElliotAndMooers2014; @PuttickAndThomas2015], we found that the body mass of the Afrotherian ancestor was inferred to be small (0.26kg, 95% CI: 0.31-3.01kg) and that substantial accelerations in the rate of body mass evolution occurred coincident with a `r text.ratio.nodeByMRCA.ancNode("Loxodonta.africana", "Orycteropus.afer")` in body mass in the stem-lineage of _Pseudoungulata_ (`r text.bodysize.ancNode.byMRCA("Loxodonta.africana", "Orycteropus.afer")`), a `r text.ratio.nodeByMRCA.ancNode("Loxodonta.africana", "Procavia.capensis")` in body mass in the stem-lineage of _Paenungulata_ (`r text.bodysize.ancNode.byMRCA("Loxodonta.africana", "Procavia.capensis")`), a `r text.ratio.nodeByMRCA.ancNode("Loxodonta.africana", "Trichechus.manatus")` in body mass in the stem-lineage of _Tehthytheria_ (`r text.bodysize.ancNode.byMRCA("Loxodonta.africana", "Trichechus.manatus")`), and a `r text.ratio.nodeByMRCA.ancNode("Loxodonta.africana", "Mammut.americanum")` in body mass in the stem-lineage of _Proboscidea_ (`r text.bodysize.ancNode.byMRCA("Loxodonta.africana", "Mammut.americanum")`) (Figure \@ref(fig:Figure-BodySize), Table \@ref(tab:Table-BodySize)). The ancestral _Hyracoidea_ was inferred to be relatively small (`r text.bodysize.ancNode.byMRCA.CI("Microhyrax.lavocati", "Procavia.capensis")`), and rate accelerations were coincident with independent body mass increases in large hyraxes such as _Titanohyrax andrewsi_ (`r text.bodysize.byLabel("Titanohyrax.andrewsi")`, `r text.ratio.nodeByMRCA.ancNode(nodeA="Titanohyrax.andrewsi","Orycteropus.afer")`). While the body mass of the ancestral _Sirenian_ was inferred to be large (`r text.bodysize.ancNode.byMRCA.CI("Trichechus.manatus", "Prorastomus.sirenoides")`), a rate acceleration occurred coincident with a `r text.ratio.node.ancnode.atLabel("Hydrodamalis.gigas")` in body mass in Stellar's sea cow. Rate accelerations also occurred coincident with `r text.ratio.nodeByMRCA.ancNode("Elephas.antiquus falconeri", "Elephas.cypriotes")` in body mass in the stem-lineage of the dwarf elephants _Elephas (Palaeoloxodon) antiquus falconeri_ and _Elephas cypriotes_. These data suggest that gigantism in _Afrotherians_ evolved step-wise, from small to medium bodies in the _Pseudoungulata_ stem-lineage, medium to large bodies in the _Tehthytherian_ stem-lineage and extinct hyraxes, and from large to exceptionally large bodies independently in the _Proboscidean_ stem-lineage and Stellar's sea cow (Figure \@ref(fig:Figure-BodySize), Table \@ref(tab:Table-BodySize)). 
 
 ## Step-wise reduction of intrinsic cancer risk in large, long-lived Afrotherians
 
@@ -1487,7 +1442,7 @@ tree.cancerSucceptibility.Atlantogenata <- table.cancerSucceptibility.Atlantogen
   mutate(highlight = sapply(seq_along(label), function(x, l=str_replace(species.highlight, " ", ".") %>% set_names(.,.), Label=label, PhyloPicUID=phyloPicUID){ifelse(Label[x]%in% names(l), PhyloPicUID[x], NA)})) %>% 
   as.treedata()
 ```
-```{r Fig2 Prep Scales}
+```{r Fig3 Prep Scales}
 scale.log2CancerSucceptabilityChange <- table.cancerSucceptibility.Atlantogenata %>% 
   pull(log2CancerSucceptabilityChange) %>% 
   unique %>% 
@@ -1506,34 +1461,7 @@ cancerSucceptibility.Atlantogenata.nodes <- table.cancerSucceptibility.Atlantoge
 set_names(., table.cancerSucceptibility.Atlantogenata.genomes$label)
 ```
 
-```{r Fig2 Prep Table, eval=F}
-if(knitr::is_latex_output()){
-# size.lifespan.Atlantogenata.lm
-  t.size.lifespan.Atlantogenata.lm <- quiet(stargazer(
-    size.lifespan.Atlantogenata.lm,
-    type="latex",
-    title = "Phylogenetic Least Squares: ln(Lifespan) & ln(Body Size) Regression",
-    style = "all"
-  )) %>% paste0(collapse="\n")
-} else if(knitr::is_html_output()){
-  t.size.lifespan.Atlantogenata.lm <- quiet(stargazer(
-    size.lifespan.Atlantogenata.lm,
-    type="html",
-    title = "Phylogenetic Least Squares: ln(Lifespan) & ln(Body Size) Regression",
-    style = "all"
-  )) %>% paste0(collapse="\n")
-} else{
-  t.size.lifespan.Atlantogenata.lm <- quiet(stargazer(
-    size.lifespan.Atlantogenata.lm,
-    type="text",
-    title = "Phylogenetic Least Squares: ln(Lifespan) & ln(Body Size) Regression",
-    style = "all"
-  )) %>% paste0(collapse="\n")
-  t.size.lifespan.Atlantogenata.lm %>% cat
-}
-```
-
-```{r Fig2 prep}
+```{r Fig3 prep}
 # f5a1 <- tree.cancerSucceptibility.Atlantogenata  %>% as_tibble %>% filter(!is.na(node)) %>%  mutate(CancerSucceptabilityChange = as.numeric(CancerSucceptabilityChange)) %>% as.treedata %>% 
 #   ggtree(
 #     aes(color=log2CancerSucceptabilityChange),
@@ -1556,7 +1484,7 @@ if(knitr::is_latex_output()){
 # #############################################################################################
 # #############################################################################################
 
-f2a <- tree.cancerSucceptibility.Atlantogenata %>% as_tibble %>% filter(!is.na(node)) %>%  mutate(branch.length = log2CancerSucceptabilityChange %>% abs()) %>% as.treedata %>% 
+p.tree.cancerSucceptibility.Atlantogenata <- tree.cancerSucceptibility.Atlantogenata %>% as_tibble %>% filter(!is.na(node)) %>%  mutate(branch.length = log2CancerSucceptabilityChange %>% abs()) %>% as.treedata %>% 
   ggtree(
     aes(color=as.numeric(log2CancerSucceptabilityChange)),
     continuous=T,
@@ -1611,72 +1539,20 @@ f2a <- tree.cancerSucceptibility.Atlantogenata %>% as_tibble %>% filter(!is.na(n
                                face = "plain", colour = "black")
   ) + 
   xlab("| Log2 Cancer Succeptibility Change |")
-# f5a
 
-f2 <- ggarrange(
-  f2a, 
-  #nrow=2, ncol=1,
-  labels="AUTO"
-)
+
 ```
 
-```{r Fig2 Prep Table 1}
-t.cancersucc.atl <- table.cancerSucceptibility.Atlantogenata.genomes %>% 
-  # filter(label %in% ml.treedata.table$label) %>%  
-  # select(-parent, -node, -branch.length) %>%
-  select(
-    Node = label, 
-    lnSize,
-    `Est. Lifespan`=Lifespan,
-    `K1` = K1,
-    `K2` = K2,
-    `Change in K` = CancerSucceptabilityChange,
-    `log2 Change` = log2CancerSucceptabilityChange
-  ) %>%
-  mutate_at(
-    vars(`K1`, `K2`, `Change in K`), 
-    . %>% formatC(., format = "e", digits = 2)
-            ) %>%
-  mutate(
-    `Est. Lifespan` = `Est. Lifespan` %>% round(2), 
-    # `Change in K` = `Change in K` %>% round(2), 
-    `log2 Change` = `log2 Change` %>% round(2)
-  ) %>% 
-  mutate(
-    Ancestor = Node %>% 
-    sapply(
-        .,
-        function(n, d=table.cancerSucceptibility.Atlantogenata.genomes){
-            p.node <- d %>% filter(label==n) %>% pull(parent) %>% unique
-            d %>% filter(node == p.node) %>% pull(label) %>% unique %>% return
-        }
-    ) %>% str_replace_all("\\.", " ") %>% str_replace("Root", "Atlantogenata") %>% factor(., levels = c("Loxodontini", "Loxodonta africana","Loxodona", "Loxodonta cyclotis", "Palaeoloxodon antiquus", "Elephantidae", "Elephantina", "Elephas maximus", "Mammuthus", "Mammuthus primigenius", "Mammuthus columbi", "Proboscidea", "Mammut americanum", "Tethytheria", "Trichechus manatus", "Paenungulata", "Procavia capensis", "Pseudoungulata", "Orycteropus afer", "Macroscelidae", "Elephantulus edwardii", "Afrosoricida", "Chrysochloris asiatica", "Echinops telfairi", "Afrotheria", "Xenarthra", "Dasypus novemcinctus", "Choloepus hoffmanni", "Atlantogenata", "Afroinsectivora")),
-        Node = Node %>% str_replace_all("\\.", " ") %>% factor(., levels = c("Loxodontini", "Loxodonta africana","Loxodona", "Loxodonta cyclotis", "Palaeoloxodon antiquus", "Elephantidae", "Elephantina", "Elephas maximus", "Mammuthus", "Mammuthus primigenius", "Mammuthus columbi", "Proboscidea", "Mammut americanum", "Tethytheria", "Trichechus manatus", "Paenungulata", "Procavia capensis", "Pseudoungulata", "Orycteropus afer", "Macroscelidae", "Elephantulus edwardii", "Afrosoricida", "Chrysochloris asiatica", "Echinops telfairi", "Afrotheria", "Xenarthra", "Dasypus novemcinctus", "Choloepus hoffmanni", "Atlantogenata", "Afroinsectivora"))
-  ) %>%
-    arrange(Node) %>% 
-  select(Node, `Est. Lifespan`, K1, K2, `Change in K`, `log2 Change`) %>% 
-  kable(
-    ., 
-    booktabs = TRUE,
-    caption = 'Estimated Cancer Succeptibilty for nodes in Atlantogenata'
-  ) %>% 
-  kable_styling(latex_options = c("scale_down"))
-```
-```{r Figure2, fig.cap="Cancer succecptibility across Atlantogenata", out.width="6in", fig.asp=1}
-f2
-```
 
-```{r Table 2}
-t.cancersucc.atl
-```
+<!-- The dramatic increase in body mass and lifespan in some Afrotherian lineages implies those lineages evolved reduced cancer risk. To infer the magnitude of these reductions we estimated differences in cancer risk between small bodied, short-lived species and large bodied, long-lived species as well as for reconstructed ancestral Afrotherians. Following [@Peto:20151c2] we estimate the intrinsic cancer risk as the product of risk associated with body mass and lifespan. Differences in cancer susceptibility $K$ due to body mass differences between species can be approximated simply as the fold difference in body mass ($D$) between species [@Peto:20151c2]. The risk of developing cancer also increases in proportion to the sixth power of age and is approximated by the formula $Ct^6$, in which the proportionality constant C that determines susceptibility to cancer induction is multiplied by the sixth power of the age in years, $t$ [@ArmitageAndDoll1954; @Nordling1953; @Peto:20151c2]. Thus we can estimate the intrinsic cancer risk for a species as $K \approx Dt^6$. -->
 
-The dramatic increase in body mass and lifespan in some Afrotherian lineages implies those lineages evolved reduced cancer risk. To infer the magnitude of these reductions we estimated differences in cancer risk between small bodied, short-lived species and large bodied, long-lived species as well as for reconstructed ancestral Afrotherians. Following [@Peto:20151c2] we estimate the intrinsic cancer risk as the product of risk associated with body mass and lifespan. Differences in cancer susceptibility $K$ due to body mass differences between species can be approximated simply as the fold difference in body mass ($D$) between species [@Peto:20151c2]. The risk of developing cancer also increases in proportion to the sixth power of age and is approximated by the formula $Ct^6$, in which the proportionality constant C that determines susceptibility to cancer induction is multiplied by the sixth power of the age in years, $t$ [@ArmitageAndDoll1954; @Nordling1953; @Peto:20151c2]. Thus we can estimate the intrinsic cancer risk for a species as $K \approx Dt^6$. 
+<!-- In order to estimate the intrinsic cancer risk of a species, we first obtained estimates for lifespans at ancestral nodes using PGLS and the model $ln(lifespan) = \beta_{1}corBrownian +\beta_{2}ln(Size) + \epsilon$ (Table 2). With this information in hand, we calculated $K_{1}$ at all nodes, and then estimated the fold change in cancer susceptibility between an ancestral node and a given node as $\frac{K_{2}}{K_{1}}$ (__Table 4__). As body size and phylogeny are the strongest predictors of lifespan, we find that this regression is sufficiently robust without further metabolic or other covariates for our purposes herein. -->
 
-In order to estimate the intrinsic cancer risk of a species, we first obtained estimates for lifespans at ancestral nodes using PGLS and the model $ln(lifespan) = \beta_{1}corBrownian +\beta_{2}ln(Size) + \epsilon$ (Table 2). With this information in hand, we calculated $K_{1}$ at all nodes, and then estimated the fold change in cancer susceptibility between an ancestral node and a given node as $\frac{K_{2}}{K_{1}}$ (__Table 4__). As body size and phylogeny are the strongest predictors of lifespan, we find that this regression is sufficiently robust without further metabolic or other covariates for our purposes herein.
+<!-- As shown in __Table 2__, cancer susceptibility skyrocketed at the initial divergence of Atlantogenata, followed by a generally upwards trend. At the common ancestor of Afrotheria there is an initial `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Afrotheria") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase in cancer risk. In parallel to Afrotheria, cancer susceptibility increases `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Xenarthra") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold in Xenarthra. However, cancer risk slowly deflates as size decreases as one moves along the tree towards extant species, such as in Hoffman's Two Toed Sloth (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Choloepus hoffmanni") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold change) and in the Nine-banded Armadillo (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Dasypus novemcinctus") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold change). -->
 
-As shown in __Table 2__, cancer susceptibility skyrocketed at the initial divergence of Atlantogenata, followed by a generally upwards trend. At the common ancestor of Afrotheria there is an initial `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Afrotheria") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase in cancer risk. In parallel to Afrotheria, cancer susceptibility increases `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Xenarthra") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold in Xenarthra. However, cancer risk slowly deflates as size decreases as one moves along the tree towards extant species, such as in Hoffman's Two Toed Sloth (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Choloepus hoffmanni") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold change) and in the Nine-banded Armadillo (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Dasypus novemcinctus") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold change).
+<!-- Within Afrotheria, cancer susceptibility drops in Afrosoricida as species shrink (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Afrosoricida") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, then stagnates for the Cape Golden Mole) - but then rises `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Echinops telfairi") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold towards the Lesser Hedgehog Tenrec. In parallel, Afroinsectivora does not increase in cancer susceptibility, and decreases once more at the Cape Elephant Shrew (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephantulus edwardii") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold). The emergence of Pseudoungulata sees the next big leap in cancer susceptibility with a `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Pseudoungulata") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase. The Aardvark further increases `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Orycteropus afer") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, while we don't observe an increase at the common ancestor of Paenungulates. While the Rock Hyrax decreases in cancer susceptibility as expected (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Procavia capensis") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold), Tethytheria sees a sharp increase in cancer risk (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Tethytheria") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold). Within Tethytheria, the Manatee's cancer risk increases once more `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Trichechus manatus") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, while Proboscidea's cancer risk drops precipitously along with its body size (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Proboscidea") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold). Yet, within Proboscidea we see the biggest increases: right off the bat, we see that the cancer susceptibility of  Elephantidae and the American Mastodon skyrocket by `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephantidae") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold and `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Mammut americanum") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, respectively. Both Elephantina and Loxodontini in Elephantidae have a `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephantina") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase in cancer susceptibility. Within Elephantina, cancer susceptibility stays stable at Mammuthus and in the Colombian Mammoth, and slightly decreases in the Wooly Mammoth (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Mammuthus primigenius") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold). The three extant elephants - Asian Elephant in Elephantina, the African Savana Elephant in Loxodontini, and the African Forest Elephant in Loxodona, meanwhile, have parallel and similar decreases in both size and cancer susceptibility (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephas maximus") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-, `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Loxodonta africana") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-, and `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Loxodonta cyclotis") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, respectively). Neither the common ancestor of Loxodonta, nor the Straight-Tusked Mammoth see any further changes in cancer susceptibility. -->
 
-Within Afrotheria, cancer susceptibility drops in Afrosoricida as species shrink (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Afrosoricida") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, then stagnates for the Cape Golden Mole) - but then rises `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Echinops telfairi") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold towards the Lesser Hedgehog Tenrec. In parallel, Afroinsectivora does not increase in cancer susceptibility, and decreases once more at the Cape Elephant Shrew (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephantulus edwardii") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold). The emergence of Pseudoungulata sees the next big leap in cancer susceptibility with a `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Pseudoungulata") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase. The Aardvark further increases `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Orycteropus afer") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, while we don't observe an increase at the common ancestor of Paenungulates. While the Rock Hyrax decreases in cancer susceptibility as expected (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Procavia capensis") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold), Tethytheria sees a sharp increase in cancer risk (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Tethytheria") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold). Within Tethytheria, the Manatee's cancer risk increases once more `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Trichechus manatus") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, while Proboscidea's cancer risk drops precipitously along with its body size (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Proboscidea") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold). Yet, within Proboscidea we see the biggest increases: right off the bat, we see that the cancer susceptibility of  Elephantidae and the American Mastodon skyrocket by `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephantidae") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold and `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Mammut americanum") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, respectively. Both Elephantina and Loxodontini in Elephantidae have a `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephantina") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase in cancer susceptibility. Within Elephantina, cancer susceptibility stays stable at Mammuthus and in the Colombian Mammoth, and slightly decreases in the Wooly Mammoth (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Mammuthus primigenius") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold). The three extant elephants - Asian Elephant in Elephantina, the African Savana Elephant in Loxodontini, and the African Forest Elephant in Loxodona, meanwhile, have parallel and similar decreases in both size and cancer susceptibility (`r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephas maximus") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-, `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Loxodonta africana") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-, and `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Loxodonta cyclotis") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold, respectively). Neither the common ancestor of Loxodonta, nor the Straight-Tusked Mammoth see any further changes in cancer susceptibility. 
+As expected, intrinsic cancer susceptibility in Afrotheria also varies with changes in body size and longevity (Figure \@ref(fig:Figure-CancerSuscept), Table \@ref(tab:Table-CancerSuscept)), with an initial `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Afrotheria") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold and `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Xenarthra") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase in the stem-lineage of Afrotheria and Xenarthra, respectively, followed by a `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Pseudoungulata") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increases in Pseudoungulata and a `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Orycteropus afer") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase in Aardvarks (Figure \@ref(fig:Figure-CancerSuscept), Table \@ref(tab:Table-CancerSuscept)). In contrast to the Paenungulate stem-lineage, there is a `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Tethytheria") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase in cancer risk in Tethytheria, a `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Trichechus manatus") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase in Manatee, and dramatic increases within Proboscidea including a `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephantidae") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase in Elephantidae and a `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Mammut americanum") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold in the American Mastodon. Within the Elephantidae, Elephantina and Loxodontini have a `r table.cancerSucceptibility.Atlantogenata.genomes %>% filter(label == "Elephantina") %>% pull(log2CancerSucceptabilityChange) %>% round(2) %>% as.numeric`-fold increase in cancer susceptibility, while susceptibility is relatively stable in Mammoths. The three extant Proboscideans, Asian Elephant, African Savana Elephant, and the African Forest Elephant, meanwhile, have similar decreases in both size and cancer susceptibility (Figure \@ref(fig:Figure-CancerSuscept), Table \@ref(tab:Table-CancerSuscept)). 
 
 
 ## Identification and evolutionary history of gene duplications
@@ -2204,46 +2080,22 @@ genome.table.forFig <- genomeTable.atlantogenata %>%
 # genome.table.forFig[which(genome.table.forFig$Species == "Elephantulus edwardii"),]$`Lifespan (y)` = "~5.7*"
 # genome.table.forFig[which(genome.table.forFig$Species == "Loxodonta cyclotis"),]$`Lifespan (y)` = paste0(genome.table.forFig[which(genome.table.forFig$Species == "Loxodonta africana"),]$`Lifespan (y)`, "\u2020")
 ```
-```{r Figure3 Prep Genome Table}
-ggt.GenomeTable.withNote <- genome.table.forFig %>% 
-  select(Species, `Common Name`, starts_with("Size"), starts_with("#"), starts_with("%"), starts_with("Mean")) %>% 
-  arrange(Species)%>% 
-  kable(
-    ., 
-    booktabs = TRUE,
-    caption = 'Summary of duplications in Atlantogenata'
-  ) %>% 
-  kable_styling(latex_options = c("scale_down"))
-```
-```{r Table2, fig.height=8, fig.width=6}
-ggt.GenomeTable.withNote
-```
+
+<!-- Enhanced cancer suppression may have evolved through many mechanisms; among the most parsimonious is an increase in the copy number of genes with tumor suppressor functions. Previous studies focusing on candidate gene studies, for example, have identified increased copy number of the tumor suppressors _TP53_ and _LIF_ in elephants [@Abegglen:JAMA2015; @Caulin2015; @Doherty2016; @Sulak2015; @Vazquez2018]. Therefore, in order to test whether this was pervasive genome-wide in _Afrotherians_, we used a Reciprocal Best Hit BLAT (RBHB) approach to infer gene copy number in _Afrotherian_ and _Atlantogenatan_ genomes (Fig. 2A, Supplementary Figure 1). Because RBHB-like approaches can over-estimate copy number when genes are fragmented  or incorrectly assembled across multiple scaffolds, we also inferred copy number using a complementary method that quantifies the ratio between observed and expected gene coverage per nucleotide (ECNC) (Supplementary Figure 1). By only including nucleotides from the query sequence that were observed in the target genome, we also correct for partial hits where some or all of the homologs of a gene have diverged from the human homolog.  -->
+
+<!-- As our sequence database included various protein transcripts for each gene, in order to obtain gene-level copy number information and eliminate any many-to-one mappings of hits, we labeled each exon of every reciprocal best hit (RBH) with the gene corresponding to the query transcript and merged all overlapping exons; next, we eliminated any many-to-one exons that resulted from the previous step. Finally, we reassembled the gene loci based on the original transcript starts and ends, and the collapsed exon data, obtaining the full sequence of each RBH locus. Genes were considered to be duplicated if its copy number via RBHB was greater than or equal to 2, and the maximum ECNC among all transcripts prior to filtering was greater than or equal to 1.50 in order to account for partial hits that may be due to incomplete coverage.  -->
+
+<!-- We found that gene duplications were common in Atlantogenatan genomes (__Figure 4__), with number of duplications per lineage consistent with previously estimated gene duplication rates (REFS), but were particularly numerous in _Chrysochloris asiatica_,  _Elephantulus edwardii_. To explore whether genome quality may adversely effect our inferences, we used CEGMA and the gVolante server [@CEGMA; @gVolante] to assess the correlation between genome quality and copy number estimates. As shown in Supplementary Figure X, mean Copy Number, mean ECNC, and mean CN (the lesser of Copy Number and ECNC per gene) moderately or strongly correlate with genomic quality, such as LD50, the number of scaffolds, and contigs with a length above either 100K or 1M. -->
+
+We found that gene duplications were common in Atlantogenatan genomes (Figure \@ref(fig:Figure-GeneDup-Cladogram)), identifying an average of `r genomeStatsRBHB$pc.found %>% mean %>% as.percentage` genes, with an average of `r genomeStatsRBHB$pc.Hits.Duplicated %>% mean %>% as.percentage()` duplicated; this is in-line with other studies describing the rates of gene duplications over time. [@Lynch2000]. We observed that the percentage of duplicated genes in non-_Pseudoungulatan_ genomes was significantly higher: while _Pseudoungulatan_ genomes had duplicates percentages ranging anywhere from `r genome.table.forFig %>% filter(!Species %in% c("Choloepus hoffmanni", "Chrysochloris asiatica", "Dasypus novemcinctus", "Echinops telfairi", "Elephantulus edwardii"))%>% pull("% Hits Duplicated") %>% str_remove("%") %>% as.numeric %>% divide_by(100) %>% min %>% as.percentage` to `r genome.table.forFig %>% filter(!Species %in% c("Choloepus hoffmanni", "Chrysochloris asiatica", "Dasypus novemcinctus", "Echinops telfairi", "Elephantulus edwardii")) %>%  pull("% Hits Duplicated") %>% str_remove("%") %>% as.numeric %>% divide_by(100) %>% max %>% as.percentage`, outgroup species' duplication rates ranged from `r genome.table.forFig %>% filter(Species %in% c("Choloepus hoffmanni", "Chrysochloris asiatica", "Dasypus novemcinctus", "Echinops telfairi", "Elephantulus edwardii"))%>% pull("% Hits Duplicated") %>% str_remove("%") %>% as.numeric %>% divide_by(100) %>% min %>% as.percentage` to `r genome.table.forFig %>% filter(Species %in% c("Choloepus hoffmanni", "Chrysochloris asiatica", "Dasypus novemcinctus", "Echinops telfairi", "Elephantulus edwardii")) %>%  pull("% Hits Duplicated") %>% str_remove("%") %>% as.numeric %>% divide_by(100) %>% max %>% as.percentage`. To explore whether genome quality may adversely effect our inferences, we used CEGMA and the gVolante server [@CEGMA; @gVolante] to assess the correlation between genome quality and copy number estimates. As shown in Figure \@ref(fig:Figure-GenomeCor), mean Copy Number, mean ECNC, and mean CN (the lesser of Copy Number and ECNC per gene) moderately or strongly correlate with genomic quality, such as LD50, the number of scaffolds, and contigs with a length above either 100K or 1M.
 
 
-```{r Figure3, fig.cap="Gene duplications occur readily throughout Atlantogenata. A) A table summarizing duplication events in Atlantogenata. B) A tree of the species in Atlantogenata with genomes, with the number of genes that underwent an increase in copy number overlayed at each node.", out.height="7in", out.width="6in"}
 
-f3 <- p.ml.tree.increasing.geneCounts.withSize
-# f3 <- ggarrange(f3a, f3b, nrow=2, ncol=1, labels = "AUTO", heights = c(1,2))
-# f3
-f3
-```
+<!-- Given the preliminary status of the genomes for _Chrysochloris asiatica_ and _Elephantulus edwardii_; and the fact that more revisions have been performed for Paenungulatan genomes; we hypothesized that genome quality may be confounding the results we've observed. We used `CEGMA` and the `gVolante` server [@CEGMA; @gVolante] to assess the quality of all our genomes, to see if any of these metrics correlated with our metrics of gene counts and copy number. As shown in Figure 3, mean ECNC, mean Copy Number, and mean CN (the lesser of Copy Number and ECNC per gene) correlate moderately strongly with genomic quality metrics related to the length and assembly quality, like LD50 and the number of scaffolds and contigs with a length above either 100K or 1M, supporting our hypothesis that increases in copy number correlate . -->
 
-Enhanced cancer suppression may have evolved through many mechanisms; among the most parsimonious is an increase in the copy number of genes with tumor suppressor functions. Previous studies focusing on candidate gene studies, for example, have identified increased copy number of the tumor suppressors _TP53_ and _LIF_ in elephants [@Abegglen:JAMA2015; @Caulin2015; @Doherty2016; @Sulak2015; @Vazquez2018]. Therefore, in order to test whether this was pervasive genome-wide in _Afrotherians_, we used a Reciprocal Best Hit BLAT (RBHB) approach to infer gene copy number in _Afrotherian_ and _Atlantogenatan_ genomes (Fig. 2A, Supplementary Figure 1). Because RBHB-like approaches can over-estimate copy number when genes are fragmented  or incorrectly assembled across multiple scaffolds, we also inferred copy number using a complementary method that quantifies the ratio between observed and expected gene coverage per nucleotide (ECNC) (Supplementary Figure 1). By only including nucleotides from the query sequence that were observed in the target genome, we also correct for partial hits where some or all of the homologs of a gene have diverged from the human homolog. 
+<!-- In order to determine when in the phylogeny our identified duplications occurred, we used maximum likelihood to reconstruct ancestral gene copy numbers across the phylogeny. We encoded the copy number of each gene as a discrete trait ranging from 0 ("?") to 31+, and then ran the ancestral gene copy number reconstruction using the phylogenetics suite `IQTREE`, which rapidly tests and runs the best evolutionary model for a given trait of interest. Importantly, `IQTREE` can be set to only output states where the likelihood of the state is greater than a certain threshold. Setting the threshold to 0.8, we obtained the results shown in Figure 2B. -->
 
-As our sequence database included various protein transcripts for each gene, in order to obtain gene-level copy number information and eliminate any many-to-one mappings of hits, we labeled each exon of every reciprocal best hit (RBH) with the gene corresponding to the query transcript and merged all overlapping exons; next, we eliminated any many-to-one exons that resulted from the previous step. Finally, we reassembled the gene loci based on the original transcript starts and ends, and the collapsed exon data, obtaining the full sequence of each RBH locus. Genes were considered to be duplicated if its copy number via RBHB was greater than or equal to 2, and the maximum ECNC among all transcripts prior to filtering was greater than or equal to 1.50 in order to account for partial hits that may be due to incomplete coverage. 
-
-Once we applied these criteria to the results, we obtained the results shown in Figure 2A. Our approach positively identified an average of `r genomeStatsRBHB$pc.found %>% mean %>% as.percentage` of the queries we searched. We observed that the percentage of duplicated genes in non-Pseudoungulatan genomes was significantly higher: while these genomes had duplicates percentages ranging anywhere from `r genome.table.forFig %>% filter(!Species %in% c("Choloepus hoffmanni", "Chrysochloris asiatica", "Dasypus novemcinctus", "Echinops telfairi", "Elephantulus edwardii"))%>% pull("% Hits Duplicated") %>% str_remove("%") %>% as.numeric %>% divide_by(100) %>% min %>% as.percentage` to `r genome.table.forFig %>% filter(!Species %in% c("Choloepus hoffmanni", "Chrysochloris asiatica", "Dasypus novemcinctus", "Echinops telfairi", "Elephantulus edwardii")) %>%  pull("% Hits Duplicated") %>% str_remove("%") %>% as.numeric %>% divide_by(100) %>% max %>% as.percentage`, outgroup species' duplication rates ranged from `r genome.table.forFig %>% filter(Species %in% c("Choloepus hoffmanni", "Chrysochloris asiatica", "Dasypus novemcinctus", "Echinops telfairi", "Elephantulus edwardii"))%>% pull("% Hits Duplicated") %>% str_remove("%") %>% as.numeric %>% divide_by(100) %>% min %>% as.percentage` to `r genome.table.forFig %>% filter(Species %in% c("Choloepus hoffmanni", "Chrysochloris asiatica", "Dasypus novemcinctus", "Echinops telfairi", "Elephantulus edwardii")) %>%  pull("% Hits Duplicated") %>% str_remove("%") %>% as.numeric %>% divide_by(100) %>% max %>% as.percentage`. 
-
-```{r Figure4, fig.cap="Correlations between genome quality metrics and ECNC metrics", fig.asp=1, out.width="5in", out.height="5in", fig.align="center"}
-f4 <- p.cor.GCT.CEGMA
-f4
-```
-
-Given the preliminary status of the genomes for _Chrysochloris asiatica_ and _Elephantulus edwardii_; and the fact that more revisions have been performed for Paenungulatan genomes; we hypothesized that genome quality may be confounding the results we've observed. We used `CEGMA` and the `gVolante` server [@CEGMA; @gVolante] to assess the quality of all our genomes, to see if any of these metrics correlated with our metrics of gene counts and copy number. As shown in Figure 3, mean ECNC, mean Copy Number, and mean CN (the lesser of Copy Number and ECNC per gene) correlate moderately strongly with genomic quality metrics related to the length and assembly quality, like LD50 and the number of scaffolds and contigs with a length above either 100K or 1M, supporting our hypothesis that increases in copy number correlate .
-
-In order to determine when in the phylogeny our identified duplications occurred, we used maximum likelihood to reconstruct ancestral gene copy numbers across the phylogeny. We encoded the copy number of each gene as a discrete trait ranging from 0 ("?") to 31+, and then ran the ancestral gene copy number reconstruction using the phylogenetics suite `IQTREE`, which rapidly tests and runs the best evolutionary model for a given trait of interest. Importantly, `IQTREE` can be set to only output states where the likelihood of the state is greater than a certain threshold. Setting the threshold to 0.8, we obtained the results shown in Figure 2B.
-
-Gene duplications events occured readily thoughout _Atlantogenata_ (Figure 2B). Among the genes that increased in copy number in the elephant lineage are TP53 and LIF, as previously described; however, we find that these two genes represent a fraction of the 940 genes that are duplicated in the African Elephant overall, which accumulated over various steps through their evolution. While the extinct elephantids have acceptable genome quality metrics according to CEGMA, they are nonetheless missing a significant number of sequences; this may contribute to the low number of duplicated genes that occured in internal nodes. The number of duplicates that occur at each branch is also proportional to the density of the sampling of the clade overall, as would be expected. In branches, such as _Afrosoricida_, where the number of species is relatively minuscule compared to the size of the clade, we see many significantly larger numbers of duplications private to these species.
+Among the genes that increased in copy number in the elephant lineage are TP53 and LIF, as previously described; however, we find that these two genes represent a fraction of the 940 genes that are duplicated in the African Elephant overall, which accumulated over various steps through their evolution. While the extinct elephantids have acceptable genome quality metrics according to CEGMA, they are nonetheless missing a significant number of sequences; this may contribute to the low number of duplicated genes that occured in internal nodes. The number of duplicates that occur at each branch is also proportional to the density of the sampling of the clade overall, as would be expected. In branches, such as _Afrosoricida_, where the number of species is relatively minuscule compared to the size of the clade, we see many significantly larger numbers of duplications private to these species.
 
 ## Duplications that occurred recently in Probodiscea are enriched for tumor suppressor pathways
 
@@ -2259,7 +2111,6 @@ p.loxAfr.ORA.dotplot.increased <- ORA.all %>%
 #   filter(Direction=="increased", Node == "Proboscidea", Database == "Reactome", RBHB == "RBB") %>% 
 #   graph.ORA.dotplot(., plotly=knitr::is_html_output())
 ```
-
 ```{r Branches which experienced an increase in size}
 
 ORA.numbers <- ORA.all  %>% filter(RBHB=="RBB") %>% group_by(Direction, Ancestor, Node, FDR.Threshold, Database) %>% summarise(N.Pathways=n_distinct(Pathway)) %>% ungroup %>% pivot_wider(names_from = FDR.Threshold, values_from = N.Pathways, names_prefix = "Pathways at FDR<") %>% mutate_if(is.numeric, . %>% ifelse(is.na(.), 0,.))
@@ -2272,47 +2123,18 @@ noEnrichmentIncreasing.Reactome <- setdiff(ORA.numbers.ReactomeOnly %>% filter(D
 noEnrichment.any <- setdiff(ml.treedata.table$label %>% str_replace_all("\\.", "_"), union(ORA.numbers %>% filter(Direction == "stable") %>% pull(Node), ORA.numbers %>% filter(Direction == "increased") %>%  pull(Node))) %>% str_replace_all("_", " ") %>% str_c("_", ., "_")
 noEnrichment.any.Reactome <- setdiff(ml.treedata.table$label %>% str_replace_all("\\.", "_"), union(ORA.numbers.ReactomeOnly %>% filter(Direction == "stable") %>% pull(Node), ORA.numbers.ReactomeOnly %>% filter(Direction == "increased") %>%  pull(Node))) %>% str_replace_all("_", " ") %>% str_c("_", ., "_")
 
-
-
-p.ORA <- ORA.numbers.ReactomeOnly %>% 
-  filter(Direction == "increased") %>% 
-  select(-Direction) %>% 
-  mutate(Node = Node %>% str_replace_all("_", " ")) %>% 
-  kable(
-    ., 
-    booktabs = TRUE,
-    caption = 'Number of pathways overrepresented among duplicated genes at different FDRs.'
-  ) %>% 
-  kable_styling(latex_options = c("scale_down"))  # TODO: Make "Number of Pathways" a group, and make each column just "FDR<=XX"
-
 ```
 
+Our initial hypothesis was that genes which duplicated in lineages that experienced a growth in size would be enriched for membership in tumor suppressor pathways. Thus, we used WebGestalt and its Overrepresentation Analysis (ORA) functionality to determine what pathways were enriched in our duplicated gene sets in each branch relative to our initial query set. For our database, we used Reactome for our primary analysis, but additionally used the KEGG, Panther, Wikipathways, and Wikipathways_cancer databases using WebGestalt ORA. Going through the tree, at no FDR $\leq$ 0.5 is there any significant pathway representation for genes that increased in the branches leading to <!--`r noEnrichmentIncreasing.Reactome[1:length(noEnrichmentIncreasing.Reactome)-1] %>% cat(sep=", ")`, or `r noEnrichmentIncreasing.Reactome[length(noEnrichmentIncreasing.Reactome)]`--> _Afrosoricida_, _Pseudoungulata_, _Elephantina_, _Loxodontini_, _Elephas maximus_, _Mammuthus_, _Loxodonta cyclotis_, _Palaeoloxodon antiquus_, _Loxodona_, _Mammuthus columbi_, _Mammuthus primigenius_, _Procavia capensis_, _Elephantidae_, or _Proboscidea_; furthermore, there are no significant pathway enrichments at FDR<0.5 for genes whose copy number did not change between branches (copy-number-stable) for _Afrotheria__. Note that because _Xenarthra_ was selected as the outgroup, it is not possible to polarize the changes in their gene copy numbers along the tree. 
 
-```{r Table3}
-p.ORA
-```
+For the other branches, the number of pathways that came up as significantly enriched at each FDR is shown in Table \@ref(tab:Table-OraFreqDatabase). For the species with high duplication rates and lower-quality, highly-fragmented genomes, such as with _Chrysochloris asiatica_ (`r genomeStatsRBHB %>% filter(Genome == "chrAsi1m") %>% pull(pc.Hits.Duplicated) %>% as.percentage` duplicated hits) and _Elephantulus edwardii_ (`r genomeStatsRBHB %>% filter(Genome == "eleEdw1m") %>% pull(pc.Hits.Duplicated) %>% as.percentage` duplicated hits), it is unsurprising that there is a proportionally large number of pathway enrichments. In the case of these two species, their many pathway enrichments also span an incredible range of processes at every level of biology; this, in combination with the high number of copy numbers identified for these genes, further suggests a need for improvement and refinement in these genomes. In the cell cycle pathways called as significant in the genomes of these two species plus _Orycteropus afer_ and _Echinops telfairi_, the duplicated genes included in these sets are from the same gene families, such as the APC subunit family; the proteosome subunit families; and the protein phosphatase 2 family, among others. It is highly possible that these results reflect true expansions of these gene families, especially in the higher-quality _Orycteropus afer_ genome; however, it is also possible that it simply reflects artifactual duplications, and so require further study.
 
+The pathway enrichments for genes whose copy number either did not change, or whose copy number increased, between _Loxodona_ and the African Elephant are shown in Figure \@ref(fig:Figure-loxAfrORA). Among the few enriched pathways in the African Elephant, we see that that two tumor suppression pathways - APC Complex-related pathways, and "TP53 Regulates Metabolic Genes"- appear not only in the case of stable genes, but also in the set of newly duplicated genes. The other pathways we see in the set of recently-duplicated genes include "Functionalization of Compounds" and its daughter pathway "Xenobiotics". Genes in these pathways serve to add functional groups to lipophylic compounds which would otherwise not be reactive in the cell, and are types of metabolic pathways. In the stable set we see enrichment of pathways such as "Neuronal Systems" and "Axon Guidance," which fit in well with what is known about elephant biology and evolution [@Goodman2009]. Overall in elephants, we see enrichments within duplicated genes for pathways involved in what makes an elephant an elephant - including tumor suppressor pathways.
 
-```{r Figure5, fig.cap="Overrepresentation Analysis of Duplicated Genes in Atlantogenata using Reactome Pathways.", out.width="6in", out.height="4in"}
-f5a <- p.loxAfr.ORA.dotplot
-f5b <- p.loxAfr.ORA.dotplot.increased
-
-f5 <- ggarrange(f5a, f5b, nrow=1, ncol=2, common.legend = T, legend = "bottom", labels="AUTO")
-
-f5
-```
-
-Our initial hypothesis was that genes which duplicated in lineages that experienced a growth in size would be enriched for membership in tumor suppressor pathways. Thus, we used WebGestalt and its Overrepresentation Analysis (ORA) functionality to determine what pathways were enriched in our duplicated gene sets in each branch relative to our initial query set. For our database, we used Reactome for our primary analysis, but additionally used the KEGG, Panther, Wikipathways, and Wikipathways_cancer databases using WebGestalt ORA. Going through the tree, at no FDR<0.5 is there any significant pathway representation for genes that increased in the branches leading to `r noEnrichmentIncreasing.Reactome[1:length(noEnrichmentIncreasing.Reactome)-1] %>% cat(sep=", ")`, or `r noEnrichmentIncreasing.Reactome[length(noEnrichmentIncreasing.Reactome)]`; furthermore, there are no significant pathway enrichments at FDR<0.5 for genes whose copy number did not change between branches (copy-number-stable) for `r noEnrichment.any.Reactome[1:length(noEnrichment.any.Reactome)-1] %>% cat(sep=", ")`, or `r noEnrichment.any.Reactome[length(noEnrichment.any.Reactome)]`. Note that because _Xenarthra_ was selected as the outgroup, it is not possible to polarize the changes in their gene copy numbers along the tree. 
-
-For the other branches, the number of pathways that came up as significantly enriched at each FDR is shown in Figure 3A (Supplementary Figure 3). For the species with high duplication rates and lower-quality, highly-fragmented genomes, such as with _Chrysochloris asiatica_ (`r genomeStatsRBHB %>% filter(Genome == "chrAsi1m") %>% pull(pc.Hits.Duplicated) %>% as.percentage` duplicated hits) and _Elephantulus edwardii_ (`r genomeStatsRBHB %>% filter(Genome == "eleEdw1m") %>% pull(pc.Hits.Duplicated) %>% as.percentage` duplicated hits), it is unsurprising that there is a proportionally large number of pathway enrichments. In the case of these two species, their many pathway enrichments also span an incredible range of processes at every level of biology; this, in combination with the high number of copy numbers identified for these genes, further suggests a need for improvement and refinement in these genomes. In the cell cycle pathways called as significant in the genomes of these two species plus _Orycteropus afer_ and _Echinops telfairi_, the duplicated genes included in these sets are from the same gene families, such as the APC subunit family; the proteosome subunit families; and the protein phosphatase 2 family, among others. It is highly possible that these results reflect true expansions of these gene families, especially in the higher-quality _Orycteropus afer_ genome; however, it is also possible that it simply reflects artificial duplication events, and so require further study.
-
-The pathway enrichments for genes whose copy number either did not change, or whose copy number increased, between _Loxodona_ and the African Elephant are shown in Figure 3B and 3C, respectively. Among the few enriched pathways in the African Elephant, we see that that two tumor suppression pathways - APC Complex-related pathways, and "TP53 Regulates Metabolic Genes"- appear not only in the case of stable genes, but also in the set of newly duplicated genes. The other pathways we see in the set of recently-duplicated genes include "Functionalization of Compounds" and its daughter pathway "Xenobiotics". Genes in these pathways serve to add functional groups to lipophylic compounds which would otherwise not be reactive in the cell, and are types of metabolic pathways. In the stable set we see enrichment of pathways such as "Neuronal Systems" and "Axon Guidance," which fit in well with what is known about elephant biology and evolution [@Goodman2009]. Overall in elephants, we see enrichments within duplicated genes for pathways involved in what makes an elephant an elephant - including tumor suppressor pathways.
-
-`r knitr::knit_exit()`
 
 ## Concerted duplication of TP53 and TP53-related genes towards _Probodiscea_
 
-```{r Fig6 prep}
+```{r Figure7 prep}
 # loxAfr4.geneTPM.genesToHighlight.plus
     # "GTF2F1", #TP53 Transcriptional Regulation, Paenungulata    #Seems like a general TF...
     # "STK11", #REgulation of TP53, Paenungulata                  #STK11 is a TSG
@@ -2329,12 +2151,14 @@ genesToHighlight.plus.TP53 <- genesToHighlight.plus$TP53
 
 loxAfr4.geneTPM.ORA.expressedDups.TP53 <- loxAfr4.geneTPM.ORA.expressedDups %>% 
   filter(Gene %in% genesToHighlight.plus.TP53) %>% 
+  group_by(Database) %>% 
   mutate(
     Reactome.Pathway.Prime = Pathway %>% str_split(", ") %>% sapply(. %>% str_extract(., ".*[Tt]?[Pp]53.*")%>% stringi::stri_remove_empty_na() %>% paste(collapse =", ")),
     id = str_remove(Locus, ".*_") %>% factor(., levels=sort(as.numeric(unique(.)))),
     Gene = Gene %>% factor(., levels=genesToHighlight.plus$TP53)
     ) %>% 
-  group_by(Locus) %>% 
+    ungroup %>% 
+  group_by(Locus, Database) %>% 
   summarize(Gene = unique(Gene), id=unique(id), TPM=max(TPM), Reactome.Pathway.Prime=unique(Reactome.Pathway.Prime)) %>% 
   arrange(Gene, id) %>% 
   mutate(Class = ifelse(
@@ -2351,8 +2175,17 @@ loxAfr4.geneTPM.ORA.expressedDups.TP53 <- loxAfr4.geneTPM.ORA.expressedDups %>%
     )
     
   )
-           )
+           )%>% 
+  ungroup %>% 
+  filter(Reactome.Pathway.Prime!="", Database == "Reactome")
   
+membership.matrix <- loxAfr4.geneTPM.ORA.expressedDups.TP53 %>% select(Gene, Reactome.Pathway.Prime)%>% distinct %>% pull(Reactome.Pathway.Prime) %>% str_split(", ") %>% set_names(., loxAfr4.geneTPM.ORA.expressedDups.TP53$Gene %>% unique)%>% binTableFromList() %>% data.table::transpose(make.names = "Gene", keep.names = "Gene")
+
+loxAfr4.geneTPM.ORA.expressedDups.TP53 %<>% full_join(
+  .,
+  membership.matrix %>% select(Gene, membership.matrix %>% summarise_at(vars(-Gene), sum) %>% select_if(.>1) %>% names), 
+  by="Gene"
+  ) 
 
 treedata.tp53.table <- ml.treedata.table %>% 
   full_join(., bodysize.tree.atlantogenata, by="label") %>%
@@ -2373,29 +2206,37 @@ p.treedata.tp53.table <- treedata.tp53.table %>%
     #continuous=T,
     aes(
     ),
-    size=2
+    size=1
   ) +  
-  geom_point2(aes(x=branch, subset=(GTF2F1>0), color="GTF2F1"), size=3, position = position_nudge(x=-0.2, y=0.2)) +
-  geom_point2(aes(x=branch, subset=(STK11>0), color="STK11"), size=3, position = position_nudge(x=0, y=0.2)) +
-  geom_point2(aes(x=branch, subset=(COX5A>0), color="COX5A"), size=3, position = position_nudge(x=0.2, y=0.2)) +
-  geom_point2(aes(x=branch, subset=(BRD7>0), color="BRD7"), size=3, position = position_nudge(x=-0.2, y=0)) +
-  geom_point2(aes(x=branch, subset=(TP53>0), color="TP53"), size=3, position = position_nudge(x=0, y=0)) +
-  geom_point2(aes(x=branch, subset=(CASP9>0), color="CASP9"), size=3, position = position_nudge(x=0.2, y=0)) +
-  geom_point2(aes(x=branch, subset=(PRDX1>0), color="PRDX1"), size=3, position = position_nudge(x=-0.2, y=-0.2)) +
-  geom_point2(aes(x=branch, subset=(LAMTOR5>0), color="LAMTOR5"), size=3, position = position_nudge(x=0, y=-0.2)) +
-  geom_point2(aes(x=branch, subset=(COX20>0), color="COX20"), size=3, position = position_nudge(x=0.2, y=-0.2)) +
-  geom_tiplab(parse=T, offset = 0.25) +
+  geom_point2(aes(x=branch, subset=(GTF2F1>0), color="GTF2F1"), size=1.5, position = position_nudge(x=-0.2, y=0.2)) +
+  geom_point2(aes(x=branch, subset=(STK11>0), color="STK11"), size=1.5, position = position_nudge(x=0, y=0.2)) +
+  geom_point2(aes(x=branch, subset=(COX5A>0), color="COX5A"), size=1.5, position = position_nudge(x=0.2, y=0.2)) +
+  geom_point2(aes(x=branch, subset=(BRD7>0), color="BRD7"), size=1.5, position = position_nudge(x=-0.2, y=0)) +
+  geom_point2(aes(x=branch, subset=(TP53>0), color="TP53"), size=1.5, position = position_nudge(x=0, y=0)) +
+  # geom_point2(aes(x=branch, subset=(CASP9>0), color="CASP9"), size=1.5, position = position_nudge(x=0.2, y=0)) +
+  geom_point2(aes(x=branch, subset=(PRDX1>0), color="PRDX1"), size=1.5, position = position_nudge(x=-0.2, y=-0.2)) +
+  geom_point2(aes(x=branch, subset=(LAMTOR5>0), color="LAMTOR5"), size=1.5, position = position_nudge(x=0, y=-0.2)) +
+  geom_point2(aes(x=branch, subset=(COX20>0), color="COX20"), size=1.5, position = position_nudge(x=0.2, y=-0.2)) +
+  geom_tiplab(parse=T, offset = 0.25, size=2) +
   scale_color_manual(values = TP53.gene.color) + 
   guides(color=guide_legend(title="Gene", title.position = "top", title.theme = element_text(size = 14, face="bold")))+
-  xlim(0,20) +
+  xlim(0,15) +
   theme_tree()+
   theme(
-    strip.text = element_text(size=14, face="bold"), 
-    legend.position = "bottom",
-    legend.title = element_text(size = 14, face="bold"), 
-    legend.text = element_text(size = 12),
-    axis.text.y = element_blank()
-    )
+    legend.position="bottom",
+    # panel.background = element_rect(fill = "lightgrey"),
+    text = element_text(face = "plain", 
+                        colour = "black", lineheight = 0.9, 
+                        hjust = 0.5, vjust = 0.5, angle = 0, margin = margin(), 
+                        debug = FALSE), 
+    plot.title = element_text(size = 6, 
+                              colour = "black", lineheight = 1, face = "bold"), 
+    legend.title = element_text(size = 8, 
+                                face = "bold", colour = "black"), 
+    legend.text = element_text(size = 6, 
+                               face = "plain", colour = "black"),
+    strip.text.y = element_text(size=8, face="bold")
+  )
 
 p.tp53.genes.expression <- loxAfr4.geneTPM.ORA.expressedDups.TP53 %>% 
   ggplot(
@@ -2406,7 +2247,7 @@ p.tp53.genes.expression <- loxAfr4.geneTPM.ORA.expressedDups.TP53 %>%
     )
   ) +
   geom_point(
-    size=3
+    size=1.5
   )+
   geom_segment(
     aes(
@@ -2429,33 +2270,14 @@ p.tp53.genes.expression <- loxAfr4.geneTPM.ORA.expressedDups.TP53 %>%
     legend.position="bottom",
     strip.placement = "outside",
     strip.background = element_rect(fill="white"),
-    strip.text.y = element_text(face = "bold", size=14),
-    legend.title = element_text(size = 14, face="bold"), 
-    legend.text = element_text(size = 12),
-    axis.title = element_text(size=14, face="bold"),
-    axis.text.x = element_text(size=12, face="bold"),
-    axis.text.y = element_text(size=12, face = "bold")
+    strip.text.y = element_text(face = "bold", size=8),
+    legend.title = element_text(size = 8, face="bold"), 
+    legend.text = element_text(size = 6),
+    axis.title = element_text(size=8, face="bold"),
+    axis.text.x = element_text(size=6, face="bold"),
+    axis.text.y = element_text(size=6, face = "bold")
   )+
   coord_flip()
-```
-
-
-```{r Figure6, fig.cap="", fig.width=5, fig.height=8}
-f6a <- p.treedata.tp53.table
-f6b <- p.tp53.genes.expression
-fig6 <- ggarrange(f6a, f6b, nrow=1, ncol=2, labels="AUTO", widths = c(1.5,1))
-
-fig6
-    # "GTF2F1", #TP53 Transcriptional Regulation, Paenungulata    #Seems like a general TF...
-    # "STK11", #REgulation of TP53, Paenungulata                  #STK11 is a TSG
-    # "COX5A", #TP53 transcriptional regulation, PRobodiscea      #CytoC OXidase
-    # "BRD7", # TP53 regulation, Tethytheria                      #Required for p53-dependent oncogene-induced senescence
-    # "TP53", #TP53 duplicates in Tethytheria
-    # "SIAH1", # p53 pathway, Ubiquitin mediated proteolysis, Tethytheria   #E3 Ligase, induces apoptosis
-    # "CASP9", # miRNA regulation of TP53, Cell Death probably, Extant Elephants  #Induces apoptosis, duh
-    # "PRDX1", # TP53 regulates metabol, LoxAfr & MamPri          #Decomposes H2O2
-    # "LAMTOR5", # Metabolism and TP53, 2x in Atlantogenata but 5x in oryAfe, 4-6 in modern elephants   #Antiapoptotic?
-    # "COX20" # TP53 Regulates Metabolic Genes, LoxAfr            #CytoC OXidase
 ```
 
 Prior studies looking at the duplication of TP53 in the African Elephant motivated further study for the enrichment of genes involved in TP53-related metabolic pathway. We traced the evolution of all genes involved in this TP53-duplicated pathway that were duplicated in the African Elephant, and used publicly-available RNA-seq data to see which genes are actively expresses in living elephants. Excitingly, we found that the initial duplication of TP53 in Tethytheria, where body size expanded, was preceded by the duplication of GTF2F1 and STK11 in _Paenungulata_; and was coincided by the duplication of BRD7. These two genes are involved in regulating the transcription of TP53, and their duplication prior to that of TP53 may have facilitated its retroduplication. Interestingly enough, STK11 is a tumor suppressor gene in its own right, and plays additional roles in mediating tumor suppression via p21-induced senescence [@Launonen2005].
@@ -2463,7 +2285,7 @@ Prior studies looking at the duplication of TP53 in the African Elephant motivat
 <!-- GTF2F1 is a general transcription factor [@CITE and talk more about this] -->
 <!-- STK11 is a tumor suppressor gene [@CITE and talk more] -->
 
-The other genes that are duplicated in the pathway are all downstream of TP53; these genes duplicated either alongside TP53 in the case of SIAH1, or subsequently in _Probodiscea_, _Elephantidae_, and in modern elephants. (Figure 4A). These genes are all expressed in RNA-seq data, suggesting that they encode functional genes in modern elephants (Fig 4B).
+The other genes that are duplicated in the pathway are all downstream of TP53; these genes duplicated either alongside TP53 in the case of SIAH1, or subsequently in _Probodiscea_, _Elephantidae_, and in modern elephants. (Figure \@ref(fig:Figure-loxAfrTP53)). These genes are all expressed in RNA-seq data, suggesting that they encode functional genes in modern elephants (Figure \@ref(fig:Figure-loxAfrTP53)).
 
 # Discussion
 
@@ -2490,14 +2312,244 @@ The Authors have no conflicts of interest to report
 We would like to thank the Department of Human Genetics at the University of Chicago for supporting this project.
 
 
-# SUPPLEMENTARY FIGURES
-<!-- ```{r SFig 1, fig.cap="As expected, there was a correlation between the number of hits identified in a species with the evolutionary distance relative to humans"} -->
-<!--  -->
-<!-- ``` -->
-`r warning("TODO: I might have made more figures. Rename this after verifying that all figures are included somewhere in the paper.")`
+# FIGURES
 
-```{r Supplementary Figure 1, fig.cap="Supplementary Figure 1: Estimated Copy Number by Coverage (ECNC) consolidates fragmented genes while accounting for missing domains in homologs. __A)__ A single, contiguous gene homolog in a target genome with 100% query length coverage has an ECNC of 1.0. __B)__ Two contiguous gene homologs, each with 100% query length coverage have an ECNC of 2.0. __C)__ A single gene homolog, split across multiple scaffolds and contigs in a fragmented target genome; BLAT identifies each fragment as a single hit. Per nucleotide of query sequence, there is only one corresponding nucleotide over all the hits, thus the ECNC is 1.0. __D)__ Two gene homologs, one fragmented and one contiguous. 100% of nucleotides in the query sequence are represented between all hits; however, every nucleotide in the query has two matching nucleotides in the target genome, thus the ECNC is 2.0. __E)__ One true gene homolog in the target genome, plus multiple hits of a conserved domain that span 20% of the query sequence. While 100% of the query sequence is represented in total, 20% of the nucleotides have 4 hits. Thus, the ECNC for this gene is 1.45. __F)__ Two real gene homologs; one hit is contiguous, one hit is fragmented in two, and the tail end of both sequences was not identified by BLAT due to sequence divergence. Only 75% of the query sequence was covered in total between the hits, but for that 75%, each nucleotide has two hits. As such, ECNC is equal to 2.0 for this gene.", eval=F}
-sf1 <- list(
+```{r Figure-intro, fig.cap="Atlantogenatans with sequenced genomes, body sizes, and known lifespans [@PuttickAndThomas2015; @HAGR]",  out.width="6in", fig.asp=1.3}
+atlantogenata.tree.size.lifespan
+```
+
+```{r Figure-BodySize, fig.cap="Body sizes rapidly and frequently expand in Eutherians, especially in Atlantogenata. **A)** Tree of Eutherian species, colored by ln(Body Size) and with branch lengths set to the rate of change in body sizes, normalized by the square root of the root branch. Atlantogenata is highlighted at the bottom. **B)** Zoom-in of (**A**) on Atlantogenata. Silhuetes for the African Elephant, West Indian Manatee, Cape Elephant Shrew, Lesser Hedgehog Tenrec, Cape Golden Mole, Nine-Banded Armadillo, and Hoffman's Two-Toed Sloth are colored by their extant body sizes, while clade labels are colored based on the common ancestor's estimated body size. **C)** Confidence interval plot for representative species and ancestral nodes.", out.width="6in", fig.asp=1}
+fig.bodysize.a <- p.tree
+fig.bodysize.b <- p.tree.atlantogenata
+fig.bodysize.c <- p.bodysize.atlantogenata
+
+fig.bodysize.ab <- ggarrange(
+  fig.bodysize.a, fig.bodysize.b, 
+  nrow=1, ncol = 2, 
+  labels="AUTO",
+  widths = c(1,2),
+  font.label = list(size=6, face="bold")
+  )
+
+fig.bodysize <-
+  ggarrange(
+  ggplotify::as.ggplot(fig.bodysize.ab),
+  fig.bodysize.c,
+  nrow=2, ncol=1,
+  labels = c("", "C"),
+  font.label = list(size=6, face="bold")
+)
+fig.bodysize
+```
+
+```{r Figure-CancerSuscept, fig.cap="Cancer succecptibility across Atlantogenata. Branch lengths are set to the magnitude of change in cancer succeptiblity; colors indicate the magnitude and direction of the change.", out.width="6in", fig.asp=1}
+p.tree.cancerSucceptibility.Atlantogenata
+```
+
+```{r Figure-GeneDup-Cladogram, fig.cap="Gene duplications occur readily throughout Atlantogenata. Shown here is a tree of Atlantogenatan species with genomes, with the number of genes that underwent an increase in copy number overlayed at each node.", out.height="7in", out.width="6in"}
+p.ml.tree.increasing.geneCounts.withSize
+```
+
+```{r Figure-GenomeCor, fig.cap="Correlations between genome quality metrics and ECNC metrics. Gene copy number metrics, and the genome quality metrics most strongly associated with them, are highlighted in red.", fig.asp=1, out.width="6in", out.height="6in", fig.align="center"}
+p.cor.GCT.CEGMA
+```
+
+```{r Figure-loxAfrORA, fig.cap="Overrepresentation Analysis of Duplicated Genes in Atlantogenata using Reactome Pathways.", out.width="6in", out.height="4in"}
+fig.loxAfr.ORA <- ggarrange(
+  p.loxAfr.ORA.dotplot, 
+  p.loxAfr.ORA.dotplot.increased, 
+  nrow=1, ncol=2, 
+  common.legend = T, legend = "bottom", 
+  labels="AUTO"
+  )
+
+fig.loxAfr.ORA
+```
+
+```{r Figure-loxAfrTP53, fig.cap="", out.width="6in", out.height="6in"}
+fig.TP53 <- ggarrange(
+  p.treedata.tp53.table, 
+  p.tp53.genes.expression, 
+  nrow=1, ncol=2, 
+  labels="AUTO", 
+  widths = c(1.5,1)
+  )
+fig.TP53
+    # "GTF2F1", #TP53 Transcriptional Regulation, Paenungulata    #Seems like a general TF...
+    # "STK11", #REgulation of TP53, Paenungulata                  #STK11 is a TSG
+    # "COX5A", #TP53 transcriptional regulation, PRobodiscea      #CytoC OXidase
+    # "BRD7", # TP53 regulation, Tethytheria                      #Required for p53-dependent oncogene-induced senescence
+    # "TP53", #TP53 duplicates in Tethytheria
+    # "SIAH1", # p53 pathway, Ubiquitin mediated proteolysis, Tethytheria   #E3 Ligase, induces apoptosis
+    # "CASP9", # miRNA regulation of TP53, Cell Death probably, Extant Elephants  #Induces apoptosis, duh
+    # "PRDX1", # TP53 regulates metabol, LoxAfr & MamPri          #Decomposes H2O2
+    # "LAMTOR5", # Metabolism and TP53, 2x in Atlantogenata but 5x in oryAfe, 4-6 in modern elephants   #Antiapoptotic?
+    # "COX20" # TP53 Regulates Metabolic Genes, LoxAfr            #CytoC OXidase
+```
+
+# TABLES 
+
+```{r Table-CancerSuscept}
+t.cancersucc.atl <- table.cancerSucceptibility.Atlantogenata.genomes %>% 
+  # filter(label %in% ml.treedata.table$label) %>%  
+  # select(-parent, -node, -branch.length) %>%
+  select(
+    Node = label, 
+    lnSize,
+    `Est. Lifespan`=Lifespan,
+    `K1` = K1,
+    `K2` = K2,
+    `Change in K` = CancerSucceptabilityChange,
+    `log2 Change` = log2CancerSucceptabilityChange
+  ) %>%
+  mutate_at(
+    vars(`K1`, `K2`, `Change in K`), 
+    . %>% formatC(., format = "e", digits = 2)
+            ) %>%
+  mutate(
+    `Est. Lifespan` = `Est. Lifespan` %>% round(2), 
+    # `Change in K` = `Change in K` %>% round(2), 
+    `log2 Change` = `log2 Change` %>% round(2)
+  ) %>% 
+  mutate(
+    Ancestor = Node %>% 
+    sapply(
+        .,
+        function(n, d=table.cancerSucceptibility.Atlantogenata.genomes){
+            p.node <- d %>% filter(label==n) %>% pull(parent) %>% unique
+            d %>% filter(node == p.node) %>% pull(label) %>% unique %>% return
+        }
+    ) %>% str_replace_all("\\.", " ") %>% str_replace("Root", "Atlantogenata") %>% factor(., levels = c("Loxodontini", "Loxodonta africana","Loxodona", "Loxodonta cyclotis", "Palaeoloxodon antiquus", "Elephantidae", "Elephantina", "Elephas maximus", "Mammuthus", "Mammuthus primigenius", "Mammuthus columbi", "Proboscidea", "Mammut americanum", "Tethytheria", "Trichechus manatus", "Paenungulata", "Procavia capensis", "Pseudoungulata", "Orycteropus afer", "Macroscelidae", "Elephantulus edwardii", "Afrosoricida", "Chrysochloris asiatica", "Echinops telfairi", "Afrotheria", "Xenarthra", "Dasypus novemcinctus", "Choloepus hoffmanni", "Atlantogenata", "Afroinsectivora")),
+        Node = Node %>% str_replace_all("\\.", " ") %>% factor(., levels = c("Loxodontini", "Loxodonta africana","Loxodona", "Loxodonta cyclotis", "Palaeoloxodon antiquus", "Elephantidae", "Elephantina", "Elephas maximus", "Mammuthus", "Mammuthus primigenius", "Mammuthus columbi", "Proboscidea", "Mammut americanum", "Tethytheria", "Trichechus manatus", "Paenungulata", "Procavia capensis", "Pseudoungulata", "Orycteropus afer", "Macroscelidae", "Elephantulus edwardii", "Afrosoricida", "Chrysochloris asiatica", "Echinops telfairi", "Afrotheria", "Xenarthra", "Dasypus novemcinctus", "Choloepus hoffmanni", "Atlantogenata", "Afroinsectivora"))
+  ) %>%
+    arrange(Node) %>% 
+  select(Node, `Est. Lifespan`, K1, K2, `Change in K`, `log2 Change`) %>% 
+  kable(
+    ., 
+    booktabs = TRUE,
+    caption = 'Estimated Cancer Succeptibilty for nodes in Atlantogenata'
+  ) %>% 
+  kable_styling(latex_options = c("scale_down"))
+
+t.cancersucc.atl
+```
+
+```{r Table-GeneDup}
+ggt.GenomeTable.withNote <- genome.table.forFig %>% 
+  select(Species, `Common Name`, starts_with("Size"), starts_with("#"), starts_with("%"), starts_with("Mean")) %>% 
+  arrange(Species)%>% 
+  kable(
+    ., 
+    booktabs = TRUE,
+    caption = 'Summary of duplications in Atlantogenata'
+  ) %>% 
+  kable_styling(latex_options = c("scale_down"))
+ggt.GenomeTable.withNote
+```
+
+```{r Table-ORAFreqDatabase}
+p.ORA <- ORA.numbers.ReactomeOnly %>% 
+  filter(Direction == "increased") %>% 
+  select(-Direction) %>% 
+  mutate(Node = Node %>% str_replace_all("_", " ")) %>% 
+  kable(
+    ., 
+    booktabs = TRUE,
+    caption = 'Number of pathways overrepresented among duplicated genes at different FDRs.'
+  ) %>% 
+  kable_styling(latex_options = c("scale_down"))  # TODO: Make "Number of Pathways" a group, and make each column just "FDR<=XX"
+p.ORA
+```
+
+```{r Table-SRAData, eval=T}
+sra.data <- read_csv("../data/SraRunTable/SraRunTable.csv") %>% 
+  select(Organism, Run, source_name, sample_name) %>% 
+  filter(Organism %in% genomeTable.atlantogenata$Species) %>% 
+     mutate(sample_name = sample_name %>% str_remove("Nine-banded Armadillo_ ID 09-86_")) %>% 
+     mutate_all(. %>% str_replace_na("")) %>% 
+     unite("Tissue", source_name, sample_name, sep="") %>% 
+     filter(Tissue != "") %>% 
+     group_by(Organism) %>% 
+     summarize(Run = Run %>% unique %>% paste0(collapse=", "), 
+               Tissue = Tissue %>% str_to_title() %>% unique %>% paste0(collapse=", ")) %>% 
+     left_join(genomeTable.atlantogenata, by=c("Organism" = "Species")) %>% 
+  select(Organism, `Common Name`, Genome, `SRA Acc.`=Run, Tissues=Tissue) #%>% 
+  # mutate_all(. %>% str_wrap(width=50))
+sra.data %>% 
+  kable(
+    ., 
+    booktabs = TRUE,
+    caption = 'NCBI SRA datasets used in this study, along with key biological and genome information.'
+  ) %>% 
+  column_spec(4, width="50em") %>% 
+  column_spec(5, width="50em") %>% 
+  kable_styling(latex_options = c("scale_down"))
+```
+
+```{r Table-BodySize, eval=T}
+t.bodysize.atlantogenata.withNodes <- st.Atlantogenata %>% 
+  as_tibble() %>% 
+  filter(!is.na(label)) %>%
+  select(
+    `Node`=label, 
+    `Size (log(g))`=Median, 
+    `95% CI (Low)` = `95%CI_Low`, 
+    `95% CI (High)` = `95%CI_High`,  
+    `Rate (sqrt)`=sqrt.rate
+  ) %>%
+  mutate_at(vars(-`Node`, ), . %>% as.numeric %>% round(2)) %>% 
+  kable(
+    ., 
+    booktabs = TRUE, longtable = T,
+    caption = 'Body Size and Confidence Intervals in Atlantogenata estimated using StableTraits.'
+  ) %>% kable_styling(latex_options = "repeat_header")
+t.bodysize.atlantogenata.withNodes
+```
+
+```{r Table-PGLS-Lifespan, eval=T}
+if(knitr::is_latex_output()){
+# size.lifespan.Atlantogenata.lm
+  t.size.lifespan.Atlantogenata.lm <- quiet(stargazer(
+    size.lifespan.Atlantogenata.lm,
+    type="latex",
+    title = "Phylogenetic Least Squares: ln(Lifespan) & ln(Body Size) Regression",
+    style = "all"
+  )) %>% paste0(collapse="\n")
+} else if(knitr::is_html_output()){
+  t.size.lifespan.Atlantogenata.lm <- quiet(stargazer(
+    size.lifespan.Atlantogenata.lm,
+    type="html",
+    title = "Phylogenetic Least Squares: ln(Lifespan) & ln(Body Size) Regression",
+    style = "all"
+  )) %>% paste0(collapse="\n")
+} else{
+  t.size.lifespan.Atlantogenata.lm <- quiet(stargazer(
+    size.lifespan.Atlantogenata.lm,
+    type="text",
+    title = "Phylogenetic Least Squares: ln(Lifespan) & ln(Body Size) Regression",
+    style = "all"
+  )) %>% paste0(collapse="\n")
+t.size.lifespan.Atlantogenata.lm %>% cat
+}
+```
+
+```{r Table-Genomes, eval=T}
+genomeTable.atlantogenata %>% 
+  mutate(Citation="NA") %>% 
+  select(Species, `Common Name`, Genomes = Genome, `Highest Quality Genome` = BestGenome, Citation) %>% 
+  kable(
+    ., 
+    booktabs = TRUE,
+    caption = 'Genomes used in this study.'
+  ) %>% 
+  kable_styling(latex_options = c("scale_down"))
+```
+
+
+# SUPPLEMENTARY FIGURES
+
+```{r Figure-ECNC, fig.cap="Estimated Copy Number by Coverage (ECNC) consolidates fragmented genes while accounting for missing domains in homologs. __A)__ A single, contiguous gene homolog in a target genome with 100% query length coverage has an ECNC of 1.0. __B)__ Two contiguous gene homologs, each with 100% query length coverage have an ECNC of 2.0. __C)__ A single gene homolog, split across multiple scaffolds and contigs in a fragmented target genome; BLAT identifies each fragment as a single hit. Per nucleotide of query sequence, there is only one corresponding nucleotide over all the hits, thus the ECNC is 1.0. __D)__ Two gene homologs, one fragmented and one contiguous. 100% of nucleotides in the query sequence are represented between all hits; however, every nucleotide in the query has two matching nucleotides in the target genome, thus the ECNC is 2.0. __E)__ One true gene homolog in the target genome, plus multiple hits of a conserved domain that span 20% of the query sequence. While 100% of the query sequence is represented in total, 20% of the nucleotides have 4 hits. Thus, the ECNC for this gene is 1.45. __F)__ Two real gene homologs; one hit is contiguous, one hit is fragmented in two, and the tail end of both sequences was not identified by BLAT due to sequence divergence. Only 75% of the query sequence was covered in total between the hits, but for that 75%, each nucleotide has two hits. As such, ECNC is equal to 2.0 for this gene.", eval=T}
+fig.ECNC <- list(
     ecnc.onegene.onehit, #A
     ecnc.twogene.twohit, #B
     ecnc.onegene.threehits, #C 
@@ -2522,31 +2574,27 @@ sf1 <- list(
 #D: "ECNC: Two Genes, Multiple Hits"
 #E: "ECNC: One Real Gene, Multiple Hits on Conserved Domain"
 #F: "ECNC: Two Real Genes, Unidentified Tails"
-sf1
+fig.ECNC
 ```
 
-```{r, Supplementary Figure 2, fig.cap="Supplementary Figure 2: Gene copy increases polarized along Atlantogenata, colored by ln(Body Size), with branch lengths equal to the change in gene copy number", eval=F}
+```{r Figure-GeneDup-BLScaled, fig.cap="Gene copy increases polarized along Atlantogenata, colored by ln(Body Size), with branch lengths equal to the change in gene copy number", eval=T}
 p.ml.tree.increasing.geneCounts.withSize.withBL
 ```
 
-```{r, Supplementary Figure 3, fig.cap="Supplementary Figure 3: Full version of RecBlat strategy, but low quality", warning=T, eval=F}
+```{r Figure-RBHBStrategy, fig.cap="Full version of RecBlat strategy, but low quality", warning=T, eval=T}
 warning("TODO: Make HQ version of this figure")
-image_read("../output/figs/RBHBDiagram.png") %>% image_ggplot()
+image_read("../output/figs/RBHBDiagram.png") %>% 
+  image_rotate(180)%>% 
+  image_ggplot()
 ```
 
 
-```{r Supplementary Figure 5, fig.cap="Supplementary Figure 5: All the Gene Copy Trees for interesting genes duplicated in LoxAfr4 (RIP any trees if this gets printed)", eval=F}
-p.ml.treedata.loxAfrHighlight.plus[1:10]
+```{r InterestingGeneTrees, fig.cap="Supplementary Figure 5: All the Gene Copy Trees for interesting genes duplicated in LoxAfr4 (RIP any trees if this gets printed)", eval=F}
+p.ml.treedata.loxAfrHighlight.plus
 warning("Don't print the full list, seriously, its like 600+ pages")
 ```
 
-```{r Supplementary Figure 6, fig.cap="Supplementary Figure 6: Expression data for interesting genes duplicated in LoxAfr4", eval=F}
-# plot.coolgenes
-```
-
-
-
-```{r Supplementary Figure 8, fig.cap="Supplementary Figure 8: The time-calibrated Eutherian tree used as input for StableTraits", warning=T, eval=F}
+```{r Figure-TimeTree-Eutheria, fig.cap="The time-calibrated Eutherian tree used as input for StableTraits, from Bininda-Emonds et al and Puttick and Thomas", warning=T, eval=T}
 p.time.tree.Eutheria <-
   time.tree %>%
   # as_tibble %>%
@@ -2566,7 +2614,10 @@ p.time.tree.Eutheria <-
   geom_highlight(node = MRCA(time.tree, "Gorilla.gorilla", "Otolemur.crassicaudatus"), fill="deepskyblue") + geom_cladelabel(node = MRCA(time.tree, "Gorilla.gorilla", "Otolemur.crassicaudatus"), fill="deepskyblue", label="Primata", align = F, offset = 2, offset.text = 3, hjust = 0, geom = "label") +
   geom_highlight(node = MRCA(time.tree, "Balaena.mysticetus", "Tursiops.truncatus"), fill="darkseagreen1") + geom_cladelabel(node = MRCA(time.tree, "Balaena.mysticetus", "Tursiops.truncatus"), fill="darkseagreen1", label="Cetacea", align = F, offset = 2, offset.text = 2, hjust = 0, geom = "label") +
   theme_tree()
+p.time.tree.Eutheria
+```
 
+```{r Figure-TimeTree-Atlantogenata, fig.cap="The time-calibrated Atlantogenatan tree used as input for StableTraits, from Puttick and Thomas", warning=T, eval=F}
 time.tree.atlantogenata <- time.tree %>%
   tree_subset(., MRCA(time.tree, "Loxodonta.africana", "Dasypus.novemcinctus"), levels_back = 0)
 
@@ -2618,39 +2669,9 @@ p.time.tree.Atlantogenata <-
   geom_point2(aes(subset=(label %in% c("Choloepus.hoffmanni", "Chrysochloris.asiatica", "Dasypus.novemcinctus", "Echinops.telfairi", "Elephantulus.edwardii", "Elephas.maximus", "Loxodonta.africana", "Loxodonta.cyclotis", "Mammut.americanum", "Mammuthus.columbi", "Mammuthus.primigenius", "Orycteropus.afer", "Palaeoloxodon.antiquus", "Procavia.capensis", "Trichechus.manatus"))), size=6, pch = 16, fill="black")+
     geom_point2(aes(subset=(label %in% c("Choloepus.hoffmanni", "Chrysochloris.asiatica", "Dasypus.novemcinctus", "Echinops.telfairi", "Elephantulus.edwardii", "Elephas.maximus", "Loxodonta.africana", "Loxodonta.cyclotis", "Mammut.americanum", "Mammuthus.columbi", "Mammuthus.primigenius", "Orycteropus.afer", "Palaeoloxodon.antiquus", "Procavia.capensis", "Trichechus.manatus"))), size=3, pch = 16, color="white")+
   theme_tree()
-# warning("TODO: this causes a segfault, find out why!")
+p.time.tree.Atlantogenata
 ```
 
-
-# Supplementary data
-```{r Supplementary Table 1, eval=F}
-sra.data <- read_csv("../data/SraRunTable/SraRunTable.csv") %>% 
-  select(Organism, Run, source_name, sample_name) %>% 
-  filter(Organism %in% genomeTable.atlantogenata$Species) %>% 
-     mutate(sample_name = sample_name %>% str_remove("Nine-banded Armadillo_ ID 09-86_")) %>% 
-     mutate_all(. %>% str_replace_na("")) %>% 
-     unite("Tissue", source_name, sample_name, sep="") %>% 
-     filter(Tissue != "") %>% 
-     group_by(Organism) %>% 
-     summarize(Run = Run %>% unique %>% paste0(collapse=", "), 
-               Tissue = Tissue %>% str_to_title() %>% unique %>% paste0(collapse=", ")) %>% 
-     left_join(genomeTable.atlantogenata, by=c("Organism" = "Species")) %>% 
-  select(Organism, `Common Name`, Genome, `SRA Acc.`=Run, Tissues=Tissue) %>% 
-  mutate_all(. %>% str_wrap(width=100))
-sra.data %>% ggtexttable()
-```
-
-```{r Supplementary Table 2, fig.cap="Table 1: Body Size and Confidence Intervals in _Atlantogenata_ estimated using StableTraits.", eval=F}
-t.bodysize.atlantogenata.withNodes
-```
-
-```{r Supplementary Table 3, fig.cap="Supplementary Table 1: Parameters from StableTraits", warning=T, eval=F}
-warning("TODO: Read in Eutheria.progress and present it to the bold.")
-```
-
-```{r Table 4, fig.cap="Model Statistics for PGLS of Cancer Succeptibility", eval=F}
-t.size.lifespan.Atlantogenata.lm %>% cat
-```
 
 # References {#references .unnumbered}
 
