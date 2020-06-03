@@ -11,15 +11,16 @@ address:
   code: "University of Chicago"
 - address: Department of Biological Sciences, 551 Cooke Hall, Buffalo NY, 14260
   code: "SUNY Buffalo"
+always_allow_html: true
 output:
+  bookdown::html_document2: default
+  bookdown::pdf_document2: default
   bookdown::pdf_book:
     base_format: rticles::elsevier_article
     number_sections: yes
     includes:
       in_header: preamble.tex
-  pdf_document: default
-  word_document: default
-  workflowr::wflow_html: default
+  bookdown::word_document2: default
 csl: plos.csl
 editor_options:
   chunk_output_type: console
@@ -53,8 +54,8 @@ abstract: "Cancer is an intrinsic disease of multicellular organisms. Within a s
 <!--_Text based on plos sample manuscript, see [http://journals.plos.org/ploscompbiol/s/latex](http://journals.plos.org/ploscompbiol/s/latex)_-->
 
 ```{r Libraries and functions, include = F}
-knitr::opts_chunk$set(eval=T, echo=F, message = F, warning = F, out.width="6in",
-                      fig.retina = 2, fig.align = "left", dpi = 300)
+knitr::opts_chunk$set(eval=T, echo=F, message = F, warning = F, out.width="6in", fig.pos = "H", out.extra = "",
+                      fig.retina = 2, dpi = 300)
 
 if(basename(getwd()) != "paper_PLOS") setwd("paper_PLOS")
 
@@ -712,8 +713,8 @@ p.ml.tree.increasing.geneCounts.withSize <- ml.tree.increasing.geneCounts.withSi
     size=2
     ) +
   scale_color_viridis_c(guide=F) +
-  scale_fill_viridis_c(limits=c(size.scale.min, size.scale.max), guide = guide_colorbar(title="Body size (ln(g))", title.position = "left", title.vjust=1,title.theme = element_text(face="bold"))) +
-  geom_tiplab(aes(label=Spc.short), offset = 0.4, color="black", size=4, parse=T)+
+  scale_fill_viridis_c(limits=c(size.scale.min, size.scale.max), guide = guide_colorbar(title="Body size (ln(g))", title.position = "left", title.vjust=1,title.theme = element_text(face="bold", size=6))) +
+  geom_tiplab(aes(label=Spc.short), offset = 0.4, color="black", size=2, parse=T)+
   geom_tiplab(aes(label=not.me(lnSize, N.Genes, threshold = 7)), geom="label",  offset=-0.5, color="black", size=2, fontface="bold")+ 
   geom_tiplab(aes(label=yes.me(lnSize, N.Genes, threshold = 7)), geom="label",  offset=-0.5, color="grey", size=2)+ 
   geom_nodelab(aes(x=branch, label=not.me(lnSize, N.Genes, threshold = 7)), geom="label", nudge_y = -0.1, nudge_x = -0.5, color="black", size=2, fontface="bold")+ 
@@ -746,6 +747,15 @@ p.ml.tree.increasing.geneCounts.withSize <- ml.tree.increasing.geneCounts.withSi
   )
 # p.ml.tree.increasing.geneCounts.withSize
 
+#Prep work
+ml.tree.increasing.geneCounts.withSize.table <- ml.tree.increasing.geneCounts.withSize %>% 
+  as_tibble %>% 
+  mutate(joint.label = str_c(label, ": ", N.Genes))
+
+ml.tree.increasing.geneCounts.withSize.table[which(ml.tree.increasing.geneCounts.withSize.table$label %in% genomeTable.atlantogenata$label),]$joint.label <- ""
+
+ml.tree.increasing.geneCounts.withSize <- ml.tree.increasing.geneCounts.withSize.table %>% as.treedata()
+
 p.ml.tree.increasing.geneCounts.withSize.withBL <- ml.tree.increasing.geneCounts.withSize %>% 
   ggtree(
     .,
@@ -762,31 +772,44 @@ p.ml.tree.increasing.geneCounts.withSize.withBL <- ml.tree.increasing.geneCounts
   geom_tiplab(aes(label=Species.strict), 
               offset = 0.02, size=3,
               color="black")+
-  geom_tiplab(aes(label=not.me(lnSize, N.Genes)), geom="label",  
-              offset=0, size=3,
-              color="black")+ 
-  geom_tiplab(aes(label=yes.me(lnSize, N.Genes)), geom="label",  
-              offset=0.0, size=3,
-              color="grey")+ 
-  geom_nodelab(aes(x=branch, label=not.me(lnSize, N.Genes)), geom="label", 
-               nudge_y = 0.2, nudge_x = 0, size=3, 
-               color="black")+ 
-  geom_nodelab(aes(x=branch, label=yes.me(lnSize, N.Genes)), geom="label", 
-               nudge_y = -0.2, nudge_x = 0, size=3, 
-               color="grey")+ 
-  geom_nodelab(aes(x=branch, label=not.me(lnSize, label)), geom="label", 
-               nudge_y = 0.2, nudge_x = -0.031, size=3, 
-               color="black")+ 
-  geom_nodelab(aes(x=branch, label=yes.me(lnSize, label)), geom="label", 
-               nudge_y = -0.2, nudge_x = -0.031, size=3, 
-               color="grey")+ 
-  geom_nodelab2(aes(subset=label=="Root", x=branch), geom="label", 
-               size=3, 
-               color="grey")+ 
+  geom_label_repel(aes(
+    label=yes.me(lnSize, joint.label, threshold=7)
+  ),
+    size=3, direction = "x", nudge_x = -0.2, force=10, segment.color = "black",
+    color="grey"
+  ) + 
+  geom_label_repel(aes(
+    label=not.me(lnSize, joint.label, threshold=7)
+  ),
+    size=3, direction = "x",nudge_x = -0.05, force=10, 
+    color="black") + 
+  geom_tiplab(aes(label=not.me(lnSize, N.Genes, threshold=7)), geom = "label", size=3, color="black") + 
+  geom_tiplab(aes(label=yes.me(lnSize, N.Genes, threshold=7)), geom = "label", size=3, color="grey") + 
+  geom_nodelab2(aes(subset=(label=="Root"), label = "Atlantogenata", x=branch), geom="label",
+               size=2,
+               color="black")+
   theme_tree2() + 
-  xlim(-0.01,0.45) +
-  theme(legend.position = "bottom") +
-  xlab("Rate of Change, Body Size")
+  xlim(-0.01,0.4) +
+  xlab("Rate of Change, Gene Copy Number") + 
+  theme(
+    legend.position="bottom",
+    # panel.background = element_rect(fill = "lightgrey"),
+    text = element_text(face = "plain", 
+                        colour = "black", lineheight = 0.9, 
+                        hjust = 0.5, vjust = 0.5, angle = 0, margin = margin(), 
+                        debug = FALSE), 
+    axis.text.x = element_text(size = 4,
+                               colour = "black", face = "bold"),
+    axis.title = element_text(size = 6, 
+                              colour = "black", face = "bold"),
+    plot.title = element_text(size = 6, 
+                              colour = "black", lineheight = 1, face = "bold"), 
+    legend.title = element_text(size = 6, 
+                                face = "bold", colour = "black"), 
+    legend.text = element_text(size = 6, 
+                               face = "plain", colour = "black")
+  )
+  
 # p.ml.tree.increasing.geneCounts.withSize.withBL
 ```
 
@@ -1623,8 +1646,7 @@ ecnc.onegene.onehit <-
   scale_x_continuous(limits = c(0,100), breaks = seq(from=0, to=100, by = 25)) + 
   labs(
     x = "Query Length",
-    y = "Query Coverage",
-    title = "ECNC: One Contiguous Gene, One Hit"
+    y = "Query Coverage"
   )
   
 ecnc.twogene.twohit <- 
@@ -1646,8 +1668,7 @@ ecnc.twogene.twohit <-
   scale_x_continuous(limits = c(0,100), breaks = seq(from=0, to=100, by = 25)) + 
   labs(
     x = "Query Length",
-    y = "Query Coverage",
-    title = "ECNC: Two Contiguous Genes, Two Hits"
+    y = "Query Coverage"
   )
   
 ecnc.onegene.threehits <-
@@ -1669,8 +1690,7 @@ ecnc.onegene.threehits <-
   scale_x_continuous(limits = c(0,100), breaks = seq(from=0, to=100, by = 25)) + 
   labs(
     x = "Query Length",
-    y = "Query Coverage",
-    title = "ECNC: One Fragmented Gene, Multiple Hits"
+    y = "Query Coverage"
   )
   
 ecnc.twogene.fourhits <-
@@ -1692,8 +1712,7 @@ ecnc.twogene.fourhits <-
   scale_x_continuous(limits = c(0,100), breaks = seq(from=0, to=100, by = 25)) + 
   labs(
     x = "Query Length",
-    y = "Query Coverage"#,
-    #title = "ECNC: Two Genes, Multiple Hits"
+    y = "Query Coverage"
   )
 
 ecnc.onegene.manypartialhits <-
@@ -1716,7 +1735,6 @@ ecnc.onegene.manypartialhits <-
   labs(
     x = "Query Length",
     y = "Query Coverage"
-    # title = "ECNC: One Real Gene, Multiple Hits on Conserved Domain"
   )
 
 ecnc.twogene.partialhits <-
@@ -1742,8 +1760,7 @@ ecnc.twogene.partialhits <-
   scale_x_continuous(limits = c(0,100), breaks = seq(from=0, to=100, by = 25)) + 
   labs(
     x = "Query Length",
-    y = "Query Coverage",
-    title = "ECNC: Two Real Genes, Unidentified Tails"
+    y = "Query Coverage"
   )
 
   
@@ -1815,7 +1832,7 @@ p.cor.GCT.CEGMA <-
   theme_pubclean() +
   theme(
     axis.text.x = element_text(
-      angle = -330, vjust = 0,
+      angle = -270, vjust = 0,
       size = highlightTextSize(cor.GCT.CEGMA$Var1, cor.toHighlight, sizes = c(6,9)), 
       color = highlightTextColor(cor.GCT.CEGMA$Var1, cor.toHighlight, color = c("black", "red")), 
       hjust = 0
@@ -2125,7 +2142,7 @@ noEnrichment.any.Reactome <- setdiff(ml.treedata.table$label %>% str_replace_all
 
 ```
 
-Our initial hypothesis was that genes which duplicated in lineages that experienced a growth in size would be enriched for membership in tumor suppressor pathways. Thus, we used WebGestalt and its Overrepresentation Analysis (ORA) functionality to determine what pathways were enriched in our duplicated gene sets in each branch relative to our initial query set. For our database, we used Reactome for our primary analysis, but additionally used the KEGG, Panther, Wikipathways, and Wikipathways_cancer databases using WebGestalt ORA. Going through the tree, at no FDR $\leq$ 0.5 is there any significant pathway representation for genes that increased in the branches leading to <!--`r noEnrichmentIncreasing.Reactome[1:length(noEnrichmentIncreasing.Reactome)-1] %>% cat(sep=", ")`, or `r noEnrichmentIncreasing.Reactome[length(noEnrichmentIncreasing.Reactome)]`--> _Afrosoricida_, _Pseudoungulata_, _Elephantina_, _Loxodontini_, _Elephas maximus_, _Mammuthus_, _Loxodonta cyclotis_, _Palaeoloxodon antiquus_, _Loxodona_, _Mammuthus columbi_, _Mammuthus primigenius_, _Procavia capensis_, _Elephantidae_, or _Proboscidea_; furthermore, there are no significant pathway enrichments at FDR<0.5 for genes whose copy number did not change between branches (copy-number-stable) for _Afrotheria__. Note that because _Xenarthra_ was selected as the outgroup, it is not possible to polarize the changes in their gene copy numbers along the tree. 
+Our initial hypothesis was that genes which duplicated in lineages that experienced a growth in size would be enriched for membership in tumor suppressor pathways. Thus, we used WebGestalt and its Overrepresentation Analysis (ORA) functionality to determine what pathways were enriched in our duplicated gene sets in each branch relative to our initial query set. For our database, we used Reactome for our primary analysis, but additionally used the KEGG, Panther, Wikipathways, and Wikipathways_cancer databases using WebGestalt ORA. Going through the tree, at no FDR $\leq$ 0.5 is there any significant pathway representation for genes that increased in the branches leading to <!--`r noEnrichmentIncreasing.Reactome[1:length(noEnrichmentIncreasing.Reactome)-1] %>% cat(sep=", ")`, or `r noEnrichmentIncreasing.Reactome[length(noEnrichmentIncreasing.Reactome)]`--> _Afrosoricida_, _Pseudoungulata_, _Elephantina_, _Loxodontini_, _Elephas maximus_, _Mammuthus_, _Loxodonta cyclotis_, _Palaeoloxodon antiquus_, _Loxodona_, _Mammuthus columbi_, _Mammuthus primigenius_, _Procavia capensis_, _Elephantidae_, or _Proboscidea_; furthermore, there are no significant pathway enrichments at FDR<0.5 for genes whose copy number did not change between branches (copy-number-stable) for _Afrotheria_. Note that because _Xenarthra_ was selected as the outgroup, it is not possible to polarize the changes in their gene copy numbers along the tree. 
 
 For the other branches, the number of pathways that came up as significantly enriched at each FDR is shown in Table \@ref(tab:Table-OraFreqDatabase). For the species with high duplication rates and lower-quality, highly-fragmented genomes, such as with _Chrysochloris asiatica_ (`r genomeStatsRBHB %>% filter(Genome == "chrAsi1m") %>% pull(pc.Hits.Duplicated) %>% as.percentage` duplicated hits) and _Elephantulus edwardii_ (`r genomeStatsRBHB %>% filter(Genome == "eleEdw1m") %>% pull(pc.Hits.Duplicated) %>% as.percentage` duplicated hits), it is unsurprising that there is a proportionally large number of pathway enrichments. In the case of these two species, their many pathway enrichments also span an incredible range of processes at every level of biology; this, in combination with the high number of copy numbers identified for these genes, further suggests a need for improvement and refinement in these genomes. In the cell cycle pathways called as significant in the genomes of these two species plus _Orycteropus afer_ and _Echinops telfairi_, the duplicated genes included in these sets are from the same gene families, such as the APC subunit family; the proteosome subunit families; and the protein phosphatase 2 family, among others. It is highly possible that these results reflect true expansions of these gene families, especially in the higher-quality _Orycteropus afer_ genome; however, it is also possible that it simply reflects artifactual duplications, and so require further study.
 
@@ -2221,6 +2238,7 @@ p.treedata.tp53.table <- treedata.tp53.table %>%
   scale_color_manual(values = TP53.gene.color) + 
   guides(color=guide_legend(title="Gene", title.position = "top", title.theme = element_text(size = 14, face="bold")))+
   xlim(0,15) +
+  ylim(0,17)+
   theme_tree()+
   theme(
     legend.position="bottom",
@@ -2314,7 +2332,9 @@ We would like to thank the Department of Human Genetics at the University of Chi
 
 # FIGURES
 
-```{r Figure-intro, fig.cap="Atlantogenatans with sequenced genomes, body sizes, and known lifespans [@PuttickAndThomas2015; @HAGR]",  out.width="6in", fig.asp=1.3}
+(ref:Figure-intro) _Atlantogenatans_ with sequenced genomes, body sizes, and known lifespans [@PuttickAndThomas2015; @HAGR]
+
+```{r Figure-intro, fig.cap="(ref:Figure-intro)",  out.width="6in", fig.asp=1.2}
 atlantogenata.tree.size.lifespan
 ```
 
@@ -2342,19 +2362,27 @@ fig.bodysize <-
 fig.bodysize
 ```
 
-```{r Figure-CancerSuscept, fig.cap="Cancer succecptibility across Atlantogenata. Branch lengths are set to the magnitude of change in cancer succeptiblity; colors indicate the magnitude and direction of the change.", out.width="6in", fig.asp=1}
+(ref:Figure-CancerSuscept) Cancer succecptibility across _Atlantogenata._ Branch lengths are set to the magnitude of change in cancer succeptiblity; colors indicate the magnitude and direction of the change.
+
+```{r Figure-CancerSuscept, fig.cap="(ref:Figure-CancerSuscept)", out.width="6in", fig.asp=1}
 p.tree.cancerSucceptibility.Atlantogenata
 ```
 
-```{r Figure-GeneDup-Cladogram, fig.cap="Gene duplications occur readily throughout Atlantogenata. Shown here is a tree of Atlantogenatan species with genomes, with the number of genes that underwent an increase in copy number overlayed at each node.", out.height="7in", out.width="6in"}
+(ref:Figure-GeneDup-Cladogram) Gene duplications occur readily throughout _Atlantogenata_. Shown here is a tree of _Atlantogenatan_ species with genomes, with the number of genes that underwent an increase in copy number overlayed at each node.
+
+```{r Figure-GeneDup-Cladogram, fig.cap="(ref:Figure-GeneDup-Cladogram)", out.height="6in", out.width="6in"}
 p.ml.tree.increasing.geneCounts.withSize
 ```
 
-```{r Figure-GenomeCor, fig.cap="Correlations between genome quality metrics and ECNC metrics. Gene copy number metrics, and the genome quality metrics most strongly associated with them, are highlighted in red.", fig.asp=1, out.width="6in", out.height="6in", fig.align="center"}
+(ref:Figure-GenomeCor) Correlations between genome quality metrics and ECNC metrics. Gene copy number metrics, and the genome quality metrics most strongly associated with them, are highlighted in red.
+
+```{r Figure-GenomeCor, fig.cap="(ref:Figure-GenomeCor)", fig.asp=1, out.width="6in", out.height="6in", fig.align="center"}
 p.cor.GCT.CEGMA
 ```
 
-```{r Figure-loxAfrORA, fig.cap="Overrepresentation Analysis of Duplicated Genes in Atlantogenata using Reactome Pathways.", out.width="6in", out.height="4in"}
+(ref:Figure-loxAfrORA) Overrepresentation Analysis of Duplicated Genes in Atlantogenata using Reactome Pathways.
+
+```{r Figure-loxAfrORA, fig.cap="(ref:Figure-loxAfrORA)", out.width="6in", out.height="4in"}
 fig.loxAfr.ORA <- ggarrange(
   p.loxAfr.ORA.dotplot, 
   p.loxAfr.ORA.dotplot.increased, 
@@ -2366,7 +2394,9 @@ fig.loxAfr.ORA <- ggarrange(
 fig.loxAfr.ORA
 ```
 
-```{r Figure-loxAfrTP53, fig.cap="", out.width="6in", out.height="6in"}
+(ref:Figure-loxAfrTP53) TP53-related genes are also duplicated and functional in _Loxodonta africana_. __A)__ Cladogram of _Atlantogenata_ highlighting along each branch when duplications for each gene occured. __B)__ Gene expression data collected from pulically-available RNA-seq data for each duplicate in __A)__.
+
+```{r Figure-loxAfrTP53, fig.cap="(ref:Figure-loxAfrTP53)", out.width="6in"}
 fig.TP53 <- ggarrange(
   p.treedata.tp53.table, 
   p.tp53.genes.expression, 
@@ -2387,7 +2417,30 @@ fig.TP53
     # "COX20" # TP53 Regulates Metabolic Genes, LoxAfr            #CytoC OXidase
 ```
 
+
 # TABLES 
+
+
+```{r Table-BodySize, eval=T}
+t.bodysize.atlantogenata.withNodes <- st.Atlantogenata %>% 
+  as_tibble() %>% 
+  filter(!is.na(label)) %>%
+  select(
+    `Node`=label, 
+    `Size (log(g))`=Median, 
+    `95% CI (Low)` = `95%CI_Low`, 
+    `95% CI (High)` = `95%CI_High`,  
+    `Rate (sqrt)`=sqrt.rate
+  ) %>%
+  mutate_at(vars(-`Node`, ), . %>% as.numeric %>% round(2)) %>% 
+  kable(
+    ., 
+    booktabs = TRUE, longtable = T,
+    caption = 'Body Size and Confidence Intervals in Atlantogenata estimated using StableTraits.'
+  ) %>% kable_styling(latex_options = "repeat_header")
+t.bodysize.atlantogenata.withNodes
+```
+
 
 ```{r Table-CancerSuscept}
 t.cancersucc.atl <- table.cancerSucceptibility.Atlantogenata.genomes %>% 
@@ -2481,29 +2534,9 @@ sra.data %>%
     booktabs = TRUE,
     caption = 'NCBI SRA datasets used in this study, along with key biological and genome information.'
   ) %>% 
-  column_spec(4, width="50em") %>% 
-  column_spec(5, width="50em") %>% 
+  column_spec(4, width="10em") %>% 
+  column_spec(5, width="10em") %>% 
   kable_styling(latex_options = c("scale_down"))
-```
-
-```{r Table-BodySize, eval=T}
-t.bodysize.atlantogenata.withNodes <- st.Atlantogenata %>% 
-  as_tibble() %>% 
-  filter(!is.na(label)) %>%
-  select(
-    `Node`=label, 
-    `Size (log(g))`=Median, 
-    `95% CI (Low)` = `95%CI_Low`, 
-    `95% CI (High)` = `95%CI_High`,  
-    `Rate (sqrt)`=sqrt.rate
-  ) %>%
-  mutate_at(vars(-`Node`, ), . %>% as.numeric %>% round(2)) %>% 
-  kable(
-    ., 
-    booktabs = TRUE, longtable = T,
-    caption = 'Body Size and Confidence Intervals in Atlantogenata estimated using StableTraits.'
-  ) %>% kable_styling(latex_options = "repeat_header")
-t.bodysize.atlantogenata.withNodes
 ```
 
 ```{r Table-PGLS-Lifespan, eval=T}
@@ -2548,7 +2581,10 @@ genomeTable.atlantogenata %>%
 
 # SUPPLEMENTARY FIGURES
 
-```{r Figure-ECNC, fig.cap="Estimated Copy Number by Coverage (ECNC) consolidates fragmented genes while accounting for missing domains in homologs. __A)__ A single, contiguous gene homolog in a target genome with 100% query length coverage has an ECNC of 1.0. __B)__ Two contiguous gene homologs, each with 100% query length coverage have an ECNC of 2.0. __C)__ A single gene homolog, split across multiple scaffolds and contigs in a fragmented target genome; BLAT identifies each fragment as a single hit. Per nucleotide of query sequence, there is only one corresponding nucleotide over all the hits, thus the ECNC is 1.0. __D)__ Two gene homologs, one fragmented and one contiguous. 100% of nucleotides in the query sequence are represented between all hits; however, every nucleotide in the query has two matching nucleotides in the target genome, thus the ECNC is 2.0. __E)__ One true gene homolog in the target genome, plus multiple hits of a conserved domain that span 20% of the query sequence. While 100% of the query sequence is represented in total, 20% of the nucleotides have 4 hits. Thus, the ECNC for this gene is 1.45. __F)__ Two real gene homologs; one hit is contiguous, one hit is fragmented in two, and the tail end of both sequences was not identified by BLAT due to sequence divergence. Only 75% of the query sequence was covered in total between the hits, but for that 75%, each nucleotide has two hits. As such, ECNC is equal to 2.0 for this gene.", eval=T}
+
+(ref:Figure-ECNC) Estimated Copy Number by Coverage (ECNC) consolidates fragmented genes while accounting for missing domains in homologs. __A)__ A single, contiguous gene homolog in a target genome with 100% query length coverage has an ECNC of 1.0. __B)__ Two contiguous gene homologs, each with 100% query length coverage have an ECNC of 2.0. __C)__ A single gene homolog, split across multiple scaffolds and contigs in a fragmented target genome; BLAT identifies each fragment as a single hit. Per nucleotide of query sequence, there is only one corresponding nucleotide over all the hits, thus the ECNC is 1.0. __D)__ Two gene homologs, one fragmented and one contiguous. 100% of nucleotides in the query sequence are represented between all hits; however, every nucleotide in the query has two matching nucleotides in the target genome, thus the ECNC is 2.0. __E)__ One true gene homolog in the target genome, plus multiple hits of a conserved domain that span 20% of the query sequence. While 100% of the query sequence is represented in total, 20% of the nucleotides have 4 hits. Thus, the ECNC for this gene is 1.45. __F)__ Two real gene homologs; one hit is contiguous, one hit is fragmented in two, and the tail end of both sequences was not identified by BLAT due to sequence divergence. Only 75% of the query sequence was covered in total between the hits, but for that 75%, each nucleotide has two hits. As such, ECNC is equal to 2.0 for this gene.
+
+```{r Figure-ECNC, fig.cap="(ref:Figure-ECNC)", eval=T}
 fig.ECNC <- list(
     ecnc.onegene.onehit, #A
     ecnc.twogene.twohit, #B
@@ -2582,9 +2618,9 @@ p.ml.tree.increasing.geneCounts.withSize.withBL
 ```
 
 ```{r Figure-RBHBStrategy, fig.cap="Full version of RecBlat strategy, but low quality", warning=T, eval=T}
-warning("TODO: Make HQ version of this figure")
 image_read("../output/figs/RBHBDiagram.png") %>% 
-  image_rotate(180)%>% 
+  # image_rotate(180)%>% 
+  image_flip() %>% 
   image_ggplot()
 ```
 
