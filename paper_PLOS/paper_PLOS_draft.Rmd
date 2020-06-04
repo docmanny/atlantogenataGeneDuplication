@@ -83,6 +83,7 @@ suppressMessages(suppressWarnings(require(broom.mixed)))
 suppressMessages(suppressWarnings(require(purrr)))
 suppressMessages(suppressWarnings(require(kableExtra)))
 suppressMessages(suppressWarnings(require(stargazer)))
+suppressMessages(suppressWarnings(require(ggnewscale)))
 source("../code/generalFunctions.R")
 ```
 ```{r Data Files, include = F}
@@ -2708,6 +2709,128 @@ p.time.tree.Atlantogenata <-
 p.time.tree.Atlantogenata
 ```
 
+```{r Figure-DoubleTree-Bodysize-CancerSuscept-Genomes}
+
+### Body Size ###
+bsize.Atlantogenata.table <- bsize.Atlantogenata %>% as_tibble
+bsize.Atlantogenata.table[which(bsize.Atlantogenata.table$node == MRCA(bsize.Atlantogenata, "Pseudoungulata", "Elephantulus.edwardii")),]$label <- "Afroinsectivora"
+bsize.Atlantogenata <- bsize.Atlantogenata.table %>% as.treedata()
+
+lnsize.bsize.Atlantogenata <- bsize.Atlantogenata %>% as_tibble() %>% select(label, Species.strict, lnSize)
+bsize.Atlantogenata.genomes <-  bsize.Atlantogenata@phylo %>% 
+  treeio::drop.tip(bsize.Atlantogenata@phylo$tip.label[!bsize.Atlantogenata@phylo$tip.label %in% genomeTable.atlantogenata$label]) %>% as.tibble
+bsize.Atlantogenata.genomes <- left_join(bsize.Atlantogenata.genomes, lnsize.bsize.Atlantogenata) %>% as.treedata
+
+p.tree.atlantogenata.genomes <- bsize.Atlantogenata.genomes %>% 
+  ggtree(
+    aes(color=as.numeric(lnSize))
+  )
+
+
+### Cancer Suscept ###
+tree.cancerSucceptibility.Atlantogenata.table <- tree.cancerSucceptibility.Atlantogenata %>% as_tibble
+tree.cancerSucceptibility.Atlantogenata.table[which(tree.cancerSucceptibility.Atlantogenata.table$node == MRCA(tree.cancerSucceptibility.Atlantogenata, "Pseudoungulata", "Elephantulus edwardii")),]$label <- "Afroinsectivora"
+tree.cancerSucceptibility.Atlantogenata <- tree.cancerSucceptibility.Atlantogenata.table %>% as.treedata()
+
+cancerSucceptibility.Atlantogenata.genomes <- tree.cancerSucceptibility.Atlantogenata %>% 
+  as_tibble() %>%  
+  mutate(abslog2CancerSucceptabilityChange = log2CancerSucceptabilityChange %>% abs(), 
+         branch.length=abslog2CancerSucceptabilityChange) %>% 
+  select(label, abslog2CancerSucceptabilityChange, log2CancerSucceptabilityChange, lnK1)
+tree.cancerSucceptibility.Atlantogenata.genomes <-  tree.cancerSucceptibility.Atlantogenata %>% 
+  as_tibble %>% 
+  filter(!is.na(node)) %>%  
+  mutate(branch.length = log2CancerSucceptabilityChange %>% abs()) %>% 
+  as.treedata %>% 
+  as.phylo() %>% 
+  treeio::drop.tip(tree.cancerSucceptibility.Atlantogenata@phylo$tip.label[!tree.cancerSucceptibility.Atlantogenata@phylo$tip.label %in% genomeTable.atlantogenata$Species.strict])  %>% as.tibble
+tree.cancerSucceptibility.Atlantogenata.genomes <- left_join(tree.cancerSucceptibility.Atlantogenata.genomes, cancerSucceptibility.Atlantogenata.genomes) %>% as.treedata
+
+p.tree.cancerSucceptibility.Atlantogenata.genomes <- tree.cancerSucceptibility.Atlantogenata.genomes %>% 
+  ggtree(
+    aes(color=as.numeric(abslog2CancerSucceptabilityChange))
+  )
+
+### Double Tree ###
+
+d.dbltree.1 <- p.tree.atlantogenata.genomes$data
+d.dbltree.2 <- p.tree.cancerSucceptibility.Atlantogenata.genomes$data
+
+d.dbltree.2$x <- max(d.dbltree.2$x) - d.dbltree.2$x + max(d.dbltree.1$x) + 500
+
+p.dbltree <-
+  bsize.Atlantogenata.genomes %>% 
+  ggtree(., aes(color=lnSize), size=2) +
+  scale_color_viridis_c(option = "A") + 
+  geom_nodepoint(size=2) + 
+  geom_tippoint(size=2) +
+  geom_tiplab(x=(min(d.dbltree.2$x)+max(d.dbltree.1$x))/2, color="black", hjust = 0.5) +
+  new_scale_color() + 
+  geom_tree(data=d.dbltree.2, aes(color=log2CancerSucceptabilityChange), inherit.aes = F, size=2) + 
+  geom_nodepoint(data=d.dbltree.2, aes(color=log2CancerSucceptabilityChange, x=x, y=y), inherit.aes = F, size=2) + 
+  geom_tippoint(data=d.dbltree.2, aes(color=log2CancerSucceptabilityChange, x=x, y=y), inherit.aes = F, size=2) +
+  # scale_color_viridis_c(option = "D") + 
+    scale_color_distiller(palette = "YlGnBu")+
+    theme(
+      plot.background = element_rect(fill="grey"),
+      panel.background = element_rect(fill="grey"),
+      legend.background = element_rect(fill="grey")
+    )
+
+  p.dbltree
+```
+
+```{r Figure-DoubleTree-Bodysize-CancerSuscept-All}
+
+### Body Size ###
+
+p.tree.atlantogenata.genomes <- bsize.Atlantogenata %>% 
+  ggtree(
+    aes(color=as.numeric(lnSize))
+  )
+
+
+### Cancer Suscept ###
+
+tree.cancerSucceptibility.Atlantogenata <-  tree.cancerSucceptibility.Atlantogenata %>% 
+  as_tibble %>% 
+  filter(!is.na(node)) %>%  
+  mutate(branch.length = log2CancerSucceptabilityChange %>% abs()) %>% 
+  as.treedata
+
+p.tree.cancerSucceptibility.Atlantogenata.2 <- tree.cancerSucceptibility.Atlantogenata %>% 
+  ggtree(
+    aes(color=as.numeric(log2CancerSucceptabilityChange))
+  )
+
+### Double Tree ###
+
+d.dbltree.3 <- p.tree.atlantogenata.genomes$data
+d.dbltree.4 <- p.tree.cancerSucceptibility.Atlantogenata.2$data
+
+d.dbltree.4$x <- max(d.dbltree.4$x) - d.dbltree.4$x + max(d.dbltree.3$x) + 500
+
+p.dbltree.all <-
+  bsize.Atlantogenata %>% 
+  ggtree(., aes(color=lnSize), size=1) +
+  scale_color_viridis_c(option = "A") + 
+  geom_nodepoint(size=2) + 
+  geom_tippoint(size=2) +
+  geom_tiplab(x=(min(d.dbltree.4$x)+max(d.dbltree.3$x))/2, color="black", hjust = 0.5) +
+  new_scale_color() + 
+  geom_tree(data=d.dbltree.4, aes(color=log2CancerSucceptabilityChange), inherit.aes = F, size=1) + 
+  geom_nodepoint(data=d.dbltree.4, aes(color=log2CancerSucceptabilityChange, x=x, y=y), inherit.aes = F, size=2) + 
+  geom_tippoint(data=d.dbltree.4, aes(color=log2CancerSucceptabilityChange, x=x, y=y), inherit.aes = F, size=2) +
+  # scale_color_viridis_c(option = "D") + 
+    scale_color_distiller(palette = "YlGnBu")+
+    theme(
+      plot.background = element_rect(fill="grey"),
+      panel.background = element_rect(fill="grey"),
+      legend.background = element_rect(fill="grey")
+    )
+
+  p.dbltree.all
+```
 
 # References {#references .unnumbered}
 
