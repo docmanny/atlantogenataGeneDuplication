@@ -91,37 +91,6 @@ include: "rules/intersections.smk"
 include: "rules/extras.smk"
 # Rules for WebGestalt
 include: "rules/webgestalt.smk"
-
-
-# rule report:
-#     input:
-#         RBB="output/{genome}/{query}-pcScore{pcS}_pcIdent{pcI}_pcQuerySpan{pcQS}_reverse-{rgenome}/RBB/{genome}_RecBlastOutput.bed.rbb",
-#         Evidenced="output/{genome}/{query}-pcScore{pcS}_pcIdent{pcI}_pcQuerySpan{pcQS}_reverse-{rgenome}/filtered/{genome}_evidenced.bed",
-#         ECNC="output/{genome}/{query}-pcScore{pcS}_pcIdent{pcI}_pcQuerySpan{pcQS}_reverse-{rgenome}/ECNC/{genome}_RecBlastOutput.bed.rbb.ecnc"
-#     output: "docs/{genome}-{query}-pcScore{pcS}_pcIdent{pcI}_pcQuerySpan{pcQS}_reverse-{rgenome}-Report.html"
-#     script: "analysis/test.Rmd"
-#     
-# 
-# rule report_test:
-#     input:
-#         RBB="output/loxAfr3/AvA-pcScore0.1_pcIdent0.8_pcQuerySpan0.5_reverse-hg38_maskRep_noVarChr_fragWithGenes/RBB/loxAfr3_RecBlastOutput.bed.rbb",
-#         Evidenced="output/loxAfr3/AvA-pcScore0.1_pcIdent0.8_pcQuerySpan0.5_reverse-hg38_maskRep_noVarChr_fragWithGenes/filtered/loxAfr3_evidenced.bed",
-#         ECNC="output/loxAfr3/AvA-pcScore0.1_pcIdent0.8_pcQuerySpan0.5_reverse-hg38_maskRep_noVarChr_fragWithGenes/ECNC/loxAfr3_RecBlastOutput.bed.rbb.ecnc"
-#     output:
-#         "docs/test-report.html"
-#     script:
-#         "analysis/test2.Rmd"
-
-rule knit_paper:
-    input:
-        RMarkdown = "paper_PLOS/paper_PLOS_draft.Rmd",
-        UP000005640 = "data/input/UP000005640.withheader.tsv",
-        gene_list = "output/recBlastDBPrep/AvA_geneList.txt",
-        gene_list_filtered = "output/recBlastDBPrep/AvA_geneList_filtered.txt",
-        genomeTable = "output/other/genomeTable.csv",
-        stabletraits_progress = "data/stableTraits/eutheria.progress",
-        time_tree = "data/stableTraits/eutheria.tree"
-    output: "paper_PLOS/paper_PLOS_draft.html"
-    script:
-        "code/renderpaper.R"
+# Rules for publication
+include: "rules/publication.smk"
         

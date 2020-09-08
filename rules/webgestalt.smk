@@ -6,7 +6,7 @@ rule WebGestalt_duplicates:
         outputDirectory = directory("output/ORA/{query}-pcScore{pc_score}_pcIdent{pc_ident}_pcQuerySpan{pc_qspan}_reverse-{rgenome}/duplicates/{enrichmentDB}-FDR_{fdr}/{genome}_{type}_filtered")
     conda: "../envs/conda_R.yaml"
     script: "../code/runORA.R"
-  
+
   
 rule WebGestalt_intersection:
     input:
@@ -49,3 +49,15 @@ rule WebGestalt_ML:
         rootDir= "output/ORA/maxLikelihood_{modelType}/{searchType}/{cladeType}/{enrichmentDB}-FDR_{fdr}"
     conda: "../envs/conda_R.yaml"
     script: "../code/runORA.R"
+
+
+rule WebGestalt_ML_top:
+    input:
+        geneSet = "output/geneLists/maxLikelihood_{modelType}/{searchType}/{cladeType}/{list}.txt",
+        refGeneSet = "output/recBlastDBPrep/AvA_geneList_filtered.txt"
+    output: 
+        outputDirectory = directory("output/ORA/maxLikelihood_{modelType}/{searchType}/{cladeType}/{enrichmentDB}-top{top}/Project_{list}")
+    params:
+        rootDir= "output/ORA/maxLikelihood_{modelType}/{searchType}/{cladeType}/{enrichmentDB}-top_{top}"
+    conda: "../envs/conda_R.yaml"
+    script: "../code/runORA2.R"

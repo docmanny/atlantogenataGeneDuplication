@@ -43,7 +43,7 @@
 \hypersetup{breaklinks=true,
             bookmarks=true,
             pdfauthor={},
-            pdftitle={Pervasive duplication of tumor suppressor genes preceded parallel evolution of large bodied Atlantogenatans},
+            pdftitle={Pervasive duplication of tumor suppressors in Afrotherians preceded evolution of large bodies and reduced cancer risk in elephants},
             colorlinks=false,
             urlcolor=blue,
             linkcolor=magenta,
@@ -59,7 +59,6 @@
 \usepackage{booktabs}
 \usepackage{geometry}
 \usepackage{pdflscape}
-
 \usepackage{float}
 \let\origfigure\figure
 \let\endorigfigure\endfigure
@@ -88,7 +87,7 @@
 \begin{document}
 \begin{frontmatter}
 
-  \title{Pervasive duplication of tumor suppressor genes preceded parallel evolution of large bodied Atlantogenatans}
+  \title{Pervasive duplication of tumor suppressors in Afrotherians preceded evolution of large bodies and reduced cancer risk in elephants}
     \author[University of Chicago]{Juan Manuel Vazquez}
   
     \author[SUNY Buffalo]{Vincent J Lynch}
@@ -97,22 +96,42 @@
     \address[SUNY Buffalo]{Department of Biological Sciences, 551 Cooke Hall, Buffalo NY, 14260}
     
   \begin{abstract}
-  Cancer is an intrinsic disease of multicellular organisms. Within a species, the size of an animal, - correlated with the individual's number of cells - and its lifespan - correlated with increasing cellular damage over time - positively correlate with the risk any individual has to form tumors. Between species, however, we do not observe any correlation between size, lifespan, and cancer, a phenomenon that referred to as \emph{Peto's Paradox}. Elephants are a particularly interesting member of this class of paradoxical animals, since they are a set of large species deeply nested in a clade of smaller species, indicating a recent gain of size. Recent work has identified several individual cases of gene duplicates contributing to the increased cancer resistance of elephants, which suggests that duplication of tumor suppressor genes may play a more general role in mediating Peto's Paradox by increasing cancer resistance in large, long-lived species.
-  By using a Reciprocal Best-Hit BLAT search approach, we investigated copy numbers of all protein-coding genes in \emph{Atlantogenatan} genomes to see if there is any correlation between the copy number of duplicates and changes body size along the phylogenetic tree. From an initial set of 18,011 protein-coding genes in hg38, we identified a median of 13,880 genes in \emph{Atlantogenatan} genomes, of which a median of 940 genes are duplicated. We find that, just as body size fluctuates throughout \emph{Atlantogenata}, genes involved in tumor suppressor pathways are also duplicated throughout the phylogenetic tree. Extant species of elephants, however, show active transcription of both canonical and duplicated copies of tummor suppressors that duplicated prior to and during their sudden increase in body size, suggesting that the duplication of tumor suppressor genes facilitates the evolution of increased body size by compensating for the increased cancer risk.
+  The risk of developing cancer is correlated with body size and lifespan within
+  species. Between species, there is no correlation between body size or
+  lifespan, and cancer, suggesting that large, long-lived species have evolved
+  enhanced cancer protection mechanisms. Elephants and their relatives
+  (Proboscideans) are a particularly interesting lineage in which to explore
+  the mechanisms underlying the evolution of augmented cancer resistance because
+  they evolved large bodies recently within a clade of smaller bodied species
+  (Atlantogenatans). Here we explore the contribution of tumor suppressor
+  duplication to body size and cancer risk in Atlantogenatans. Unexpectedly, we
+  found that tumor suppressor duplication was pervasive in Atlantogenatan
+  genomes rather than restricted to Proboscideans. Proboscideans, however, have
+  duplicates in unique pathways that may underlie some aspects of their
+  remarkable anti-cancer cell biology. These data suggest that duplication of
+  tumor suppressor genes facilitated the evolution of increased body size by
+  compensating for decreasing intrinsic cancer risk.
   \end{abstract}
   
  \end{frontmatter}
 
+\newcommand{\beginsupplement}{%
+        \setcounter{table}{0}
+        \renewcommand{\thetable}{S.\thechapter.\arabic{table}}%
+        \setcounter{figure}{0}
+        \renewcommand{\thefigure}{S.\thechapter.\arabic{figure}}%
+     }
+
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
 
-Among the major constraints on the evolution of large body sizes (and long life-spans) in animals is an increased risk of developing cancer. If all cells in all organisms have a similar risk of malignant transformation and equivalent cancer suppression mechanisms, organism with many cells should have a higher prevalence of cancer than organisms with fewer cells, particularly because large and small animals have similar cell sizes ({[}1{]}). Consistent with this expectation there is a strong positive correlation between body size and cancer incidence within species, for example, cancer incidence increases with increasing adult height in humans {[}2,3{]} and in dogs {[}4,5{]}. There is no correlation, however, between body size and cancer risk \emph{between} species; this lack of correlation is often referred to as `Peto's Paradox' {[}6--8{]}. The ultimate resolution to Peto's Paradox is obvious: large bodied and long-lived species evolved enhanced cancer protection mechanisms. However, identifiying the specific genetic, molecular, and cellular mechanisms that underlie the evolution of augmented cancer protection has been difficult {[}9--13{]}.
+Among the constraints on the evolution of large bodies and long life-spans in animals is an increased risk of developing cancer. If all cells in all organisms have a similar risk of malignant transformation and equivalent cancer suppression mechanisms, then organisms with many cells should have a higher prevalence of cancer than organisms with fewer cells, particularly because large and small animals have similar cell sizes (\emph{1}). Consistent with this expectation there is a strong positive correlation between body size and cancer incidence within species, for example, cancer incidence increases with increasing adult height in humans (\emph{2}, \emph{3}) and overall body size in dogs, cats, and cattle (\emph{4}--\emph{6}). There is no correlation, however, between body size and cancer risk between species; this lack of correlation is often referred to as `Peto's Paradox' (\emph{7}--\emph{9}). Indeed, cancer prevalence is relatively stable at \textasciitilde5\% across species with diverse body sizes ranging from the minuscule 51g grass mouse to the gargantuan 4800kg African elephant (\emph{10}--\emph{12}). While the ultimate resolution to Peto's Paradox is obvious, large bodied and long-lived species evolved enhanced cancer protection mechanisms, identifying and characterizing the proximate genetic, molecular, and cellular mechanisms that underlie the evolution of augmented cancer protection has proven difficult (\emph{13}--\emph{17}).
 
-Among the challenges for discovering how animals evolved enhanced cancer protection mechanisms is identifying lineages in which large bodied species are nested within species with small body sizes. \emph{Afrotherian} mammals are generally small-bodied, but also include the largest extant land mammals. For example, maximum adult weights are \textasciitilde{}70g in golden moles, \textasciitilde{}120g in tenrecs, \textasciitilde{}170g in elephant shrews, \textasciitilde{}3kg in hyraxes, and 60kg in aardvarks {[}14{]}. While extant hyraxes are relatively small, the extinct Titanohyrax is estimated to have weighted up to \textasciitilde{}1300kg {[}15{]}. The largest members of \emph{Afrotheria}, too, are dwarfed by the size of their recent ancestors: extant cows manatees are large bodied (\textasciitilde{}322-480kg) but are relatively small compared to the extinct Stellar's sea cow which is estimated to have weight 8000-10000kg {[}16{]}. Similarly African (4,800kg) and Asian elephants (3,200kg) are the largest living elephant species, but are dwarfed by the truly gigantic extinct Proboscideans such as Deinotherium (\textasciitilde{}132,000kg), Mammut borsoni (110,000kg), and the Asian straight-tusked elephant (\textasciitilde{}220,000kg), the largest known land mammal {[}17{]}. Remarkably, these large-bodied \emph{Afrotherian} lineages are nested within small bodied species (\textbf{Figure \ref{fig:Figure-intro}}) {[}18--21{]}, indicating that gigantism independently evolved in hyraxes, sea cows, and elephants (\emph{Paenungulata}). Thus, Paenungulates are an excellent model system in which to explore the mechanisms that underlie the evolution of large body sizes and augmented cancer resistance.
+One of the challenges for discovering how animals evolved enhanced cancer protection mechanisms is identifying lineages in which large bodied species are nested within species with small body sizes. \emph{Afrotherian} mammals are generally small-bodied, but also include the largest extant land mammals. For example, maximum adult weights are \textasciitilde70g in golden moles, \textasciitilde120g in tenrecs, \textasciitilde170g in elephant shrews, \textasciitilde3kg in hyraxes, and \textasciitilde60kg in aardvarks (\emph{18}). In contrast, while extant hyraxes are relatively small, the extinct \emph{Titanohyrax} is estimated to have weighed \textasciitilde1300kg (\emph{19}). The largest members of \emph{Afrotheria}, too, are dwarfed by the size of their recent ancestors: extant sea cows such as manatees are large bodied (\textasciitilde322-480kg) but are relatively small compared to the extinct Stellar's sea cow which is estimated to have weight \textasciitilde8000-10000kg (\emph{20}). Similarly African (4,800kg) and Asian elephants (3,200kg) are the large, but are dwarfed by the truly gigantic extinct Proboscideans such as \emph{Deinotherium} (\textasciitilde132,000kg), \emph{Mammut borsoni} (110,000kg), and the straight-tusked elephant (\textasciitilde220,000kg), the largest known land mammal (\emph{21}). Remarkably, these large-bodied \emph{Afrotherian} lineages are nested deeply within small bodied species (\textbf{Figure \ref{fig:Figure-intro}}) (\emph{22}--\emph{25}), indicating that gigantism independently evolved in hyraxes, sea cows, and elephants (\emph{Paenungulata}). Thus, \emph{Paenungulates} are an excellent model system in which to explore the mechanisms that underlie the evolution of large body sizes and augmented cancer resistance.
 
-Although many mechanisms can potentially resolve Peto's paradox, among the most parsimonious routes to enhanced cancer resistance is through an increased copy number of tumor suppressors. Indeed, candidate genes studies have found that the elephant genome encodes duplicate such as \emph{TP53} and \emph{LIF} {[}13,22,23{]} as well as other genes with putative tumor suppressive functions {[}24,25{]}. As these studies focus on \emph{a priori} gene sets, however, it remains unknown whether this is a general, genome-wide trend in \emph{Afrotherian} genomes; and whether such a general trend is associated with the recent increases in body size -- and therefore expected cancer risk -- in these species.
+Many mechanisms have been suggested to resolve Peto's paradox, including a decrease in the copy number of oncogenes, an increase in the copy number of tumor suppressor genes (\emph{7}, \emph{8}, \emph{26}), reduced metabolic rates, reduced retroviral activity and load (\emph{27}), and selection for `cheater' tumors that parasitize the growth of other tumors (\emph{28}), among many others. Among the most parsimonious routes to enhanced cancer resistance may be through an increased copy number of tumor suppressors. For example, transgenic mice with additional copies of TP53 have reduced cancer rates and extended lifespans but not increased cancer (\emph{29}), respectively, suggesting that changes in the copy number of tumor suppressors can effect cancer rates. Indeed, candidate genes studies have found that the elephant genome encodes duplicate tumor suppressors such as TP53 and LIF (\emph{10}, \emph{17}, \emph{30}) as well as other genes with putative tumor suppressive functions (\emph{31}, \emph{32}). These studies, however, focused on a priori candidate genes, thus it is unclear whether duplication of tumor suppressor genes is a general phenomenon in the elephant lineage.
 
-Here, we trace the evolution of body mass and gene copy number variation in across \emph{Afrotherian} genomes in order to investigate whether duplication of tumors suppresor is common in large, long-lived Proboscideans. Our estimates of the evolution of body mass, similarly to previous studies {[}18--21{]}, show that large body masses evolved in a step-wise manner, with major increases in body mass in the \emph{Pseudoungulata} (17kg), \emph{Paenungulata} (25kg), \emph{Tethytheria} (296kg), and \emph{Proboscidea} (4,100kg) stem-lineages. To explore whether duplication of tumor suppressor genes occurred coincident with the evolution of large body sizes, we used a genome-wide Reciprocal Best BLAT Hit (RBBH) strategy to identify gene duplications, and used maximum likelihood to infer the lineages in which those duplications occurred. Unexpectedly, we found that duplication of tumor suppressor genes was common in all Afrotherians, both large and small. These data suggest that duplication of tumor suppressor genes is pervasive in Afrotherians and proceeded the evolution of species with very large body sizes.
+Here we trace the evolution of body mass, cancer risk, and gene copy number variation across Afrotherian genomes, including multiple living and extinct Proboscideans, to investigate whether duplication of tumor suppressors occurred coincident with the evolution of large body sizes. Our estimates of the evolution of body mass across Afrotheria show that large body masses evolved in a step-wise manner, similar to previous studies (\emph{22}--\emph{25}) and coincident with dramatic reductions in intrinsic cancer risk. To explore whether duplication of tumor suppressors occurred coincident with the evolution of large body sizes, we used a genome-wide Reciprocal Best BLAT Hit (RBBH) strategy to identify gene duplications, and used maximum likelihood to infer the lineages in which those duplications occurred. Unexpectedly, we found that duplication of tumor suppressor genes was common in Afrotherians, both large and small, but that gene duplications in the Proboscidean lineage were enriched in pathways that may explain some of the unique cancer protection mechanisms observed iin elephant cells. These data suggest that duplication of tumor suppressor genes is pervasive in Afrotherians and proceeded the evolution of species with very large body sizes.
 
 \hypertarget{methods}{%
 \section{Methods}\label{methods}}
@@ -120,114 +139,130 @@ Here, we trace the evolution of body mass and gene copy number variation in acro
 \hypertarget{ancestral-body-size-reconstruction}{%
 \subsection{Ancestral Body Size Reconstruction}\label{ancestral-body-size-reconstruction}}
 
-We built a time-calibrated supertree of Eutherian mammals by combining the time-calibrated molecular phylogeny of Bininda-Emonds \emph{et al.} {[}26{]} with the time-calibrated total evidence Afrotherian phylogeny from Puttick and Thomas {[}21{]}. While the Bininda-Emonds \emph{et al.} {[}26{]} phylogeny includes 1,679 species, only 34 are Afrotherian, and no fossil data are included. The inclusion of fossil data from extinct species is essential to ensure that ancestral state reconstructions of body mass are not biased by only including extant species. This can lead to inaccurate reconstructions, for example, if lineages convergently evolved large body masses from a small bodied ancestor. In contrast, the total evidence Afrotherian phylogeny of Puttick and Thomas {[}21{]} includes 77 extant species and fossil data from 39 extinct species. Therefore we replaced the Afrotherian clade in the Bininda-Emonds \emph{et al.} {[}26{]} phylogeny with the Afrotherian phylogeny of Puttick and Thomas {[}21{]} using Mesquite. Next, we jointly estimated rates of body mass evolution and reconstructed ancestral states using a generalization of the Brownian motion model that relaxes assumptions of neutrality and gradualism by considering increments to evolving characters to be drawn from a heavy-tailed stable distribution (the ``Stable Model'') implemented in StableTraits {[}27{]}. The stable model allows for occasional large jumps in traits and has previously been shown to out-perform other models of body mass evolution, including standard Brownian motion models, Ornstein--Uhlenbeck models, early burst maximum likelihood models, and heterogeneous multi-rate models {[}27{]}.
+We first built a time-calibrated supertree of Eutherian mammals by combining the time-calibrated molecular phylogeny of Bininda-Emonds et al.~(\emph{33}) with the time-calibrated total evidence Afrotherian phylogeny from Puttick and Thomas (\emph{25}). While the Bininda-Emonds et al.~(\emph{33}) phylogeny includes 1,679 species, only 34 are Afrotherian, and no fossil data are included. The inclusion of fossil data from extinct species is essential to ensure that ancestral state reconstructions of body mass are not biased by only including extant species. This can lead to inaccurate reconstructions, for example, if lineages convergently evolved large body masses from a small bodied ancestor. In contrast, the total evidence Afrotherian phylogeny of Puttick and Thomas (\emph{25}) includes 77 extant species and fossil data from 39 extinct species. Therefore we replaced the Afrotherian clade in the Bininda-Emonds et al.~(\emph{33}) phylogeny with the Afrotherian phylogeny of Puttick and Thomas (\emph{25}) using Mesquite. Next, we jointly estimated rates of body mass evolution and reconstructed ancestral states using a generalization of the Brownian motion model that relaxes assumptions of neutrality and gradualism by considering increments to evolving characters to be drawn from a heavy-tailed stable distribution (the ``Stable Model'') implemented in StableTraits (\emph{34}). The stable model allows for large jumps in traits and has previously been shown to out-perform other models of body mass evolution, including standard Brownian motion models, Ornstein--Uhlenbeck models, early burst maximum likelihood models, and heterogeneous multi-rate models (\emph{34}).
 
 \hypertarget{identification-of-duplicate-genes}{%
 \subsection{Identification of Duplicate Genes}\label{identification-of-duplicate-genes}}
 
-\textbf{Reciprocal Best-Hit BLAT:} We developed a reciprocal best hit BLAT (RBHB) pipeline to identify putative homologs and estimate gene copy number across species (\ref{fig:Figure-RBHBStrategy}). The Reciprocal Best Hit (RBH) search strategy is conceptually straightforward: 1) Given a gene of interest \(G_A\) in a query genome \(A\), one searches a target genome \(B\) for all possible matches to \(G_A\); 2) For each of these hits, one then performs the reciprocal search in the original query genome to identify the highest-scoring hit; 3) A hit in genome \(B\) is defined as a homolog of gene \(G_A\) if and only if the original gene \(G_A\) is the top reciprocal search hit in genome \(A\). We selected BLAT {[}28{]} as our algorithm of choice, as this algorithm is sensitive to highly simliar (\textgreater{}90\% identity) sequences, thus identifying the highest-confidence homologs while minimizing many-to-one mapping problems when searching for multiple genes. RBH performs similar to other more complex methods of orthology prediction, and is particularly good at identifying incomplete genes that may be fragmented in low quality/poor assembled regions of the genome {[}29,30{]}.
+\emph{Reciprocal Best-Hit BLAT:} We developed a reciprocal best hit BLAT (RBHB) pipeline to identify putative homologs and estimate gene copy number across species. The Reciprocal Best Hit (RBH) search strategy is conceptually straightforward: 1) Given a gene of interest \(G_A\) in a query genome \(A\), one searches a target genome \(B\) for all possible matches to \(G_A\); 2) For each of these hits, one then performs the reciprocal search in the original query genome to identify the highest-scoring hit; 3) A hit in genome \(B\) is defined as a homolog of gene \(G_A\) if and only if the original gene \(G_A\) is the top reciprocal search hit in genome \(A\). We selected BLAT (\emph{35}) as our algorithm of choice, as this algorithm is sensitive to highly simliar (\textgreater90\% identity) sequences, thus identifying the highest-confidence homologs while minimizing many-to-one mapping problems when searching for multiple genes. RBH performs similar to other more complex methods of orthology prediction, and is particularly good at identifying incomplete genes that may be fragmented in low quality/poor assembled regions of the genome (\emph{36}, \emph{37}).
 
-\textbf{Effective Copy Number By Coverage:} In lower-quality genomes, many genes are fragmented across multiple scaffolds, which results in BLAT calling multiple hits when in reality there is only one gene. To compensate for this, we came up with a novel statistic, Estimated Copy Number by Coverage (ECNC), which averages the number of times we see each nucleotides of a query sequence in a target genome over the total number of nucleotides of the query sequence found overall in each target genome (\textbf{Figure \ref{fig:Figure-ECNC}}). This allows us to correct for genes that have been fragmented across incomplete genomes, while also taking into account missing sequences from the human query in the target genome. Mathematically, this can be written as:\\
+\emph{Effective Copy Number By Coverage:} In low-quality genomes, many genes are fragmented across multiple scaffolds, which results in BLA(S)T-like methods calling multiple hits when in reality there is only one gene. To compensate for this, developed a novel statistic, Estimated Copy Number by Coverage (ECNC), which averages the number of times we hit each nucleotide of a query sequence in a target genome over the total number of nucleotides of the query sequence found overall in each target genome (\textbf{Supplemental Figure \ref{fig:Figure-ECNC}}). This allows us to correct for genes that have been fragmented across incomplete genomes, while also taking into account missing sequences from the human query in the target genome. Mathematically, this can be written as:
+
 \[ ECNC = \frac{\sum_{n=1}^{l} C_n}{\sum_{n=1}^{l} bool(C_n)}\]
+
 where \(n\) is a given nucleotide in the query, \(l\) is the total length of the query, \(C_n\) is the number of instances that \(n\) is present within a reciprocal best hit, and \(bool(C_n)\) is 1 if \(C_n > 0\) or 0 if \(C_n = 0\).
 
-\textbf{RecSearch Pipeline:} We created a custom Python pipeline for automating RBHB searches between a single reference genome and multiple target genomes using a list of query sequences from the reference genome. For the query sequences in our search, we used the hg38 Proteome provided by UniProt {[}31{]}, which is a comprehensive set of protein sequences curated from a combination of predicted and validated protein sequences generated by the UniProt Consortium. In order to refine our search, we omitted protein sequences originating from long, noncoding RNA loci (e.g.~LINC genes); poorly-studied genes from predicted open reading frames (C-ORFs); and sequences with highly repetitive sequences such as zinc fingers, protocadherins, and transposon-containing genes, as these were prone to high levels of false positive hits.
+\emph{RecSearch Pipeline:} We created a custom Python pipeline for automating RBHB searches between a single reference genome and multiple target genomes using a list of query sequences from the reference genome. For the query sequences in our search, we used the hg38 UniProt proteome (\emph{38}), which is a comprehensive set of protein sequences curated from a combination of predicted and validated protein sequences generated by the UniProt Consortium. In order to refine our search, we omitted protein sequences originating from long, noncoding RNA loci (e.g.~LINC genes); poorly-studied genes from predicted open reading frames (C-ORFs); and sequences with highly repetitive sequences such as zinc fingers, protocadherins, and transposon-containing genes, as these were prone to high levels of false positive hits.
+After filtering out problematic protein queries, we then used our pipeline to search for all copies of 18011 query genes in publicly available \emph{Afrotherian} genomes (\ref{tab:Table-Genomes}), including African savannah elephant (\emph{Loxodonta africana}: loxAfr3, loxAfr4, loxAfrC), African forest elephant (\emph{Loxodonta cyclotis}: loxCycF), Asian Elephant (\emph{Elephas maximus}: eleMaxD), Woolly Mammoth (\emph{Mammuthus primigenius}: mamPriV), Colombian mammoth (\emph{Mammuthus columbi}: mamColU), American mastodon (\emph{Mammut americanum}: mamAmeI), Rock Hyrax (\emph{Procavia capensis}: proCap1, proCap2, proCap2\emph{HiC), West Indian Manatee (}Trichechus manatus latirostris\emph{: triManLat1, triManLat1}HiC), Aardvark (\emph{Orycteropus afer}: oryAfe1, oryAfe1\emph{HiC), Lesser Hedgehog Tenrec (}Echinops telfairi\emph{: echTel2), Nine-banded armadillo (}Dasypus novemcinctus\emph{: dasNov3), Hoffman's two-toed sloth (}Choloepus hoffmannii\emph{: choHof1, choHof2, choHof2}HiC), Cape golden mole (\emph{Chrysochloris asiatica}: chrAsi1), and Cape elephant shrew (\emph{Elephantulus edwardii}: eleEdw1).
 
-After filtering out problematic protein queries (see below), we then used our pipeline to search for all copies of our 18011 query genes in publicly available \emph{Afrotherian} genomes (\ref{tab:Table-Genomes}), including African savannah elephant (\emph{Loxodonta africana}: loxAfr3, loxAfr4, loxAfrC), African forest elephant (\emph{Loxodonta cyclotis}: loxCycF), Asian Elephant (\emph{Elephas maximus}: eleMaxD), Woolly Mammoth (\emph{Mammuthus primigenius}: mamPriV), Colombian mammoth (\emph{Mammuthus columbi}: mamColU), American mastodon (\emph{Mammut americanum}: mamAmeI), Rock Hyrax (\emph{Procavia capensis}: proCap1, proCap2, proCap2\_HiC), West Indian Manatee (\emph{Trichechus manatus latirostris}: triManLat1, triManLat1\_HiC), Aardvark (\emph{Orycteropus afer}: oryAfe1, oryAfe1\_HiC), Lesser Hedgehog Tenrec (\emph{Echinops telfairi}: echTel2), Nine-banded armadillo (\emph{Dasypus novemcinctus}: dasNov3), Hoffman's two-toed sloth (\emph{Choloepus hoffmannii}: choHof1, choHof2, choHof2\_HiC), Cape golden mole (\emph{Chrysochloris asiatica}: chrAsi1), and Cape elephant shrew (\emph{Elephantulus edwardii}: eleEdw1).
+\emph{Query gene inclusion criteria:} To assemble our query list, we first removed all unnamed genes from UP000005640. Next, we excluded genes from downstream analyses for which assignment of homology was uncertain, including uncharacterized ORFs (991 genes), LOC (63 genes), HLA genes (402 genes), replication dependent histones (72 genes), odorant receptors (499 genes), ribosomal proteins (410 genes), zinc finger transcription factors (1983 genes), viral and repetitive-element-associated proteins (82 genes) and any protein described as either ``Uncharacterized,'' ``Putative,'' or ``Fragment'' by UniProt in UP000005640 (30724 genes), leaving us with a final set of 37,582 query protein isoforms, corresponding to 18,011 genes.
 
-\textbf{Query gene inclusion criteria:} To assemble our query list, we first removed all unnamed genes from UP000005640. Next, we excluded genes from downstream analyses for which assignment of homology was uncertain, including uncharacterized ORFs (991 genes), LOC (63 genes), HLA genes (402 genes), replication dependent histones (72 genes), odorant receptors (499 genes), ribosomal proteins (410 genes), zinc finger transcription factors (1983 genes), viral and repetitive-element-associated proteins (82 genes) and any protein described as either ``Uncharacterized,'' ``Putative,'' or ``Fragment'' by UniProt in UP000005640 (30724 genes), leaving us with a final set of 37582 query protein isoforms, corresponding to 18011 genes.
+\emph{Duplication gene inclusion criteria:} In order to condense transcript-level hits into single gene loci, and to resolve many-to-one genome mappings, we removed exons where transcripts from different genes overlapped, and merged overlapping transcripts of the same gene into a single gene locus call. The resulting gene-level copy number table was then combined with the maximum ECNC values observed for each gene in order to call gene duplications. We called a gene duplicated if its copy number was two or more, and if the maximum ECNC value of all the gene transcripts searched was 1.5 or greater; previous studies have shown that incomplete duplications can encode functional genes (\emph{17}, \emph{30}), therefore partial gene duplications were included provided they passed additional inclusion criteria (see below). The ECNC cut-off of 1.5 was selected empirically, as this value minimized the number of false positives seen in a test set of genes and genomes. The results of our initial search are summarized in \textbf{Figure @ref(fig: Figure-ML-UpSet-WC)A}. Overall, we identified 13880 genes across all species, or 77.1\% of our starting query genes.
 
-\textbf{Duplication gene inclusion criteria:} In order to condense transcript-level hits into single gene loci, and to resolve many-to-one genome mappings, we removed exons where transcripts from different genes overlapped, and merged overlapping transcripts of the same gene into a single gene locus call. The resulting gene-level copy number table was then combined with the maximum ECNC values observed for each gene in order to call gene duplications. We called a gene duplicated if its copy number was two or more, and if the maximum ECNC value of all the gene transcripts searched was 1.5 or greater; previous studies have shown that incomplete duplications can encode functional genes {[}13,23{]}, therefore partial gene duplications were included provided they passed additional inclusion criteria (see below). The ECNC cut off of 1.5 was selected empirically, as this value minimized the number of false positives seen in a test set of genes and genomes. The results of our initial search are summarized in Figure \ref{fig:Figure-GeneDup-Cladogram}. Overall, we identified 13880 genes across all species, or 77.1\% of our starting query genes.
-
-\textbf{Genome Quality Assessment using CEGMA:} In order to determine the effect of genome quality on our results, we used the gVolante webserver and CEGMA to assess the quality and completeness of the genome {[}32,33{]}. CEGMA was run using the default settings for mammals (``Cut-off length for sequence statistics and composition'' = 1;``CEGMA max intron length'' = 100000; ``CEGMA gene flanks'' = 10000, ``Selected reference gene set'' = CVG). For each genome, we generated a correlation matrix using the aforementioned genome quality scores, and either the mean Copy Number or mean ECNC for all hits in the genome.
+\emph{Genome Quality Assessment using CEGMA:} In order to determine the effect of genome quality on our results, we used the gVolante webserver and CEGMA to assess the quality and completeness of the genome (\emph{39}, \emph{40}). CEGMA was run using the default settings for mammals (``Cut-off length for sequence statistics and composition'' = 1;``CEGMA max intron length'' = 100000; ``CEGMA gene flanks'' = 10000, ``Selected reference gene set'' = CVG). For each genome, we generated a correlation matrix using the aforementioned genome quality scores, and either the mean Copy Number or mean ECNC for all hits in the genome. We observed that the percentage of duplicated genes in non-\emph{Pseudoungulatan} genomes was higher (12.94\% to 23.66\%) than \emph{Pseudoungulatan} genomes (3.26\% to 7.80\%). Mean Copy Number, mean ECNC, and mean CN (the lesser of Copy Number and ECNC per gene) moderately or strongly correlated with genomic quality, such as LD50, the number of scaffolds, and contigs with a length above either 100K or 1M (\textbf{Supplemental Figure \ref{fig:Figure-GenomeCor}}). The Afrosoricidians had the greatest correlation between poor genome quality and high gene duplication rates including larger numbers of private duplications. The correlations between genome quality metric and number of gene duplications was particularly high for Cape golden mole (\emph{Chrysochloris asiatica}: chrAsi1) and Cape elephant shrew (\emph{Elephantulus edwardii}: eleEdw1), therefore we excluded these species from downstream pathway enrichment analyses.
 
 \hypertarget{evidence-for-functionality-of-gene-duplicates}{%
 \subsection{Evidence for Functionality of Gene Duplicates}\label{evidence-for-functionality-of-gene-duplicates}}
 
 To validate and filter out duplicate gene calls, we intersected our results with either gene prediction or transcriptomic evidence as a proxy for functionality.
 
-\textbf{Transcriptome Assembly:} For the African Savana Elephant, Asian Elephant, West Indian Manatee, and Nine-Banded Armadillo, we generated \emph{de novo} transcriptomes using publically-available RNA-sequencing data from NCBI SRA (\ref{tab:Table-SRAData}). We mapped reads to all genomes available for each species, and assembled transcripts using HISAT2 and StringTie, respectively {[}34--36{]}. RNA-sequencing data was not available for Cape Golden Mole, Cape Elephant Shrew, Rock Hyrax, Aardvark, or the Lesser Hedgehog Tenrec.
+\emph{Transcriptome Assembly}: For the African Savana Elephant, Asian Elephant, West Indian Manatee, and Nine-Banded Armadillo, we generated de novo transcriptomes using publically-available RNA-sequencing data from NCBI SRA (Supplemental Table \ref{tab:Table-SRAData}). We mapped reads to all genomes available for each species, and assembled transcripts using HISAT2 and StringTie, respectively (\emph{41}--\emph{43}). RNA-sequencing data was not available for Cape Golden Mole, Cape Elephant Shrew, Rock Hyrax, Aardvark, or the Lesser Hedgehog Tenrec.
 
-\textbf{Gene Prediction:} We obtained tracks for genes predicted using GenScan for all the genomes available via UCSC Genome Browser: African savannah elephant (loxAfr3), Rock Hyrax (proCap1), West Indian Manatee (triManLat1), Aardvark (oryAfe1), Lesser Hedgehog Tenrec (echTel2), Nine-banded armadillo (dasNov3), Hoffman's Two-Toed Sloth (choHof1), Cape golden mole (chrAsi1), and Cape Elephant Shrew (eleEdw1); gene prediction tracks for higher-quality assemblies were not available.
+\emph{Gene Prediction}: We downloaded tracks for genes predicted using GenScan for all the genomes available via UCSC Genome Browser: African savannah elephant (loxAfr3), Rock Hyrax (proCap1), West Indian Manatee (triManLat1), Aardvark (oryAfe1), Lesser Hedgehog Tenrec (echTel2), Nine-banded armadillo (dasNov3), Hoffman's Two-Toed Sloth (choHof1), Cape golden mole (chrAsi1), and Cape Elephant Shrew (eleEdw1); gene prediction tracks for higher-quality assemblies were not available.
 
-\textbf{Evidenced Duplicate Criteria:} We intersected our records of duplicate hits identified in each genome with the gene prediction tracks and/or transcriptome assemblies using \texttt{bedtools}. When multiple lines of evidence for functionality were present for a genome, we used the union of all intersections as the final output for evidenced duplicates. When analyzing the highest-quality assemblies available for each species, if a species had neither gene prediction tracks nor RNA-seq data for the highest-quality genome available, we conservatively included all hits for the genome in the final set of evidenced duplicates.
+\emph{Evidenced Duplicate Criteria}: We intersected our records of duplicate hits identified in each genome with the gene prediction tracks and/or transcriptome assemblies using bedtools. When multiple lines of evidence for functionality were present for a genome, we used the union of all intersections as the final output for evidenced duplicates. When analyzing the highest-quality assemblies available for each species, if a species had neither gene prediction tracks nor RNA-seq data for the highest-quality genome available, we conservatively included all hits for the genome in the final set of evidenced duplicates.
 
 \hypertarget{reconstruction-of-ancestral-copy-numbers}{%
 \subsection{Reconstruction of Ancestral Copy Numbers}\label{reconstruction-of-ancestral-copy-numbers}}
 
-We encoded the copy number of each gene for each species as a discrete trait ranging from 0 (one gene copy) to 31 (for 32+ gene copies) and used IQ-TREE to select the best-fitting model of character evolution {[}37--41{]}, which was inferred to be a Jukes-Cantor type model for morphological data (MK) with equal character state frequencies (FQ) and rate heterogeneity across sites approximated by including a class of invariable sites (I) plus a discrete Gamma model with four rate categories (G4). Next we inferred gene duplication and loss events with the empirical Bayesian ancestral state reconstruction (ASR) method implemented in IQ-TREE {[}37--41{]}, the best fitting model of character evolution (MK+FQ+GR+I) {[}42,43{]}, and the unrooted species tree for Atlantogenata. We considered ancestral state reconstructions to be reliable if they had Bayeisan Posterior Probability (BPP) ?0.80; less reliable reconstructions were excluded for pathway analyses.
+We encoded the copy number of each gene for each species as a discrete trait ranging from 0 (one gene copy) to 31 (for 32+ gene copies) and used IQ-TREE to select the best-fitting model of character evolution (\emph{44}--\emph{48}), which was inferred to be a Jukes-Cantor type model for morphological data (MK) with equal character state frequencies (FQ) and rate heterogeneity across sites approximated by including a class of invariable sites (I) plus a discrete Gamma model with four rate categories (G4). Next we inferred gene duplication and loss events with the empirical Bayesian ancestral state reconstruction (ASR) method implemented in IQ-TREE (\emph{44}--\emph{48}), the best fitting model of character evolution (MK+FQ+GR+I) (\emph{49}, \emph{50}), and the unrooted species tree for \emph{Atlantogenata}. We considered ancestral state reconstructions to be reliable if they had Bayeisan Posterior Probability (BPP) \(\geq\) 0.80; less reliable reconstructions were excluded from pathway analyses.
 
 \hypertarget{pathway-enrichment-analysis}{%
 \subsection{Pathway Enrichment Analysis}\label{pathway-enrichment-analysis}}
 
-To determine if gene duplications were enriched in particular biological pathways, we used the WEB-based Gene SeT AnaLysis Toolkit (WEBGESTALT){[}44{]} to perform overrepresentation analysis (ORA); pathway databases included Reactome {[}45{]}, Wikipathways, {[}46{]}, and KEGG {[}47{]}. Gene duplicates in each lineage were used as the foreground gene set, and the initial query set was used as the background gene set. Statistical significance of enriched terms was assessed with a hypergeometric test, and controlled for multiple testing using the Benjamini-Hochberg false discovery rate (FDR); each analysis was run at FDR=0.1, FDR=0.2, FDR=0.3, and FDR=0.5. In order to determine an empirical false positive rate for term enrichment, we randomly sampled 1000-10,000 genes from our background set 1000 times, and ran the aforementioned analyses to see which terms were likely to randomly appear; there were no terms which appeared at FDR \(\leq\) 0.3.
+To determine if gene duplications were enriched in particular biological pathways, we used the WEB-based Gene SeT AnaLysis Toolkit (WebGestalt)(\emph{51}) to perform Over-Representation Analysis (ORA) using the Reactome database (\emph{52}). Gene duplicates in each lineage were used as the foreground gene set, and the initial query set was used as the background gene set. WebGestalt uses a hypergeometric test for statistical significance of pathway over-representation, which we refined using two methods: an False Discovery Rate (FDR)-based approach, and an empirical p-value approach (\emph{53}). The Benjamini-Hochberg FDR multiple-testing correction was generated by WebGestalt. In order to correct P-values based on an empirical distribution, we modified the approach used by Chen \emph{et al.} in Enrichr (\emph{53}) to generate a ``combined score'' for each pathway based on the hypergeometric P-value from WebGestalt, and a correction for expected rank for each pathway. In order to generate the table of expected ranks and variances for this approach, we randomly sampled foreground sets of 10-5,000 genes from our background set 5000 times, and used WebGestalt ORA to obtain a list of enriched terms and P-values for each run; we then compiled a table of Reactome terms with their expected frequencies and standard deviation. This data was used to calculate a Z-score for terms in an ORA run, and the combined score was calculated using the formula \(C = \log{(p)}\cdot{}z\).
 
 \hypertarget{estimating-the-evolution-of-cancer-risk}{%
 \subsection{Estimating the Evolution of Cancer Risk}\label{estimating-the-evolution-of-cancer-risk}}
 
-The dramatic increase in body mass and lifespan in some Afrotherian lineages implies those lineages must have also evolved reduced cancer risk. To infer the magnitude of these reductions we estimated differences in intrinsic cancer risk across extant and ancestral Afrotherians. Following Peto {[}48{]} we estimate the intrinsic cancer risk as the product of risk associated with body mass and lifespan. In order to determine the intrinsic cancer risk (\(K\)) across species and at ancestral nodes (see below), we first needed to estimate ancestral lifespans at each node. We used Phylogenetic Generalized Least-Square Regression (PGLS) {[}49,50{]} implemented in the R package \texttt{ape} to calculate estimated ancestral lifespans across \emph{Atlantogenata} using our estimates for body size at each node. In order to estimate the intrinsic cancer risk of a species, we first inferred lifespans at ancestral nodes using PGLS and the model \(ln(lifespan) = \beta_{1}corBrowninan + \beta_{2}ln(size) + \epsilon\). Next, we calculated \(K_{1}\) at all nodes, and then estimated the fold change in cancer susceptibility between ancestral and descendant nodes (Figure \ref{fig:Figure-CancerSuscept}, Table \ref{tab:Table-CancerSuscept}).A Next, in oder to calculate \(K_{1}\) at all nodes, we used a simplified multistage cancer risk model for body size \(D\) and lifespan \(t\): \(K \approx Dt^6\) {[}8,48,51,52{]}. The fold change in cancer risk between a node and its ancestor was then defined as \(\log_{2}(\frac{K_{2}}{K_{1}})\).
+The dramatic increase in body mass and lifespan in some Afrotherian lineages, and the relatively constant rate of cancer across species of diverse body sizes (\emph{10}), indicates that those lineages must have also evolved reduced cancer risk. To infer the magnitude of these reductions we estimated differences in intrinsic cancer risk across extant and ancestral Afrotherians. Following Peto (\emph{54}), we estimate the intrinsic cancer risk (\(K\)) as the product of risk associated with body mass and lifespan. In order to determine (\(K\)) across species and at ancestral nodes (see below), we first estimated ancestral lifespans at each node. We used Phylogenetic Generalized Least-Square Regression (PGLS) (\emph{55}, \emph{56}), using a Brownian covariance matrix as implemented in the R package \texttt{ape} (\emph{57}), to calculate estimated ancestral lifespans across \emph{Atlantogenata} using our estimates for body size at each node. In order to estimate the intrinsic cancer risk of a species, we first inferred lifespans at ancestral nodes using PGLS and the model \(ln(lifespan) = \beta_{1}corBrowninan + \beta_{2}ln(size) + \epsilon\). Next, we calculated \(K_{1}\) at all nodes, and then estimated the fold-change in cancer susceptibility between ancestral and descendant nodes (\textbf{Figure @ref(fig:Figure-DoubleTree-Bodysize-Lifespan}). Next, in order to calculate \(K_{1}\) at all nodes, we used a simplified multistage cancer risk model for body size \(D\) and lifespan \(t\): \(K \approx Dt^6\) (\emph{9}, \emph{54}, \emph{58}, \emph{59}). The fold change in cancer risk between a node and its ancestor was then defined as \(\log_{2}(\frac{K_{2}}{K_{1}})\).
+
+\hypertarget{data-analysis}{%
+\subsection{Data Analysis}\label{data-analysis}}
+
+All data analysis was performed using R version 4.0.2 (2020-06-22), and the complete reproducible manuscript along with code and data generation pipeline can be found on the author's GitHub page at \url{www.github.com/docmanny/smRecSearch/tree/publication} (\emph{57}, \emph{60}--\emph{104})
 
 \hypertarget{results}{%
 \section{Results}\label{results}}
 
 \hypertarget{step-wise-evolution-of-body-size-in-afrotherians}{%
-\subsection{\texorpdfstring{Step-wise evolution of body size in \emph{Afrotherians}}{Step-wise evolution of body size in Afrotherians}}\label{step-wise-evolution-of-body-size-in-afrotherians}}
+\subsection{Step-wise evolution of body size in Afrotherians}\label{step-wise-evolution-of-body-size-in-afrotherians}}
 
-Similar to previous studies of Afrotherian body size {[}21,27{]}, we found that the body mass of the Afrotherian ancestor was inferred to be small (0.26kg, 95\% CI: 0.31-3.01kg) and that substantial accelerations in the rate of body mass evolution occurred coincident with a 67.36x increase in body mass in the stem-lineage of \emph{Pseudoungulata} (17.33kg), a 1.45x increase in body mass in the stem-lineage of \emph{Paenungulata} (25.08kg), a 11.82x increase in body mass in the stem-lineage of \emph{Tehthytheria} (296.56kg), and a 2.69x increase in body mass in the stem-lineage of \emph{Proboscidea} (4114.39kg) (Figure \ref{fig:Figure-BodySize}, Table \ref{tab:Table-BodySize}). The ancestral \emph{Hyracoidea} was inferred to be relatively small (2.86kg-118.18kg), and rate accelerations were coincident with independent body mass increases in large hyraxes such as \emph{Titanohyrax andrewsi} (429.34kg, 67.36x increase). While the body mass of the ancestral \emph{Sirenian} was inferred to be large (61.7kg-955.51kg), a rate acceleration occurred coincident with a 10.59x increase in body mass in Stellar's sea cow. Rate accelerations also occurred coincident with 36.6x decrease in body mass in the stem-lineage of the dwarf elephants \emph{Elephas (Palaeoloxodon) antiquus falconeri} and \emph{Elephas cypriotes}. These data suggest that gigantism in \emph{Afrotherians} evolved step-wise, from small to medium bodies in the \emph{Pseudoungulata} stem-lineage, medium to large bodies in the \emph{Tehthytherian} stem-lineage and extinct hyraxes, and from large to exceptionally large bodies independently in the \emph{Proboscidean} stem-lineage and Stellar's sea cow (Figure \ref{fig:Figure-BodySize}, Table \ref{tab:Table-BodySize}).
+Similar to previous studies of Afrotherian body size (\emph{25}, \emph{34}), we found that the body mass of the Afrotherian ancestor was inferred to be small (0.26kg, 95\% CI: 0.31-3.01kg) and that substantial accelerations in the rate of body mass evolution occurred coincident with a 67.36x increase in body mass in the stem-lineage of \emph{Pseudoungulata} (17.33kg), a 1.45x increase in body mass in the stem-lineage of \emph{Paenungulata} (25.08kg), a 11.82x increase in body mass in the stem-lineage of \emph{Tehthytheria} (296.56kg), and a 2.69x increase in body mass in the stem-lineage of \emph{Proboscidea} (4114.39kg) (\textbf{Figure \ref{fig:Figure-DoubleTree-Bodysize-Lifespan}A,B}). The ancestral \emph{Hyracoidea} was inferred to be relatively small (2.86kg-118.18kg), and rate accelerations were coincident with independent body mass increases in large hyraxes such as \emph{Titanohyrax andrewsi} (429.34kg, 67.36x increase). While the body mass of the ancestral \emph{Sirenian} was inferred to be large (61.7kg-955.51kg), a rate acceleration occurred coincident with a 10.59x increase in body mass in Stellar's sea cow. Rate accelerations also occurred coincident with 36.6x decrease in body mass in the stem-lineage of the dwarf elephants \emph{Elephas (Palaeoloxodon) antiquus falconeri} and \emph{Elephas cypriotes}. These data suggest that gigantism in \emph{Afrotherians} evolved step-wise, from small to medium bodies in the \emph{Pseudoungulata} stem-lineage, medium to large bodies in the \emph{Tehthytherian} stem-lineage and extinct hyraxes, and from large to exceptionally large bodies independently in the \emph{Proboscidean} stem-lineage and Stellar's sea cow (\textbf{Figure \ref{fig:Figure-DoubleTree-Bodysize-Lifespan}A,B}).
 
 \hypertarget{step-wise-reduction-of-intrinsic-cancer-risk-in-large-long-lived-afrotherians}{%
 \subsection{Step-wise reduction of intrinsic cancer risk in large, long-lived Afrotherians}\label{step-wise-reduction-of-intrinsic-cancer-risk-in-large-long-lived-afrotherians}}
 
-As expected, intrinsic cancer susceptibility in Afrotheria also varies with changes in body size and longevity (Figure \ref{fig:Figure-CancerSuscept}, Table \ref{tab:Table-CancerSuscept}), with an initial 9.22-fold and 20.75-fold increase in the stem-lineage of Afrotheria and Xenarthra, respectively, followed by a 9.22-fold increases in Pseudoungulata and a 5.38-fold increase in Aardvarks (Figure \ref{fig:Figure-CancerSuscept}, Table \ref{tab:Table-CancerSuscept}). In contrast to the Paenungulate stem-lineage, there is a 6.92-fold increase in cancer risk in Tethytheria, a 8.62-fold increase in Manatee, and dramatic increases within Proboscidea including a 27.66-fold increase in Elephantidae and a 29.97-fold in the American Mastodon. Within the Elephantidae, Elephantina and Loxodontini have a 2.31-fold increase in cancer susceptibility, while susceptibility is relatively stable in Mammoths. The three extant Proboscideans, Asian Elephant, African Savana Elephant, and the African Forest Elephant, meanwhile, have similar decreases in both size and cancer susceptibility (Figure \ref{fig:Figure-CancerSuscept}, Table \ref{tab:Table-CancerSuscept}).
+In order to account for a relatively stable cancer rate across species (\emph{10}--\emph{12}), intrinsic cancer risk must also evolve with changes body size and lifespan across species. As expected, intrinsic cancer susceptibility in \emph{Afrotheria} also varies with changes in body size and longevity (\textbf{Figure \ref{fig:Figure-DoubleTree-Bodysize-Lifespan}A}), with initial 0-log\_\{2\}-fold and 6.41-log\_\{2\}-fold decreases in the stem-lineage of Afrotheria and Xenarthra, respectively, followed by a 13.37-log\_\{2\}-fold decrease in Pseudoungulata, and a 1.49-log\_\{2\}-fold decrease in Aardvarks (\textbf{Figure \ref{fig:Figure-DoubleTree-Bodysize-Lifespan}A}). In contrast to the Paenungulate stem-lineage, there is a 7.84-log\_\{2\}-fold decrease in cancer risk in Tethytheria, a 0.67-log\_\{2\}-fold decrease in Manatee, and dramatic increases within Proboscidea including a 0.83-log\_\{2\}-fold decrease in Elephantidae and a 0.57-log\_\{2\}-fold decrease in the American Mastodon. Within the Elephantidae, Elephantina and Loxodontini have a 0.06-log\_\{2\}-fold decrease in cancer susceptibility, while susceptibility is relatively stable in Mammoths. The three extant Proboscideans, Asian Elephant, African Savana Elephant, and the African Forest Elephant, meanwhile, have similar decreases in body size, with increases in cancer susceptibility (\textbf{Figure \ref{fig:Figure-DoubleTree-Bodysize-Lifespan}A}).
 
-\hypertarget{identification-and-evolutionary-history-of-gene-duplications}{%
-\subsection{Identification and evolutionary history of gene duplications}\label{identification-and-evolutionary-history-of-gene-duplications}}
+\hypertarget{pervasive-duplication-of-tumor-suppressor-genes-in-afrotheria}{%
+\subsection{Pervasive duplication of tumor suppressor genes in Afrotheria}\label{pervasive-duplication-of-tumor-suppressor-genes-in-afrotheria}}
 
-We found that gene duplications were common in Atlantogenatan genomes (Figure \ref{fig:Figure-GeneDup-Cladogram}), identifying an average of NA genes, with an average of 10.53\% duplicated; this is in-line with other studies describing the rates of gene duplications over time. {[}53{]}. We observed that the percentage of duplicated genes in non-\emph{Pseudoungulatan} genomes was significantly higher: while \emph{Pseudoungulatan} genomes had duplicates percentages ranging anywhere from 3.26\% to 7.80\%, outgroup species' duplication rates ranged from 12.94\% to 23.66\%. To explore whether genome quality may adversely effect our inferences, we used CEGMA and the gVolante server {[}32,33{]} to assess the correlation between genome quality and copy number estimates. As shown in Figure \ref{fig:Figure-GenomeCor}, mean Copy Number, mean ECNC, and mean CN (the lesser of Copy Number and ECNC per gene) moderately or strongly correlate with genomic quality, such as LD50, the number of scaffolds, and contigs with a length above either 100K or 1M.
+Our hypothesis was that genes which duplicated coincident with the evolution of increased body sizes (IBM) and reduced intrinsic cancer risk (RICR) would be uniquely enriched in tumor suppressor pathways compared to genes that duplicated in other lineages. Therefore, we tested if duplicated genes in each lineage were enriched in Reactome pathways using ORA implemented in WEBGESTALT. No pathways obviously related to cancer biology or tumor suppression were enriched in either the stem-lineage of \emph{Pseudoungulata} (67.36-fold IBM, 13.37-log\_\{2\}-fold RICR) or \emph{Paenungulata} (1.45-fold IBM, 1.17-log\_\{2\}-log\_\{2\}-fold RICR) (\textbf{Figure \ref{fig:Figure-DoubleTree-Bodysize-Lifespan}A}). Consistent with our hypothesis, 55.8\% (29/52) of the pathways that were enriched in the Tethytherian stem-lineage (11.82-fold IBM, 7.84-log\_\{2\}-fold RICR), 27.8\% (20/72) of the pathways that were enriched in the Proboscidean stem-lineage (1.06-fold IBM, 3.14-log\_\{2\}-fold RICR), and 28\% (33/118) of the pathways that were enriched within the Proboscidean clade were related to tumor suppression (\textbf{Figure \ref{fig:Figure-DoubleTree-Bodysize-Lifespan}C}). Similarly, 17.8\% (10/56) and 30\% (30/100) of the pathways that were enriched in manatee (1.11-fold IBM, 0.25, 0.22, 0.32, 2.29, 0.98-log\_\{2\}-fold RICR) and aardvark (67.36-fold IBM, 1.49-log\_\{2\}-fold RICR), respectively, were related to tumor suppression. In contrast, only 4.9\% (2/41) of the pathways that were enriched in hyrax (1.6-fold IBM, 1.49-log\_\{2\}-fold RICR) were related to tumor suppression (\textbf{Figure \ref{fig:Figure-ML-UpSet-WC}}).
 
-Among the genes that increased in copy number in the elephant lineage are TP53 and LIF, as previously described; however, we find that these two genes represent a fraction of the 940 genes that are duplicated in the African Elephant overall, which accumulated over various steps through their evolution. While the extinct elephantids have acceptable genome quality metrics according to CEGMA, they are nonetheless missing a significant number of sequences; this may contribute to the low number of duplicated genes that occured in internal nodes. The number of duplicates that occur at each branch is also proportional to the density of the sampling of the clade overall, as would be expected. In branches, such as \emph{Afrosoricida}, where the number of species is relatively minuscule compared to the size of the clade, we see many significantly larger numbers of duplications private to these species.
+Unexpectedly, however, lineages without major increases in body size, lifespan, or intrinsic cancer risk were also enriched for tumor suppressor pathways. For example, 13.2\% (9/68), 36.1\% (13/36), and 20\% (20/100) of the pathways that were enriched in the stem-lineages of Afroinsectivoa and Afrosoricida, and in E. telfairi, respectively, were related to tumor suppression (\textbf{Figure \ref{fig:Figure-ML-UpSet-WC}}). These data suggest that either duplication of genes in tumor suppressor pathways is common in Afrotherians, or that there is a systemic bias in our pathways enrichment analyses. To explore this possibility further we generated 5000 randomly sampled gene sets of sizes between 10 and 5000 genes from the query gene set, and tested for enriched pathways using ORA implemented in WebGestalt. After filtering out pathways with a median p-value greater than 0.05, we saw no enrichments of cancer pathways above 157 genes; below that number, between 12.2\% and 18\% of enriched pathways were classified as cancer pathways by our criteria. Without considering p-values, the percentage of cancer pathways approaches 15.4\% (213/1381) in simulated sets as the number of genes in a set increases. When directly comparing our simulated results with the \emph{Atlantogenatan} results by gene set size, we see that only cancer pathway enrichments in \emph{Mammuthus columbi}, \emph{Paenungulata}, \emph{Elephantidae}, \emph{Loxodonta cyclotis}, \emph{Afrosoricida}, \emph{Tethytheria}, \emph{Elephas maximus}, \emph{Loxodonta africana}, \emph{Proboscidea}, \emph{Trichechus manatus}, \emph{Orycteropus afer}, \emph{Echinops telfairi}, \emph{Chrysochloris asiatica}, and \emph{Elephantulus edwardii} are above their simulated cancer pathway percentages.
 
-\hypertarget{duplications-that-occurred-recently-in-probodiscea-are-enriched-for-tumor-suppressor-pathways}{%
-\subsection{Duplications that occurred recently in Probodiscea are enriched for tumor suppressor pathways}\label{duplications-that-occurred-recently-in-probodiscea-are-enriched-for-tumor-suppressor-pathways}}
+\hypertarget{tumor-suppressor-pathways-enriched-exclusively-within-proboscideans}{%
+\subsection{Tumor suppressor pathways enriched exclusively within Proboscideans}\label{tumor-suppressor-pathways-enriched-exclusively-within-proboscideans}}
 
-Our initial hypothesis was that genes which duplicated in lineages that experienced a growth in size would be enriched for membership in tumor suppressor pathways. Thus, we used WebGestalt and its Overrepresentation Analysis (ORA) functionality to determine what pathways were enriched in our duplicated gene sets in each branch relative to our initial query set. For our database, we used Reactome for our primary analysis, but additionally used the KEGG, Panther, Wikipathways, and Wikipathways\_cancer databases using WebGestalt ORA. Going through the tree, at no FDR \(\leq\) 0.5 is there any significant pathway representation for genes that increased in the branches leading to \emph{Afrosoricida}, \emph{Pseudoungulata}, \emph{Elephantina}, \emph{Loxodontini}, \emph{Elephas maximus}, \emph{Mammuthus}, \emph{Loxodonta cyclotis}, \emph{Palaeoloxodon antiquus}, \emph{Loxodona}, \emph{Mammuthus columbi}, \emph{Mammuthus primigenius}, \emph{Procavia capensis}, \emph{Elephantidae}, or \emph{Proboscidea}; furthermore, there are no significant pathway enrichments at FDR\textless{}0.5 for genes whose copy number did not change between branches (copy-number-stable) for \emph{Afrotheria}. Note that because \emph{Xenarthra} was selected as the outgroup, it is not possible to polarize the changes in their gene copy numbers along the tree.
+While duplication of tumor suppressor genes is common in Afrotheria, we identified 12 pathways related to tumor suppression that were enriched exclusively in the Proboscidean stem-lineage (\textbf{Figure \ref{fig:Figure-ML-UpSet-WC}C}). Among these were pathways related to the cell cycle, including ``G0 and Early G1'', ``G2/M Checkpoints'' and ``Phosphorylation of the APC/C'', pathways related to DNA damage repair including ``Global Genome Nucleotide Excision Repair (GG-NER)'', ``HDR through Single Strand Annealing (SSA)'', ``Gap-filling DNA repair synthesis and ligation in GG-NER'', ``Recognition of DNA damage by PCNA-containing replication complex'', and ``DNA Damage Recognition in GG-NER'', pathways related to telomere biology including ``Extension of Telomeres'' and ``Telomere Maintenance'', pathways related to the apoptosome including ``Activation of caspases through apoptosome-mediated cleavage'', pathways related to ``mTORC1-mediated signaling'' and ``mTOR signaling''. Thus we conclude that duplication of genes in tumor suppressor pathways is pervasive in Afrotherians, but that genes in some pathways related to cancer biology and tumor suppression are uniquely duplicated in large-bodied (or long-lived) Proboscideans.
 
-For the other branches, the number of pathways that came up as significantly enriched at each FDR is shown in Table \ref{tab:Table-OraFreqDatabase}. For the species with high duplication rates and lower-quality, highly-fragmented genomes, such as with \emph{Chrysochloris asiatica} (20.05\% duplicated hits) and \emph{Elephantulus edwardii} (23.66\% duplicated hits), it is unsurprising that there is a proportionally large number of pathway enrichments. In the case of these two species, their many pathway enrichments also span an incredible range of processes at every level of biology; this, in combination with the high number of copy numbers identified for these genes, further suggests a need for improvement and refinement in these genomes. In the cell cycle pathways called as significant in the genomes of these two species plus \emph{Orycteropus afer} and \emph{Echinops telfairi}, the duplicated genes included in these sets are from the same gene families, such as the APC subunit family; the proteosome subunit families; and the protein phosphatase 2 family, among others. It is highly possible that these results reflect true expansions of these gene families, especially in the higher-quality \emph{Orycteropus afer} genome; however, it is also possible that it simply reflects artifactual duplications, and so require further study.
+Among the genes uniquely duplicated within Proboscideans are TP53, COX20, LAMTOR5, PRDX1, STK11, BRD7, MAD2L1, BUB3, UBE2D1, SOD1, LIF, MAPRE1, CNOT11, CASP9, CD14, HMGB2. Two of these, TP53 and LIF, have been previously described (\emph{10}, \emph{17}, \emph{30}). These genes are significantly enriched in pathways involved in apoptosis, cell cycle regulation, and both upstream and downstream pathways involving TP53. The majority of these genes are actively expressed in extant African Elephants, suggesting that they maintain functionality (\textbf{Figure \ref{fig:Figure-LoxAfrExpressedDups}D}).
 
-The pathway enrichments for genes whose copy number either did not change, or whose copy number increased, between \emph{Loxodona} and the African Elephant are shown in Figure \ref{fig:Figure-loxAfrORA}. Among the few enriched pathways in the African Elephant, we see that that two tumor suppression pathways - APC Complex-related pathways, and ``TP53 Regulates Metabolic Genes''- appear not only in the case of stable genes, but also in the set of newly duplicated genes. The other pathways we see in the set of recently-duplicated genes include ``Functionalization of Compounds'' and its daughter pathway ``Xenobiotics''. Genes in these pathways serve to add functional groups to lipophylic compounds which would otherwise not be reactive in the cell, and are types of metabolic pathways. In the stable set we see enrichment of pathways such as ``Neuronal Systems'' and ``Axon Guidance,'' which fit in well with what is known about elephant biology and evolution {[}54{]}. Overall in elephants, we see enrichments within duplicated genes for pathways involved in what makes an elephant an elephant - including tumor suppressor pathways.
+\hypertarget{coordinated-duplication-of-tp53-related-genes-in-proboscidea}{%
+\subsection{Coordinated duplication of TP53-related genes in Proboscidea}\label{coordinated-duplication-of-tp53-related-genes-in-proboscidea}}
 
-\hypertarget{concerted-duplication-of-tp53-and-tp53-related-genes-towards-probodiscea}{%
-\subsection{\texorpdfstring{Concerted duplication of TP53 and TP53-related genes towards \emph{Probodiscea}}{Concerted duplication of TP53 and TP53-related genes towards Probodiscea}}\label{concerted-duplication-of-tp53-and-tp53-related-genes-towards-probodiscea}}
-
-Prior studies looking at the duplication of TP53 in the African Elephant motivated further study for the enrichment of genes involved in TP53-related metabolic pathway. We traced the evolution of all genes involved in this TP53-duplicated pathway that were duplicated in the African Elephant, and used publicly-available RNA-seq data to see which genes are actively expresses in living elephants. Excitingly, we found that the initial duplication of TP53 in Tethytheria, where body size expanded, was preceded by the duplication of GTF2F1 and STK11 in \emph{Paenungulata}; and was coincided by the duplication of BRD7. These two genes are involved in regulating the transcription of TP53, and their duplication prior to that of TP53 may have facilitated its retroduplication. Interestingly enough, STK11 is a tumor suppressor gene in its own right, and plays additional roles in mediating tumor suppression via p21-induced senescence {[}55{]}.
-
-The other genes that are duplicated in the pathway are all downstream of TP53; these genes duplicated either alongside TP53 in the case of SIAH1, or subsequently in \emph{Probodiscea}, \emph{Elephantidae}, and in modern elephants. (Figure \ref{fig:Figure-loxAfrTP53}). These genes are all expressed in RNA-seq data, suggesting that they encode functional genes in modern elephants (Figure \ref{fig:Figure-loxAfrTP53}).
+Prior studies found that the ``master'' tumor suppressor TP53 duplicated multiple times in elephants (\emph{10}, \emph{17}), motivating us to further study duplication of genes involved in TP53-related pathways Proboscidea. We traced the evolution of all genes involved in this TP53-duplicated pathway that were duplicated in the African Elephant, which has the most complete genome and for which several RNA-seq data sets are available. We found that the initial duplication of TP53 in Tethytheria, where body size expanded, was preceded by the duplication of GTF2F1 and STK11 in Paenungulata; and was coincident with the duplication of BRD7. These three genes are involved in regulating the transcription of TP53 (\emph{105}--\emph{108}), and their duplication prior to that of TP53 may have facilitated re-functionalization of TP53 retroduplicates. Interestingly, STK11 is a tumor suppressor gene in its own right, and plays additional roles in mediating tumor suppression via p21-induced senescence (\emph{106}). The other genes that are duplicated in the pathway are all downstream of TP53; these genes duplicated either coincident with TP53, in the case of SIAH1, or subsequently in Probodiscea, Elephantidae, or extant elephants (\textbf{Figure \ref{fig:Figure-LoxAfrExpressedDups}}). These genes are all expressed in RNA-seq data, suggesting that they encode functional genes (\textbf{Figure \ref{fig:Figure-LoxAfrExpressedDups}}).
 
 \hypertarget{discussion}{%
 \section{Discussion}\label{discussion}}
 
-With our results, we have demonstrated that gigantism in \emph{Atlantogenata} was not limited to extant elephants, but rather occurred at various points in the evolution of the clade; however, the hundred-fold to hundred-million-fold increases in cancer risk that is associated with these increases however poses an innate challenge in the evolution and persistence of this trait.
-The environmental selective pressures on body size have long been the fascination of evolutionary biologists, and the influence of climate, predation, geography, and ecological niche on body size have been well established. {[}56{]}. Indeed, there is a general trend, known as Cope's Rule, for body sizes of species to increase over time {[}57--59{]}. However, for all the research on body size that has been done thus far, the mechanisms that enable a release from the negative pressure on body size exerted on cancer risk has proven more elusive {[}57--59{]}.
+Among the evolutionary, developmental, and life history constraints on the evolution of large bodies and long lifespans is an increased risk of developing cancer. While body size and lifespan are correlated with cancer risk within species, there is no correlation between species because large and long-lived organisms have evolved enhanced cancer suppression mechanisms. While this ultimate evolutionary explanation is straightforward (\emph{54}), determining the mechanisms that underlie the evolution of enhanced cancer protection is challenging because many mechanisms likely contribute to evolution of reduced cancer risk. Previous candidate gene studies in elephants have identified duplications of tumor suppressors such as TP53 and LIF, among others, suggesting that an increased copy number of tumor suppressors may contribute to the evolution of large body sizes in the elephant lineage (\emph{10}, \emph{17}, \emph{30}--\emph{32}). Here we: 1) Trace the evolution of body sizes in Eutherian mammals, with particular reference to Afrotherians; 2) Infer changes in cancer susceptibility across Afrotherian lineages; and 3) Use a genome-wide screen to determine gene duplications in Afrotherian genomes, including multiple living and extinct Proboscideans, are enriched in tumor suppressor pathways.
 
-Furthermore, we show that tumor suppressor duplications are enriched not only in large, extant species, but also in large common ancestors, and that these duplications evolved throughout the tree, rather than in concert. The ancestral body sizes of many of the subclades in \emph{Atlantogenata} were estimated to be large, and the estimated cancer risk increases - even for the small clades like \emph{Afroinsectivora} may explain why these TSG gene duplications occurred early on, and persisted even in species that we did not expect to have high risks of cancer. However, some of our results also provide interesting evidence for a paradigm of TSG duplications being a pervasive phenomenon, rather than a specific mechanism that occurs after the evolution of gigantism. At the common ancestor of \emph{Proboscidea}, which was small relative to both its ancestors and its descendants, we see the emergence of various TSG duplications, which may have enabled the stratospheric increase in body size of modern elephants. We also identified many TSG duplication events in smaller species and lineages such as in \emph{Chrysochloris asiatica} and \emph{Elephantulus edwardii}, although these may have been the result of low-quality genomes.
+\hypertarget{correlated-evolution-of-large-bodies-and-reduced-cancer-risk}{%
+\subsection{Correlated evolution of large bodies and reduced cancer risk}\label{correlated-evolution-of-large-bodies-and-reduced-cancer-risk}}
 
-The impacts and takeaways of this study are limited by the quality and quantity of \emph{Atlantogenatan} genomes that were available, and our available knowledge of the lifespans and cancer risk of the extant species. For many of our species, studies in captivity are limited, and the species are relatively understudied from a longitudinal perspective, such as with the Cape Elephant Shrew and Cape Golden Mole. Furthermore, while there is recent interest in resequencing and improving the quality of these assemblies, at the time of this writing there is still quite a ways to go in order to have genomes of a sufficiently rigorous quality to make stronger inferences about gene copy number expansions and contractions (which were not considered in this study for this reason).
+One of the challenges for determining the mechanisms that underlie the evolution of large bodies, long lifespans, and reduced cancer risk is identifying lineages that are large and/or long-lived and closely related to species with normal body sizes and lifespans. One such lineage appears to be elephants, which are deeply nested within Afrotherians with smaller bodies and that are generally shorter-lived. To reconstruct the evolution of body size across Afrotherians, and determine in which lineages exceptional body sizes evolved generated a time-calibrated super tree of Eutherian mammals that combined the X and Y trees. Similar to previous studies, we found that the evolution of gigantism in Afrotheria was not limited to the living and extinct Proboscideans, but independently evolved in multiple lineages including hyraxes and sea cows. These data indicate that the Paenungulata is a particularly good model in which to explore mechanisms that underlie the evolution of exceptionally large bodies.
 
-The lack of a stronger signal from tumor suppressor duplications is likely a result of the strong effect size on both cancer risk and organismal toxicity that a TSG duplication would provide. The duplication of a tumor suppressor in many cases is associated with mild toxicity, although it greatly varies given the context and TSG in question; however, a single TSG duplication can also provide significant protection against cancer. For example, the overexpression of TP53 in mice, while protective of cancer, is associated with progeria and early death; however, if an additional copy of TP53 is introduced with its regulatory elements intact, the mice are healthy and experience normaging, while also demonstrating an enhanced response to cellular stress and lower rates of cancer. {[}60,61{]}. In light of this, it is fascinating that our results in the elephant lineage suggest that the duplication of TP53 regulators preceded the retroduplication and expansion of TP53, as this likely would have lowered the toxicity of the initial duplication and thus enabled it to occur. Given a sufficient selective pressure on increasing body size, it stands to reason that events like this could alleviate the negative pleiotropy of TSG duplications sufficiently to enable their persistence and allow for subsequent refinement over evolutionary time.
+The absence of a correlation between body size or lifespan and cancer risk indicates that large, long-lived species evolved reduced cancer risk. Previous studies, for example, have shown that while cancer incidence varies by species, the rate is relatively stable at \textasciitilde5\% for both large and small mammals; rates can increase significantly for species with transmissible cancers such as Tasmanian devils or that live in particularly polluted environments such as Minke whales that inhabit the St.~Lawrence estuary. Therefore, we used our ancestral body size and lifespan estimates to infer the magnitude of changes in intrinsic cancer risk across species (following Peto (2015)) that would be required to keep cancer rates stable across species. As expected, we identified significant reductions in intrinsic cancer risk in large bodied lineages, most notably in Pseudoungulata (13 log\_\{2\}-fold RICR), Tethytheria (7.84 log\_\{2\}-fold RICR), and Proboscidea (3.14 log\_\{2\}-fold RICR).
 
-By combining a phylogenetic study on body size in addition to a survey of copy number across nearly all protein-coding genes, we provide a comprehensive look at the question of the role of cancer risk and body size in \emph{Atlantogenata} that may provide broader insight to other mammalian species. Our study was initially motivated by the identification of functional duplicates of tumor suppressors, such as TP53 and LIF in elephants {[}13,22,23{]}. Further in support of our results, a larger candidate gene study by Caulin et al. {[}24{]} characterized the copy number of 830 known tumor-suppressor genes across 36 mammals and identified 382 putative duplicates, including duplicates in species with large body sizes and long life-spans. However, while candidate gene studies are useful, by their very design they are biased in determining larger patterns of evolution of traits. Without addressing these questions with a genome-wide approach, any and all insights will be inevitably limited to a fraction of the whole story.
+\hypertarget{all-afrotheria-are-equal-but-some-afrotheria-are-more-equal-than-others}{%
+\subsection{All Afrotheria are equal, but some Afrotheria are more equal than others}\label{all-afrotheria-are-equal-but-some-afrotheria-are-more-equal-than-others}}
 
-Our results suggest that the pervasive duplication of tumor suppressors may help enable the evolution of larger body sizes by lowering the cancer risk of species, either prior to or in lockstep with increasing body size. however, this is unlikely to be the only genetic mechanism at play in this scenario. In genome-wide studies of unusually large or long-lived species such as the bowhead whale {[}62{]}, Myotid bats {[}63,64{]}, naked mole rat {[}65{]}, and blind mole rat {[}66{]}, there were cases of overrepresentation of TSGs among duplicate genes that were outshadowed by the identification of strong signatures of positive selection at TSGs. While the evolution of regulatory and coding elements of both TSGs and other non-canonical tumor suppressor genes have been shown to be important for mediating the cancer risk of long-lived species, there has been no attention given to the possibility of TSG duplications providing a relaxation of possible negative pleitropy that could result from these traits. It has been well-established in the literature that genes duplication events allow for evolutionary drift in one of the copies, which may result in neofunctionalization or specialization of the two copies {[}67--69{]}. While this is beyond the scope of our study, a promising future direction of this work would include an evolutionary analysis of duplicated genes relative to each other to see if this has already occurred between the pairs of genes we have identified.
+The hundred- to hundred-million-fold reductions in intrinsic cancer risk associated with the evolution of large body sizes in some Afrotherian lineages, in particular Paenungulates such as elephants and mastodons, suggests that these lineages must have also evolved remarkable mechanisms to suppress cancer. While our initial hypothesis was that large bodied lineages would be uniquely enriched in duplicate tumor suppressor genes compared to other smaller bodied lineages, we unexpectedly found that duplication of genes in tumor suppressor pathways was common in Afrotheria regardless of body size. These data suggest that this abundance of tumor suppressors may have contributed to the evolution of large bodies and reduced cancer risk, but that these processes were not necessarily coincident. Interestingly, pervasive duplication of tumor suppressors may also have contributed to the repeated evolution of large bodies in hyraxes and sea cows, because at least some of the genetic changes that underlie the evolution of reduced cancer risk was common in this group. It remains to be determined whether our observation of pervasive duplication of tumor suppressors also occurs in other lineages. Using a similar reciprocal best BLAST/BLAT approach that focused on estimating copy number of known tumor suppressors in mammalian genomes, for example, Caulin et al.~(2015) found no evidence between copy number or tumor suppressor genes with either body mass or longevity, whilst Tollis et al.~(2020) found a correlation between copy number and longevity (but not body size) (\emph{12}, \emph{31}). These opposing conclusions may be results from differences in the number of genes (81 vs 548) and genomes (8 vs 63) analyzed, highlighting the need for genome-wide analyses of many species that vary in body size and longevity.
+
+While we found that duplication of tumor suppressor genes is common in Afrotheria, genes that duplicated in the Proboscidean stem-lineage (\textbf{Figure \ref{fig:Figure-ML-UpSet-WC}C}) were uniquely enriched in functions and pathways that may be related to the evolution of unique anti-cancer cellular phenotypes in the elephant lineage. Elephant cells, for example, cannot be experimentally immortalized (\emph{109}, \emph{110}), rapidly repair DNA damage (\emph{17}, \emph{111}, \emph{112}), are extremely resistant to oxidative stress (\emph{110}), yet are also extremely sensitive to DNA damage (\emph{10}, \emph{17}, \emph{30}). Several pathways related to DNA damage repair, nucleotide excision repair (NER) in particular, were uniquely enriched among genes that duplicated within Proboscideans suggesting a connection between duplication of genes involved in NER and rapid DNA damage repair (\emph{111}, \emph{112}). Similarly, the duplicate SOD1 gene in elephants may confer the resistance of elephant cells to oxidative stress (\emph{110}). Pathways related to the cell cycle were also uniquely enriched among genes that duplicated within Proboscideans, and cell cycle dynamics are different in elephants compared to other species; population doubling (PD) times for African and Asian elephant cells were 13-16 days, while it 21-28 days for other Afrotherians (\emph{110}). Finally, the role of ``mTOR signaling'' in the biology of aging is well-known. Collectively these data suggest that gene duplications within Proboscideans may underlie some of their cellular phenotypes that contribute to cancer resistance.
+
+\hypertarget{theres-no-such-thing-as-a-free-lunch-trade-offs-and-constraints-on-tumor-suppressor-copy-number}{%
+\subsection{There's no such thing as a free lunch: Trade-offs and constraints on tumor suppressor copy number}\label{theres-no-such-thing-as-a-free-lunch-trade-offs-and-constraints-on-tumor-suppressor-copy-number}}
+
+The lack of a preponderance of duplicate tumor suppressor in the stem-lineage of Proboscideans, coincident with the evolution of very large body sizes, may suggest that Afrotherians have all the additional tumor suppressors needed to evolve large body sizes, that duplication of tumor suppressors is not a general phenomena related to the evolution of cancer resistance or only a minor one, or reflect a trade-off between the protective effects of increased tumor suppressor number on cancer risk and potentially deleterious consequences of augmented tumor suppressor copy number. Indeed, increased copy number of tumor suppressors can have deleterious consequences. Overexpression of TP53 in mice, while protective against cancer, is associated with progeria, premature reproductive senescence, and early death; however, transgenic mice with a duplication of the TP53 locus that includes native regulatory elements are healthy and experience normal aging, while also demonstrating an enhanced response to cellular stress and lower rates of cancer (\emph{29}, \emph{113}). These data suggest duplication of tumor suppressors can contribute to augmented cancer resistance, if the duplication includes sufficient regulatory architecture to direct spatially and temporally appropriate gene expression. Thus it is fascinating that duplication of genes that regulate TP53 function, such as STK11, SIAH1, and BRD7, preceded the retroduplication TP53 in the Proboscidean stem-lineage, which may have mitigated toxicity arising from dosage imbalances. Similar co-duplication events may have alleviated the negative pleiotropy of tumor suppressor gene duplications to enable their persistence and allow for subsequent co-option during the evolution of cancer resistance.
+
+\hypertarget{conclusions-caveats-and-limitations}{%
+\subsection{Conclusions, caveats, and limitations}\label{conclusions-caveats-and-limitations}}
+
+Our genome-wide results suggest that duplication of tumor suppressors is pervasive in Afrotherians and may have enabled the evolution of larger body sizes by lowering intrinsic cancer risk either prior to (preadaptation or exaptation) or coincident with increasing body size. However, our study has several inherent limitations, for example, we have shown that genome quality plays an important role in our ability to identify duplicate genes and several species have poor quality genomes. Conversely, without comprehensive gene expression data we cannot be certain that duplicate genes are actually expressed. Duplication of tumor suppressor genes is also unlikely to be the only mechanism responsible for the evolution of large body sizes, long lifespans, and reduced cancer risk. The evolution of regulatory elements and coding genes with other non-canonical tumor suppressor functions are also important for mediating the cancer risk. We also assume that duplicate genes preserve their original functions and increase overall gene dosage. Many processes, however, such as developmental systems drift, neofunctionalization, and subfunctionalization can cause divergence in gene functions (\emph{114}--\emph{116}), leading to inaccurate inferences of dosage effects and pathway functions.
 
 \hypertarget{acknowledgements}{%
 \section{Acknowledgements}\label{acknowledgements}}
 
-I would like to thank Olga Duchenko at the Aiden Lab, D.H. Vazquez for his indispensable support.
+We would like to thank Olga Duchenko and Eren Aiden at Baylor College of Medicine for the Hi-C scaffolded Procavia capensis, Trichechus manatus, Orycteropus afer, and Choloepus hoffmannii genomes. We would also like to thank
+D.H. Vazquez for his indispensable support.
 
 \hypertarget{conflicts-of-interest}{%
 \section{Conflicts of Interest}\label{conflicts-of-interest}}
 
-The Authors have no conflicts of interest to report
+The Authors have no conflicts of interest to report.
 
 \hypertarget{funding-source}{%
 \section{Funding Source}\label{funding-source}}
@@ -240,337 +275,127 @@ We would like to thank the Department of Human Genetics at the University of Chi
 
 
 \begin{figure}[H]
-\includegraphics[width=6in,]{paper_PLOS_draft_files/figure-latex/Figure-intro-1} \caption{\emph{Atlantogenatans} with sequenced genomes, body sizes, and known lifespans {[}14,21{]}}\label{fig:Figure-intro}
-\end{figure}
-
-\begin{figure}[H]
-\includegraphics[width=6in,]{paper_PLOS_draft_files/figure-latex/Figure-BodySize-1} \caption{Body sizes rapidly and frequently expand in Eutherians, especially in Atlantogenata. **A)** Tree of Eutherian species, colored by ln(Body Size) and with branch lengths set to the rate of change in body sizes, normalized by the square root of the root branch. Atlantogenata is highlighted at the bottom. **B)** Zoom-in of (**A**) on Atlantogenata. Silhuetes for the African Elephant, West Indian Manatee, Cape Elephant Shrew, Lesser Hedgehog Tenrec, Cape Golden Mole, Nine-Banded Armadillo, and Hoffman's Two-Toed Sloth are colored by their extant body sizes, while clade labels are colored based on the common ancestor's estimated body size. **C)** Confidence interval plot for representative species and ancestral nodes.}\label{fig:Figure-BodySize}
+\includegraphics[width=6in,]{paper_PLOS_draft_files/figure-latex/Figure-intro-1} \caption{\emph{Atlantogenatans} span a diverse range of body sizes (\emph{18}, \emph{25}).}\label{fig:Figure-intro}
 \end{figure}
 
 
 
 \begin{figure}[H]
-\includegraphics[width=6in,]{paper_PLOS_draft_files/figure-latex/Figure-CancerSuscept-1} \caption{Cancer succecptibility across \emph{Atlantogenata.} Branch lengths are set to the magnitude of change in cancer succeptiblity; colors indicate the magnitude and direction of the change.}\label{fig:Figure-CancerSuscept}
+\includegraphics[width=6in,]{paper_PLOS_draft_files/figure-latex/Figure-DoubleTree-Bodysize-Lifespan-1} \caption{Body sizes rapidly and frequently expand in Eutherians, especially in Atlantogenata. \textbf{A)} Back-to-back phylogeny for \emph{Atlantogenata}, scaled by log-fold increases in body mass (IBM, left) and log\_\{2\}-fold reduction in intrinsic cancer risk (RICR, right). \textbf{B)} Extant body sizes, plus estimated body sizes, for highlighted species and their ancestral nodes. \textbf{C)} Estimated Lifespans for body sizes in \textbf{B)}. Intervals are based on predicted lifespans of the 95\% CIs for body size.}\label{fig:Figure-DoubleTree-Bodysize-Lifespan}
 \end{figure}
 
 
 
 \begin{figure}[H]
-\includegraphics[width=6in,height=6in,]{paper_PLOS_draft_files/figure-latex/Figure-GeneDup-Cladogram-1} \caption{Gene duplications occur readily throughout \emph{Atlantogenata}. Shown here is a tree of \emph{Atlantogenatan} species with genomes, with the number of genes that underwent an increase in copy number overlayed at each node.}\label{fig:Figure-GeneDup-Cladogram}
+\includegraphics[width=6in,]{paper_PLOS_draft_files/figure-latex/Figure-ML-UpSet-WC-1} \caption{While duplications of genes in tumor supressor pathways are pervasive in \emph{Atlantogenata}, \emph{Proboscideans} have a greater number of cancer-related pathways enriched, in addition to duplications in various unique pathways. \textbf{A)} A cladogram of \emph{Afrotheria} highlighting the estimated number of genes duplicated at each node using maximum likelihood. \textbf{B)} Upset plot of cancer-related Reactome pathways enriched in each clade in \textbf{A}. \textbf{C)} Wordcloud of enriched pathways among Proboscideans that are exclusive to Proboscidea (purple), shared between Proboscidea and Tethytheria (blue), or shared between Proboscidea and one or more other lineages (green).}\label{fig:Figure-ML-UpSet-WC}
 \end{figure}
 
 
 
 \begin{figure}[H]
-
-{\centering \includegraphics[width=6in,height=6in,]{paper_PLOS_draft_files/figure-latex/Figure-GenomeCor-1} 
-
-}
-
-\caption{Correlations between genome quality metrics and ECNC metrics. Gene copy number metrics, and the genome quality metrics most strongly associated with them, are highlighted in red.}\label{fig:Figure-GenomeCor}
-\end{figure}
-
-
-
-\begin{figure}[H]
-\includegraphics[width=6in,height=4in,]{paper_PLOS_draft_files/figure-latex/Figure-loxAfrORA-1} \caption{Overrepresentation Analysis of Duplicated Genes in Atlantogenata using Reactome Pathways.}\label{fig:Figure-loxAfrORA}
-\end{figure}
-
-
-
-\begin{figure}[H]
-\includegraphics[width=6in,]{paper_PLOS_draft_files/figure-latex/Figure-loxAfrTP53-1} \caption{TP53-related genes are also duplicated and functional in \emph{Loxodonta africana}. \textbf{A)} Cladogram of \emph{Atlantogenata} highlighting along each branch when duplications for each gene occured. \textbf{B)} Gene expression data collected from pulically-available RNA-seq data for each duplicate in \textbf{A)}.}\label{fig:Figure-loxAfrTP53}
+\includegraphics[width=6in,]{paper_PLOS_draft_files/figure-latex/Figure-LoxAfrExpressedDups-1} \caption{Duplications that occured in the African Savannah Elephant, \emph{Loxodonta africana}, are enriched for TP53-related and other tumor suppressor processes. \textbf{A)} Upset plot of cancer-related Reactome pathways in \emph{Loxodonta africana}, highlighting shared genes in each set, and the pathway class represented by the combinations. \textbf{B)} Inverted Upset plot from \textbf{A)}, showing the pathways shared by genes highlighted by WEBGESTALT in each pathway. \textbf{C)} Cladogram of \emph{Atlantogenata}, colored by the rate of gene duplication estimated by maximum likelihood. Dots represent a duplication event of the color-coded genes. \textbf{D)} Gene expression levels of genes in \textbf{C)} which have two or more expressed duplicates.}\label{fig:Figure-LoxAfrExpressedDups}
 \end{figure}
 
 \hypertarget{tables}{%
 \section{TABLES}\label{tables}}
-
-\begin{longtable}[t]{lrrrr}
-\caption{\label{tab:Table-BodySize}Body Size and Confidence Intervals in Atlantogenata estimated using StableTraits.}\\
-\toprule
-Node & Size (log(g)) & 95\% CI (Low) & 95\% CI (High) & Rate (sqrt)\\
-\midrule
-\endfirsthead
-\caption[]{\label{tab:Table-BodySize}Body Size and Confidence Intervals in Atlantogenata estimated using StableTraits. \textit{(continued)}}\\
-\toprule
-Node & Size (log(g)) & 95\% CI (Low) & 95\% CI (High) & Rate (sqrt)\\
-\midrule
-\endhead
-\
-\endfoot
-\bottomrule
-\endlastfoot
-Cryptochloris wintoni & 3.13 & 3.13 & 3.13 & 5.78\\
-Amblysomus marleyi & 3.53 & 3.53 & 3.53 & 3.79\\
-Elephantulus revoili & 3.48 & 3.48 & 3.48 & 1.10\\
-Titanohyrax andrewsi & 12.97 & 12.97 & 12.97 & 0.07\\
-Titanohyrax ultimus & 14.08 & 14.08 & 14.08 & 34.61\\
-\addlinespace
-Megalohyrax sp  nov & 12.52 & 12.52 & 12.52 & 7.21\\
-Elephas maximus asurus & 15.66 & 15.66 & 15.66 & 0.34\\
-Protenrec tricuspis & 1.14 & 1.14 & 1.14 & 69.75\\
-Microgale parvula & 1.16 & 1.16 & 1.16 & 33.46\\
-Microgale pusilla & 1.25 & 1.25 & 1.25 & 34.31\\
-\addlinespace
-Geogale aurita & 1.90 & 1.90 & 1.90 & 40.07\\
-Microgale longicaudata & 2.09 & 2.09 & 2.09 & 0.77\\
-Microgale brevicaudata & 2.19 & 2.19 & 2.19 & 0.60\\
-Microgale jobihely & 2.30 & 2.30 & 2.30 & 1.07\\
-Microgale principula & 2.32 & 2.32 & 2.32 & 0.17\\
-\addlinespace
-Dilambdogale gheerbranti & 2.38 & 2.38 & 2.38 & 2.21\\
-Microgale taiva & 2.47 & 2.47 & 2.47 & 0.13\\
-Microgale cowani & 2.62 & 2.62 & 2.62 & 0.57\\
-Eremitalpa granti & 3.14 & 3.14 & 3.14 & 9.65\\
-Calcochloris obtusirostris & 3.27 & 3.27 & 3.27 & 13.38\\
-\addlinespace
-Neamblysomus julianae & 3.33 & 3.33 & 3.33 & 5.72\\
-Chlorotalpa duthieae & 3.38 & 3.38 & 3.38 & 0.32\\
-Chlorotalpa sclateri & 3.54 & 3.54 & 3.54 & 0.09\\
-Macroscelides proboscideus & 3.64 & 3.64 & 3.64 & 14.17\\
-Chrysochloris stuhlmanni & 3.74 & 3.74 & 3.74 & 0.33\\
-\addlinespace
-Oryzorictes hova & 3.79 & 3.79 & 3.79 & 22.77\\
-Elephantulus myurus & 3.81 & 3.81 & 3.81 & 0.95\\
-Elephantulus brachyrhynchus & 3.81 & 3.81 & 3.81 & 0.93\\
-Elephantulus rozeti & 3.81 & 3.81 & 3.81 & 10.51\\
-Elephantulus fuscus & 3.82 & 3.82 & 3.82 & 0.68\\
-\addlinespace
-Elephantulus intufi & 3.82 & 3.82 & 3.82 & 1.15\\
-Microgale talazaci & 3.88 & 3.88 & 3.88 & 61.40\\
-Chrysochloris asiatica & 3.89 & 3.89 & 3.89 & 3.34\\
-Elephantulus edwardii & 3.90 & 3.90 & 3.90 & 0.24\\
-Carpitalpa arendsi & 3.94 & 3.94 & 3.94 & 0.45\\
-\addlinespace
-Amblysomus corriae & 3.94 & 3.94 & 3.94 & 0.98\\
-Amblysomus hottentotus & 3.98 & 3.98 & 3.98 & 0.02\\
-Elephantulus fuscipes & 4.04 & 4.04 & 4.04 & 1.93\\
-Elephantulus rufescens & 4.05 & 4.05 & 4.05 & 0.12\\
-Neamblysomus gunningi & 4.09 & 4.09 & 4.09 & 3.26\\
-\addlinespace
-Elephantulus rupestris & 4.12 & 4.12 & 4.12 & 0.32\\
-Amblysomus septentrionalis & 4.23 & 4.23 & 4.23 & 0.52\\
-Chambius kasserinensis & 4.27 & 4.27 & 4.27 & 11.84\\
-Amblysomus robustus & 4.33 & 4.33 & 4.33 & 1.38\\
-Micropotamogale lamottei & 4.36 & 4.36 & 4.36 & 2.82\\
-\addlinespace
-Echinops telfairi & 4.47 & 4.47 & 4.47 & 7.75\\
-Limnogale mergulus & 4.52 & 4.52 & 4.52 & 121.95\\
-Hemicentetes semispinosus & 4.75 & 4.75 & 4.75 & 4.68\\
-Chrysospalax villosus & 4.77 & 4.77 & 4.77 & 0.13\\
-Petrodromus tetradactylus & 5.29 & 5.29 & 5.29 & 24.61\\
-\addlinespace
-Herodotius pattersoni & 5.50 & 5.50 & 5.50 & 11.64\\
-Setifer setosus & 5.61 & 5.61 & 5.61 & 12.52\\
-Rhynchocyon cirnei & 5.86 & 5.86 & 5.86 & 3.30\\
-Metoldobotes sp  nov & 5.93 & 5.93 & 5.93 & 15.94\\
-Chrysospalax trevelyani & 6.13 & 6.13 & 6.13 & 62.84\\
-\addlinespace
-Rhynchocyon petersi & 6.15 & 6.15 & 6.15 & 2.13\\
-Rhynchocyon chrysopygus & 6.28 & 6.28 & 6.28 & 0.40\\
-Potamogale velox & 6.49 & 6.49 & 6.49 & 103.04\\
-Rhynchocyon udzungwensis & 6.57 & 6.57 & 6.57 & 4.33\\
-Tenrec ecaudatus & 6.75 & 6.75 & 6.75 & 79.50\\
-\addlinespace
-Dasypus sabanicola & 7.05 & 7.05 & 7.05 & 12.18\\
-Tolypeutes matacus & 7.11 & 7.11 & 7.11 & 15.96\\
-Dasypus septemcinctus & 7.30 & 7.30 & 7.30 & 4.44\\
-Zaedyus pichiy & 7.31 & 7.31 & 7.31 & 5.54\\
-Dasypus hybridus & 7.31 & 7.31 & 7.31 & 4.05\\
-\addlinespace
-Chaetophractus villosus & 7.61 & 7.61 & 7.61 & 0.42\\
-Chaetophractus nationi & 7.67 & 7.67 & 7.67 & 0.09\\
-Heterohyrax brucei & 7.78 & 7.78 & 7.78 & 1.64\\
-Cabassous centralis & 7.92 & 7.92 & 7.92 & 0.25\\
-Seggeurius amourensis & 7.98 & 7.98 & 7.98 & 2.82\\
-\addlinespace
-Procavia capensis & 8.01 & 8.01 & 8.01 & 0.00\\
-Dendrohyrax dorsalis & 8.06 & 8.06 & 8.06 & 1.86\\
-Microhyrax lavocati & 8.13 & 8.13 & 8.13 & 0.73\\
-Bradypus tridactylus & 8.23 & 8.23 & 8.23 & 0.48\\
-Bradypus torquatus & 8.27 & 8.27 & 8.27 & 0.03\\
-\addlinespace
-Dasypus novemcinctus & 8.37 & 8.37 & 8.37 & 14.73\\
-Euphractus sexcinctus & 8.43 & 8.43 & 8.43 & 14.99\\
-Choloepus hoffmanni & 8.47 & 8.47 & 8.47 & 0.32\\
-Bradypus variegatus & 8.49 & 8.49 & 8.49 & 0.51\\
-Tamandua tetradactyla & 8.52 & 8.52 & 8.52 & 10.44\\
-\addlinespace
-Cyclopes didactylus & 8.53 & 8.53 & 8.53 & 2.15\\
-Choloepus didactylus & 8.71 & 8.71 & 8.71 & 0.64\\
-Thyrohyrax meyeri & 8.78 & 8.78 & 8.78 & 3.55\\
-Saghatherium bowni & 9.13 & 9.13 & 9.13 & 15.85\\
-Dasypus kappleri & 9.23 & 9.23 & 9.23 & 74.13\\
-\addlinespace
-Thyrohyrax domorictus & 9.30 & 9.30 & 9.30 & 1.15\\
-Dimaitherium patnaiki & 9.57 & 9.57 & 9.57 & 18.23\\
-Phosphatherium escuilliei & 9.62 & 9.62 & 9.62 & 326.23\\
-Saghatherium antiquum & 9.73 & 9.73 & 9.73 & 2.90\\
-Thyrohyrax litholagus & 10.01 & 10.01 & 10.01 & 28.58\\
-\addlinespace
-Myrmecophaga tridactyla & 10.26 & 10.26 & 10.26 & 41.03\\
-Myorycteropus africanus & 10.27 & 10.27 & 10.27 & 0.57\\
-Selenohyrax chatrathi & 10.73 & 10.73 & 10.73 & 14.99\\
-Priodontes maximus & 10.82 & 10.82 & 10.82 & 268.43\\
-Orycteropus afer & 10.87 & 10.87 & 10.87 & 6.59\\
-\addlinespace
-Antilohyrax pectidens & 10.93 & 10.93 & 10.93 & 13.69\\
-Bunohyrax fajumensis & 11.32 & 11.32 & 11.32 & 1.45\\
-Afrohyrax championi & 11.32 & 11.32 & 11.32 & 0.19\\
-Geniohyus mirus & 11.33 & 11.33 & 11.33 & 5.44\\
-Prorastomus sirenoides & 11.49 & 11.49 & 11.49 & 13.61\\
-\addlinespace
-Elephas antiquus falconeri & 11.51 & 11.51 & 11.51 & 6.12\\
-Pachyhyrax crassidentatus & 11.81 & 11.81 & 11.81 & 2.29\\
-Megalohyrax eocaenus & 11.95 & 11.95 & 11.95 & 0.24\\
-Elephas cypriotes & 12.21 & 12.21 & 12.21 & 1.90\\
-Bunohyrax major & 12.36 & 12.36 & 12.36 & 11.39\\
-\addlinespace
-Titanohyrax angustidens & 12.48 & 12.48 & 12.48 & 0.04\\
-Daouitherium rebouli & 12.80 & 12.80 & 12.80 & 0.74\\
-Arcanotherium savagei & 12.89 & 12.89 & 12.89 & 7.29\\
-Dugong dugon & 12.92 & 12.92 & 12.92 & 5.85\\
-Trichechus senegalensis & 13.03 & 13.03 & 13.03 & 0.57\\
-\addlinespace
-Trichechus inunguis & 13.08 & 13.08 & 13.08 & 0.69\\
-Protosiren smithae & 13.20 & 13.20 & 13.20 & 33.69\\
-Numidotherium koholense & 13.23 & 13.23 & 13.23 & 2.29\\
-Omanitherium dhofarensis & 13.35 & 13.35 & 13.35 & 0.03\\
-Trichechus manatus & 13.44 & 13.44 & 13.44 & 1.39\\
-\addlinespace
-Moeritherium spp & 13.82 & 13.82 & 13.82 & 5.71\\
-Phiomia spp & 13.89 & 13.89 & 13.89 & 3.64\\
-Elephas maximus & 15.02 & 15.02 & 15.02 & 5.81\\
-Barytherium spp & 15.20 & 15.20 & 15.20 & 73.58\\
-Mammuthus primigenius & 15.27 & 15.27 & 15.27 & 2.17\\
-\addlinespace
-Mammut borsoni & 16.49 & 16.49 & 16.49 & 15.33\\
-Mammuthus trogontherii & 16.38 & 16.38 & 16.38 & 16.00\\
-Loxodonta africana & 15.35 & 15.35 & 15.35 & 1.28\\
-Loxodonta cyclotis & 15.37 & 15.37 & 15.37 & 3.72\\
-Palaeoloxodon antiquus & 16.14 & 16.14 & 16.14 & 0.01\\
-\addlinespace
-Palaeoloxodon namadicus & 16.81 & 16.81 & 16.81 & 12.81\\
-Mammut americanum & 15.61 & 15.61 & 15.61 & 0.95\\
-Mammuthus columbi & 15.71 & 15.71 & 15.71 & 0.91\\
-Hydrodamalis gigas & 15.72 & 15.72 & 15.72 & 172.52\\
-Atlantogenata & 5.55 & 4.06 & 7.95 & 0.03\\
-\addlinespace
-Afrotheria & 5.55 & 4.05 & 7.96 & 0.00\\
-Afrosoricida & 4.35 & 2.58 & 6.13 & 44.49\\
-Macroscelidae & 5.27 & 3.98 & 6.85 & 2.49\\
-Pseudoungulata & 9.76 & 5.21 & 12.78 & 545.83\\
-Paenungulata & 10.13 & 7.24 & 13.02 & 4.42\\
-\addlinespace
-Tethytheria & 12.60 & 10.25 & 13.81 & 187.47\\
-Proboscidea & 15.23 & 14.22 & 16.24 & 30.28\\
-Elephantidae & 15.49 & 14.89 & 16.10 & 2.21\\
-Elephantina & 15.51 & 15.08 & 15.96 & 0.01\\
-Mammuthus & 15.54 & 15.24 & 15.85 & 0.47\\
-\addlinespace
-Loxodontini & 15.55 & 15.02 & 16.11 & 0.11\\
-Loxodona & 15.72 & 15.16 & 16.30 & 0.86\\
-Xenarthra & 7.57 & 5.96 & 9.18 & 124.94\\*
-\end{longtable}
-
-\begin{table}
-
-\caption{\label{tab:Table-CancerSuscept}Estimated Cancer Succeptibilty for nodes in Atlantogenata}
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lrlllr}
-\toprule
-Node & Est. Lifespan & K1 & K2 & Change in K & log2 Change\\
-\midrule
-Loxodontini & 34.38 & 1.47e+16 & 2.97e+15 & 4.94e+00 & 2.31\\
-Loxodonta africana & 65.00 & 2.47e+17 & 1.47e+16 & 1.68e+01 & 4.07\\
-Loxodona & 34.38 & 1.47e+16 & 1.47e+16 & 1.00e+00 & 0.00\\
-Loxodonta cyclotis & 31.12 & 2.97e+15 & 1.47e+16 & 2.02e-01 & -2.31\\
-Palaeoloxodon antiquus & 34.38 & 1.47e+16 & 1.47e+16 & 1.00e+00 & 0.00\\
-\addlinespace
-Elephantidae & 31.12 & 2.97e+15 & 1.40e+07 & 2.13e+08 & 27.66\\
-Elephantina & 34.38 & 1.47e+16 & 2.97e+15 & 4.94e+00 & 2.31\\
-Elephas maximus & 65.50 & 2.58e+17 & 1.47e+16 & 1.76e+01 & 4.14\\
-Mammuthus & 34.38 & 1.47e+16 & 1.47e+16 & 1.00e+00 & 0.00\\
-Mammuthus primigenius & 31.12 & 2.97e+15 & 1.47e+16 & 2.02e-01 & -2.31\\
-\addlinespace
-Mammuthus columbi & 34.38 & 1.47e+16 & 1.47e+16 & 1.00e+00 & 0.00\\
-Proboscidea & 9.41 & 1.40e+07 & 1.21e+14 & 1.15e-07 & -23.05\\
-Mammut americanum & 34.38 & 1.47e+16 & 1.40e+07 & 1.05e+09 & 29.97\\
-Tethytheria & 25.49 & 1.21e+14 & 1.01e+12 & 1.21e+02 & 6.92\\
-Trichechus manatus & 69.00 & 4.77e+16 & 1.21e+14 & 3.93e+02 & 8.62\\
-\addlinespace
-Paenungulata & 18.91 & 1.01e+12 & 1.01e+12 & 1.00e+00 & 0.00\\
-Procavia capensis & 14.80 & 3.13e+10 & 1.01e+12 & 3.11e-02 & -5.01\\
-Pseudoungulata & 18.91 & 1.01e+12 & 1.69e+09 & 5.97e+02 & 9.22\\
-Orycteropus afer & 29.80 & 4.19e+13 & 1.01e+12 & 4.17e+01 & 5.38\\
-Elephantulus edwardii & 10.40 & 6.90e+07 & 1.69e+09 & 4.09e-02 & -4.61\\
-\addlinespace
-Afrosoricida & 10.40 & 6.90e+07 & 1.69e+09 & 4.09e-02 & -4.61\\
-Chrysochloris asiatica & 10.40 & 6.90e+07 & 6.90e+07 & 1.00e+00 & 0.00\\
-Echinops telfairi & 19.00 & 2.57e+09 & 6.90e+07 & 3.72e+01 & 5.22\\
-Afrotheria & 12.69 & 1.69e+09 & 2.83e+06 & 5.97e+02 & 9.22\\
-Xenarthra & 20.89 & 4.97e+12 & 2.83e+06 & 1.76e+06 & 20.75\\
-\addlinespace
-Dasypus novemcinctus & 22.30 & 3.67e+11 & 4.97e+12 & 7.37e-02 & -3.76\\
-Choloepus hoffmanni & 41.00 & 1.42e+13 & 4.97e+12 & 2.85e+00 & 1.51\\
-Atlantogenata & 8.52 & 2.83e+06 & 2.83e+06 & 1.00e+00 & 0.00\\
-Afroinsectivora & 12.69 & 1.69e+09 & 1.69e+09 & 1.00e+00 & 0.00\\
-\bottomrule
-\end{tabular}}
-\end{table}
 
 \begin{table}
 
 \caption{\label{tab:Table-GeneDup}Summary of duplications in Atlantogenata}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lllrrllr}
-\toprule
+\begin{tabular}[t]{l|l|l|r|r|l|l|r}
+\hline
 Species & Common Name & Size (g) & \#Hits & \#Duplicated & \% Genes Found & \% Hits Duplicated & Mean ECNC/Hit\\
-\midrule
-Choloepus hoffmanni & Hoffmans Two-Toed Sloth & 4.3e+03 & 14082 & 3204 & 78.19\% & 22.75\% & 0.98\\
+\hline
+Choloepus hoffmanni & Hoffmans Two-Toed Sloth & 4.8e+03 & 14082 & 3204 & 78.19\% & 22.75\% & 0.98\\
+\hline
 Chrysochloris asiatica & Cape Golden Mole & 49 & 13547 & 2716 & 75.22\% & 20.05\% & 0.99\\
-Dasypus novemcinctus & Nine-Banded Armadillo & 4.8e+03 & 13819 & 2605 & 76.73\% & 18.85\% & 0.98\\
+\hline
+Dasypus novemcinctus & Nine-Banded Armadillo & 4.3e+03 & 13819 & 2605 & 76.73\% & 18.85\% & 0.98\\
+\hline
 Echinops telfairi & Lesser Hedgehog Tenrec & 87 & 12903 & 1670 & 71.64\% & 12.94\% & 0.99\\
+\hline
 Elephantulus edwardii & Cape Elephant Shrew & 49 & 12884 & 3048 & 71.53\% & 23.66\% & 0.99\\
-\addlinespace
+\hline
 Elephas maximus & Asian Elephant & 3.3e+06 & 14073 & 907 & 78.14\% & 6.44\% & 1.00\\
+\hline
 Loxodonta africana & African Savanna Elephant & 4.6e+06 & 14051 & 940 & 78.01\% & 6.69\% & 1.00\\
+\hline
 Loxodonta cyclotis & African Forest Elephant & 4.7e+06 & 14065 & 900 & 78.09\% & 6.40\% & 1.00\\
+\hline
 Mammut americanum & American Mastodon & 6e+06 & 13840 & 737 & 76.84\% & 5.33\% & 1.00\\
+\hline
 Mammuthus columbi & Columbian Mammoth & 6.6e+06 & 13059 & 426 & 72.51\% & 3.26\% & 1.00\\
-\addlinespace
+\hline
 Mammuthus primigenius & Woolly Mammoth & 4.3e+06 & 13935 & 723 & 77.37\% & 5.19\% & 1.00\\
+\hline
 Orycteropus afer & Aardvark & 5.3e+04 & 13880 & 1083 & 77.06\% & 7.80\% & 0.99\\
+\hline
 Palaeoloxodon antiquus & Straight Tusked Elephant & 1e+07 & 13969 & 745 & 77.56\% & 5.33\% & 1.00\\
+\hline
 Procavia capensis & Rock Hyrax & 3e+03 & 13672 & 788 & 75.91\% & 5.76\% & 1.00\\
+\hline
 Trichechus manatus & Manatee & 6.9e+05 & 14092 & 1046 & 78.24\% & 7.42\% & 1.00\\
-\bottomrule
+\hline
 \end{tabular}}
 \end{table}
 
 \begin{table}
 
-\caption{\label{tab:Table-ORAFreqDatabase}Number of pathways overrepresented among duplicated genes at different FDRs.}
+\caption{\label{tab:Table-ORA-pcCancer-withSim}Summary of Reactome Pathways in Atlantogenata}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}[t]{llrrrr}
-\toprule
-Ancestor & Node & Pathways at FDR<0.1 & Pathways at FDR<0.2 & Pathways at FDR<0.3 & Pathways at FDR<0.5\\
-\midrule
-Afroinsectivora & Elephantulus edwardii & 252 & 37 & 30 & 87\\
-Afrosoricida & Chrysochloris asiatica & 90 & 48 & 43 & 105\\
-Afrosoricida & Echinops telfairi & 0 & 2 & 0 & 31\\
-Afrotheria & Afroinsectivora & 0 & 0 & 0 & 33\\
-Loxodontini & Loxodonta africana & 6 & 0 & 1 & 0\\
-\addlinespace
-Paenungulata & Tethytheria & 0 & 0 & 0 & 2\\
-Proboscidea & Mammut americanum & 0 & 0 & 0 & 6\\
-Pseudoungulata & Orycteropus afer & 27 & 67 & 29 & 67\\
-Tethytheria & Proboscidea & 0 & 3 & 0 & 3\\
-Tethytheria & Trichechus manatus & 4 & 0 & 0 & 2\\
-\bottomrule
+\begin{tabular}[t]{l|r|r|r|r|l}
+\hline
+Node & N. Genes & N. Pathways & \% Cancer Pathways & Simulated \% Cancer Pathways & p<0.05 in Simulation\\
+\hline
+Afroinsectivora & 36 & 65 & 0.1384615 & 0.1542361 & Yes\\
+\hline
+Afrosoricida & 79 & 27 & 0.3703704 & 0.1542361 & Yes\\
+\hline
+Chrysochloris.asiatica & 1591 & 100 & 0.2700000 & 0.1542361 & No\\
+\hline
+Echinops.telfairi & 587 & 100 & 0.2200000 & 0.1542361 & No\\
+\hline
+Elephantidae & 61 & 25 & 0.2000000 & 0.1302682 & Yes\\
+\hline
+Elephantulus.edwardii & 2103 & 100 & 0.2200000 & 0.1542361 & No\\
+\hline
+Elephas.maximus & 94 & 32 & 0.4062500 & 0.1772575 & Yes\\
+\hline
+Loxodona & 12 & 60 & 0.1000000 & 0.1453344 & Yes\\
+\hline
+Loxodonta.africana & 100 & 47 & 0.5319149 & 0.1542361 & Yes\\
+\hline
+Loxodonta.cyclotis & 76 & 35 & 0.3428571 & 0.1611374 & Yes\\
+\hline
+Loxodontini & 15 & 12 & 0.0000000 & 0.1381974 & Yes\\
+\hline
+Mammut.americanum & 52 & 16 & 0.0000000 & 0.1290878 & Yes\\
+\hline
+Mammuthus & 5 & 62 & 0.0483871 & 0.1529145 & Yes\\
+\hline
+Mammuthus.columbi & 28 & 26 & 0.2692308 & 0.1287958 & Yes\\
+\hline
+Mammuthus.primigenius & 35 & 16 & 0.0000000 & 0.1228288 & Yes\\
+\hline
+Orycteropus.afer & 504 & 100 & 0.3800000 & 0.1542361 & No\\
+\hline
+Paenungulata & 28 & 22 & 0.1818182 & 0.1287958 & Yes\\
+\hline
+Palaeoloxodon.antiquus & 35 & 8 & 0.0000000 & 0.1228288 & Yes\\
+\hline
+Proboscidea & 157 & 67 & 0.3880597 & 0.0952381 & Yes\\
+\hline
+Procavia.capensis & 383 & 35 & 0.0285714 & 0.1542361 & No\\
+\hline
+Pseudoungulata & 9 & 10 & 0.0000000 & 0.1489860 & Yes\\
+\hline
+Tethytheria & 83 & 46 & 0.6304348 & 0.1851852 & Yes\\
+\hline
+Trichechus.manatus & 484 & 47 & 0.2127660 & 0.1542361 & No\\
+\hline
 \end{tabular}}
 \end{table}
 
@@ -588,6 +413,31 @@ Loxodonta africana & African savanna elephant & loxAfr3, loxAfrC, loxAfr4 & SRR6
 Trichechus manatus latirostris & Manatee & triMan1, triManLat2 & SRR4228542, SRR4228545, SRR4228544, SRR4228539, SRR4228541, SRR4228538, SRR4228546, SRR4228537, SRR4228540, SRR4228543, SRR4228547 & Buffy Coat\\
 \bottomrule
 \end{tabular}}
+\end{table}
+
+\begin{table}[!htbp] \centering 
+  \caption{PGLS: ln(Lifespan) ~ ln(Size)} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}}lc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\\[-1.8ex] & ln(Lifespan) \\ 
+\hline \\[-1.8ex] 
+ ln(Size) & 0.200$^{***}$ \\ 
+  & (0.027) \\ 
+  & \\ 
+ Constant & 1.327$^{***}$ \\ 
+  & (0.237) \\ 
+  & \\ 
+\hline \\[-1.8ex] 
+Observations & 28 \\ 
+Log Likelihood & $-$22.160 \\ 
+Akaike Inf. Crit. & 50.320 \\ 
+Bayesian Inf. Crit. & 54.095 \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{1}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
 \end{table}
 
 \begin{table}
@@ -626,23 +476,30 @@ Trichechus manatus latirostris & Manatee & triMan1, triManLat2 & triManLat2 & NA
 
 
 \begin{figure}[H]
-\includegraphics[width=6in,]{paper_PLOS_draft_files/figure-latex/Figure-ECNC-1} \caption{Estimated Copy Number by Coverage (ECNC) consolidates fragmented genes while accounting for missing domains in homologs. \textbf{A)} A single, contiguous gene homolog in a target genome with 100\% query length coverage has an ECNC of 1.0. \textbf{B)} Two contiguous gene homologs, each with 100\% query length coverage have an ECNC of 2.0. \textbf{C)} A single gene homolog, split across multiple scaffolds and contigs in a fragmented target genome; BLAT identifies each fragment as a single hit. Per nucleotide of query sequence, there is only one corresponding nucleotide over all the hits, thus the ECNC is 1.0. \textbf{D)} Two gene homologs, one fragmented and one contiguous. 100\% of nucleotides in the query sequence are represented between all hits; however, every nucleotide in the query has two matching nucleotides in the target genome, thus the ECNC is 2.0. \textbf{E)} One true gene homolog in the target genome, plus multiple hits of a conserved domain that span 20\% of the query sequence. While 100\% of the query sequence is represented in total, 20\% of the nucleotides have 4 hits. Thus, the ECNC for this gene is 1.45. \textbf{F)} Two real gene homologs; one hit is contiguous, one hit is fragmented in two, and the tail end of both sequences was not identified by BLAT due to sequence divergence. Only 75\% of the query sequence was covered in total between the hits, but for that 75\%, each nucleotide has two hits. As such, ECNC is equal to 2.0 for this gene.}\label{fig:Figure-ECNC}
+\includegraphics[width=6in,]{paper_PLOS_draft_files/figure-latex/SFigure-ECNC-1} \caption{Estimated Copy Number by Coverage (ECNC) consolidates fragmented genes while accounting for missing domains in homologs. \textbf{A)} A single, contiguous gene homolog in a target genome with 100\% query length coverage has an ECNC of 1.0. \textbf{B)} Two contiguous gene homologs, each with 100\% query length coverage have an ECNC of 2.0. \textbf{C)} A single gene homolog, split across multiple scaffolds and contigs in a fragmented target genome; BLAT identifies each fragment as a single hit. Per nucleotide of query sequence, there is only one corresponding nucleotide over all the hits, thus the ECNC is 1.0. \textbf{D)} Two gene homologs, one fragmented and one contiguous. 100\% of nucleotides in the query sequence are represented between all hits; however, every nucleotide in the query has two matching nucleotides in the target genome, thus the ECNC is 2.0. \textbf{E)} One true gene homolog in the target genome, plus multiple hits of a conserved domain that span 20\% of the query sequence. While 100\% of the query sequence is represented in total, 20\% of the nucleotides have 4 hits. Thus, the ECNC for this gene is 1.45. \textbf{F)} Two real gene homologs; one hit is contiguous, one hit is fragmented in two, and the tail end of both sequences was not identified by BLAT due to sequence divergence. Only 75\% of the query sequence was covered in total between the hits, but for that 75\%, each nucleotide has two hits. As such, ECNC is equal to 2.0 for this gene.}\label{fig:SFigure-ECNC}
 \end{figure}
 
+
+
+
+
+
+
 \begin{figure}[H]
-\includegraphics[width=6in,]{paper_PLOS_draft_files/figure-latex/Figure-GeneDup-BLScaled-1} \caption{Gene copy increases polarized along Atlantogenata, colored by ln(Body Size), with branch lengths equal to the change in gene copy number}\label{fig:Figure-GeneDup-BLScaled}
+\includegraphics[width=6in,]{paper_PLOS_draft_files/figure-latex/SFigure-TimeTree-Eutheria-1} \caption{The time-calibrated Eutherian tree used as input for StableTraits, from Bininda-Emonds \emph{et al.} (\emph{117}) and Puttick and Thomas (\emph{25}).}\label{fig:SFigure-TimeTree-Eutheria}
 \end{figure}
 
-\begin{verbatim}
-## Warning: TODO: Make HQ version of this figure
-\end{verbatim}
+
+
+
 
 \begin{figure}[H]
-\includegraphics[width=6in,]{paper_PLOS_draft_files/figure-latex/Figure-RBHBStrategy-1} \caption{Full version of RecBlat strategy, but low quality}\label{fig:Figure-RBHBStrategy}
-\end{figure}
 
-\begin{figure}[H]
-\includegraphics[width=6in,]{paper_PLOS_draft_files/figure-latex/Figure-TimeTree-Eutheria-1} \caption{The time-calibrated Eutherian tree used as input for StableTraits, from Bininda-Emonds et al and Puttick and Thomas}\label{fig:Figure-TimeTree-Eutheria}
+{\centering \includegraphics[width=6in,height=6in,]{paper_PLOS_draft_files/figure-latex/SFigure-GenomeCor-1} 
+
+}
+
+\caption{Correlations between genome quality metrics and ECNC metrics. Gene copy number metrics, and the genome quality metrics most strongly associated with them, are highlighted in red.}\label{fig:SFigure-GenomeCor}
 \end{figure}
 
 \hypertarget{references}{%
@@ -651,211 +508,355 @@ Trichechus manatus latirostris & Manatee & triMan1, triManLat2 & triManLat2 & NA
 
 \hypertarget{refs}{}
 \leavevmode\hypertarget{ref-Savage2007}{}%
-1. Savage VM, Allen AP, Brown JH, Gillooly JF, Herman AB, Woodruff WH, et al. Scaling of number, size, and metabolic rate of cells with body size in mammals. Proceedings of the National Academy of Sciences. 2007;104: 4718--4723. doi:\href{https://doi.org/10.1073/pnas.0611235104}{10.1073/pnas.0611235104}
+1. V. M. Savage, A. P. Allen, J. H. Brown, J. F. Gillooly, A. B. Herman, W. H. Woodruff, G. B. West, Scaling of number, size, and metabolic rate of cells with body size in mammals. \emph{Proceedings of the National Academy of Sciences}. \textbf{104}, 4718--4723 (2007).
 
 \leavevmode\hypertarget{ref-Green2011}{}%
-2. Green J, Cairns BJ, Casabonne D, Wright FL, Reeves G, Beral V, et al. Height and cancer incidence in the Million Women Study: prospective cohort, and meta-analysis of prospective studies of height and total cancer risk. The Lancet Oncology. 2011;12: 785--794. doi:\href{https://doi.org/10.1016/s1470-2045(11)70154-1}{10.1016/s1470-2045(11)70154-1}
+2. J. Green, B. J. Cairns, D. Casabonne, F. L. Wright, G. Reeves, V. Beral, for the M. W. S. collaborators, Height and cancer incidence in the Million Women Study: prospective cohort, and meta-analysis of prospective studies of height and total cancer risk. \emph{The Lancet Oncology}. \textbf{12}, 785--794 (2011).
 
 \leavevmode\hypertarget{ref-Nunney:20181c2}{}%
-3. Nunney L. Size matters: height, cell number and a person's risk of cancer. Proc R Soc B. 2018;285: 20181743. doi:\href{https://doi.org/10.1098/rspb.2018.1743}{10.1098/rspb.2018.1743}
+3. L. Nunney, Size matters: height, cell number and a person's risk of cancer. \emph{Proc. R. Soc. B}. \textbf{285}, 20181743 (2018).
 
 \leavevmode\hypertarget{ref-Dobson2013}{}%
-4. Dobson JM. Breed-predispositions to cancer in pedigree dogs. ISRN veterinary science. 2013;2013: 941275. doi:\href{https://doi.org/10.1155/2013/941275}{10.1155/2013/941275}
+4. J. M. Dobson, Breed-predispositions to cancer in pedigree dogs. \emph{ISRN veterinary science}. \textbf{2013}, 941275 (2013).
 
 \leavevmode\hypertarget{ref-Dorn1968}{}%
-5. Dorn CR, Taylor DON, Schneider R, Hibbard HH, Klauber MR. Survey of Animal Neoplasms in Alameda and Contra Costa Counties, California. II. Cancer Morbidity in Dogs and Cats From Alameda County\textless{}xref ref-type="fn" rid="FN2"\textgreater{}2\textless{}/xref\textgreater{}. JNCI: Journal of the National Cancer Institute. 1968;40: 307--318. doi:\href{https://doi.org/10.1093/jnci/40.2.307}{10.1093/jnci/40.2.307}
+5. C. R. Dorn, D. O. N. Taylor, R. Schneider, H. H. Hibbard, M. R. Klauber, Survey of Animal Neoplasms in Alameda and Contra Costa Counties, California. II. Cancer Morbidity in Dogs and Cats From Alameda County\textless xref ref-type="fn" rid="FN2"\textgreater2\textless/xref\textgreater{}. \emph{JNCI: Journal of the National Cancer Institute}. \textbf{40}, 307--318 (1968).
+
+\leavevmode\hypertarget{ref-Lucena2011}{}%
+6. R. B. Lucena, D. R. Rissi, G. D. Kommers, F. Pierezan, J. C. Oliveira-Filho, J. T. S. A. Macêdo, M. M. Flores, C. S. L. Barros, A Retrospective Study of 586 Tumours in Brazilian Cattle. \emph{Journal of Comparative Pathology}. \textbf{145}, 20--24 (2011).
 
 \leavevmode\hypertarget{ref-Caulin2011}{}%
-6. Caulin AF, Maley CC. Peto's Paradox: evolution's prescription for cancer prevention. Trends in ecology \& evolution. 2011;26: 175--82. doi:\href{https://doi.org/10.1016/j.tree.2011.01.002}{10.1016/j.tree.2011.01.002}
+7. A. F. Caulin, C. C. Maley, Peto's Paradox: evolution's prescription for cancer prevention. \emph{Trends in ecology \& evolution}. \textbf{26}, 175--82 (2011).
 
 \leavevmode\hypertarget{ref-Leroi2003}{}%
-7. Leroi AM, Koufopanou V, Burt A. Cancer selection. Nature Reviews Cancer. 2003;3: 226--231. doi:\href{https://doi.org/10.1038/nrc1016}{10.1038/nrc1016}
+8. A. M. Leroi, V. Koufopanou, A. Burt, Cancer selection. \emph{Nature Reviews Cancer}. \textbf{3}, 226--231 (2003).
 
 \leavevmode\hypertarget{ref-Peto1975}{}%
-8. Peto R, Roe F, Lee P, Levy L, Clack J. Cancer and ageing in mice and men. British Journal of Cancer. 1975;32: 411--426. doi:\href{https://doi.org/10.1038/bjc.1975.242}{10.1038/bjc.1975.242}
-
-\leavevmode\hypertarget{ref-Ashur-Fabian2004}{}%
-9. Ashur-Fabian O, Avivi A, Trakhtenbrot L, Adamsky K, Cohen M, Kajakaro G, et al. Evolution of p53 in hypoxia-stressed Spalax mimics human tumor mutation. Proceedings of the National Academy of Sciences. 2004;101: 12236--12241. doi:\href{https://doi.org/10.1073/pnas.0404998101}{10.1073/pnas.0404998101}
-
-\leavevmode\hypertarget{ref-Seluanov2008}{}%
-10. Seluanov A, Hine C, Bozzella M, Hall A, Sasahara THC, Ribeiro AACM, et al. Distinct tumor suppressor mechanisms evolve in rodent species that differ in size and lifespan. Aging cell. 2008;7: 813--23. doi:\href{https://doi.org/10.1111/j.1474-9726.2008.00431.x}{10.1111/j.1474-9726.2008.00431.x}
-
-\leavevmode\hypertarget{ref-Gorbunova2012}{}%
-11. Gorbunova V, Hine C, Tian X, Ablaeva J, Gudkov AV, Nevo E, et al. Cancer resistance in the blind mole rat is mediated by concerted necrotic cell death mechanism. Proceedings of the National Academy of Sciences of the United States of America. 2012;109: 19392--6. doi:\href{https://doi.org/10.1073/pnas.1217211109}{10.1073/pnas.1217211109}
-
-\leavevmode\hypertarget{ref-Tian2013}{}%
-12. Tian X, Azpurua J, Hine C, Vaidya A, Myakishev-Rempel M, Ablaeva J, et al. High molecular weight hyaluronan mediates the cancer resistance of the naked mole-rat. 2013;499. doi:\href{https://doi.org/10.1038/nature12234}{10.1038/nature12234}
-
-\leavevmode\hypertarget{ref-Sulak2015}{}%
-13. Sulak M, Fong L, Mika K, Chigurupati S, Yon L, Mongan NP, et al. TP53 copy number expansion is associated with the evolution of increased body size and an enhanced DNA damage response in elephants. eLife. 2016;5: e11994. doi:\href{https://doi.org/10.7554/elife.11994}{10.7554/elife.11994}
-
-\leavevmode\hypertarget{ref-HAGR}{}%
-14. Tacutu R, Craig T, Budovsky A, Wuttke D, Lehmann G, Taranukha D, et al. Human Ageing Genomic Resources: Integrated databases and tools for the biology and genetics of ageing. Nucleic Acids Research. 2013;41: D1027--D1033. doi:\href{https://doi.org/10.1093/nar/gks1155}{10.1093/nar/gks1155}
-
-\leavevmode\hypertarget{ref-Schwartz1995}{}%
-15. Schwartz GT, Rasmussen DT, Smith RJ. Body-Size Diversity and Community Structure of Fossil Hyracoids. Journal of Mammalogy. 1995;76: 1088--1099. doi:\href{https://doi.org/10.2307/1382601}{10.2307/1382601}
-
-\leavevmode\hypertarget{ref-Scheffer1972}{}%
-16. Scheffer VB. The Weight of the Steller Sea Cow. Journal of Mammalogy. 1972;53: 912--914. doi:\href{https://doi.org/10.2307/1379236}{10.2307/1379236}
-
-\leavevmode\hypertarget{ref-Larramendi:20151c2}{}%
-17. Larramendi A. Shoulder Height, Body Mass, and Shape of Proboscideans. Acta Palaeontologica Polonica. 2015;61. doi:\href{https://doi.org/10.4202/app.00136.2014}{10.4202/app.00136.2014}
-
-\leavevmode\hypertarget{ref-OLeary2013a}{}%
-18. O'Leary MA, Bloch JI, Flynn JJ, Gaudin TJ, Giallombardo A, Giannini NP, et al. The placental mammal ancestor and the post-K-Pg radiation of placentals. Science (New York, NY). 2013;339: 662--7. doi:\href{https://doi.org/10.1126/science.1229237}{10.1126/science.1229237}
-
-\leavevmode\hypertarget{ref-Springer2013}{}%
-19. Springer MS, Meredith RW, Teeling EC, Murphy WJ. Technical comment on "The placental mammal ancestor and the post-K-Pg radiation of placentals". Science (New York, NY). 2013;341: 613. doi:\href{https://doi.org/10.1126/science.1238025}{10.1126/science.1238025}
-
-\leavevmode\hypertarget{ref-OLeary2013b}{}%
-20. O'Leary MA, Bloch JI, Flynn JJ, Gaudin TJ, Giallombardo A, Giannini NP, et al. Response to comment on "The placental mammal ancestor and the post-K-Pg radiation of placentals". Science (New York, NY). 2013;341: 613. doi:\href{https://doi.org/10.1126/science.1238162}{10.1126/science.1238162}
-
-\leavevmode\hypertarget{ref-PuttickAndThomas2015}{}%
-21. Puttick MN, Thomas GH. Fossils and living taxa agree on patterns of body mass evolution: a case study with Afrotheria. Proceedings Biological sciences / The Royal Society. 2015;282: 20152023. doi:\href{https://doi.org/10.1098/rspb.2015.2023}{10.1098/rspb.2015.2023}
+9. R. Peto, F. Roe, P. Lee, L. Levy, J. Clack, Cancer and ageing in mice and men. \emph{British Journal of Cancer}. \textbf{32}, 411--426 (1975).
 
 \leavevmode\hypertarget{ref-Abegglen:JAMA2015}{}%
-22. Abegglen LM, Caulin AF, Chan A, Lee K, Robinson R, Campbell MS, et al. Potential Mechanisms for Cancer Resistance in Elephants and Comparative Cellular Response to DNA Damage in Humans. JAMA. 2015;314: 1850--1860. doi:\href{https://doi.org/10.1001/jama.2015.13134}{10.1001/jama.2015.13134}
+10. L. M. Abegglen, A. F. Caulin, A. Chan, K. Lee, R. Robinson, M. S. Campbell, W. K. Kiso, D. L. Schmitt, P. J. Waddell, S. Bhaskara, S. T. Jensen, C. C. Maley, J. D. Schiffman, Potential Mechanisms for Cancer Resistance in Elephants and Comparative Cellular Response to DNA Damage in Humans. \emph{JAMA}. \textbf{314}, 1850--1860 (2015).
 
-\leavevmode\hypertarget{ref-Vazquez2018}{}%
-23. Vazquez JM, Sulak M, Chigurupati S, Lynch VJ. A Zombie LIF Gene in Elephants Is Upregulated by TP53 to Induce Apoptosis in Response to DNA Damage. Cell Reports. 2018;24: 1765--1776. doi:\href{https://doi.org/10.1016/j.celrep.2018.07.042}{10.1016/j.celrep.2018.07.042}
+\leavevmode\hypertarget{ref-Boddy2020}{}%
+11. A. M. Boddy, L. M. Abegglen, A. P. Pessier, J. D. Schiffman, C. C. Maley, C. Witte, Lifetime cancer prevalence and life history traits in mammals. \emph{Evolution, Medicine, and Public Health}, eoaa015 (2020).
 
-\leavevmode\hypertarget{ref-Caulin2015}{}%
-24. Caulin AF, Graham TA, Wang L-S, Maley CC. Solutions to Peto's paradox revealed by mathematical modelling and cross-species cancer gene analysis. Philosophical transactions of the Royal Society of London Series B, Biological sciences. 2015;370: 20140222. doi:\href{https://doi.org/10.1098/rstb.2014.0222}{10.1098/rstb.2014.0222}
+\leavevmode\hypertarget{ref-Tollis2020}{}%
+12. M. Tollis, E. Ferris, M. S. Campbell, V. K. Harris, S. M. Rupp, T. M. Harrison, W. K. Kiso, D. L. Schmitt, M. M. Garner, C. A. Aktipis, C. C. Maley, A. M. Boddy, M. Yandell, C. Gregg, J. D. Schiffman, L. M. Abegglen, Elephant Genomes Reveal Insights into Differences in Disease Defense Mechanisms between Species. \emph{bioRxiv}, 2020.05.29.124396 (2020).
 
-\leavevmode\hypertarget{ref-Doherty2016}{}%
-25. Doherty A, Magalhães J de. Has gene duplication impacted the evolution of Eutherian longevity? Aging Cell. 2016;15: 978--980. doi:\href{https://doi.org/10.1111/acel.12503}{10.1111/acel.12503}
+\leavevmode\hypertarget{ref-Ashur-Fabian2004}{}%
+13. O. Ashur-Fabian, A. Avivi, L. Trakhtenbrot, K. Adamsky, M. Cohen, G. Kajakaro, A. Joel, N. Amariglio, E. Nevo, G. Rechavi, Evolution of p53 in hypoxia-stressed Spalax mimics human tumor mutation. \emph{Proceedings of the National Academy of Sciences}. \textbf{101}, 12236--12241 (2004).
 
-\leavevmode\hypertarget{ref-Bininda-Emonds2008}{}%
-26. Bininda-Emonds ORP, Cardillo M, Jones KE, MacPhee RDE, Beck RMD, Grenyer R, et al. Erratum: The delayed rise of present-day mammals. Nature. 2008;456: 274--274. doi:\href{https://doi.org/10.1038/nature07347}{10.1038/nature07347}
+\leavevmode\hypertarget{ref-Seluanov2008}{}%
+14. A. Seluanov, C. Hine, M. Bozzella, A. Hall, T. H. C. Sasahara, A. A. C. M. Ribeiro, K. C. Catania, D. C. Presgraves, V. Gorbunova, Distinct tumor suppressor mechanisms evolve in rodent species that differ in size and lifespan. \emph{Aging cell}. \textbf{7}, 813--23 (2008).
 
-\leavevmode\hypertarget{ref-ElliotAndMooers2014}{}%
-27. Elliot MG, Mooers AØ. Inferring ancestral states without assuming neutrality or gradualism using a stable model of continuous character evolution. BMC evolutionary biology. 2014;14: 226. doi:\href{https://doi.org/10.1186/s12862-014-0226-8}{10.1186/s12862-014-0226-8}
+\leavevmode\hypertarget{ref-Gorbunova2012}{}%
+15. V. Gorbunova, C. Hine, X. Tian, J. Ablaeva, A. V. Gudkov, E. Nevo, A. Seluanov, Cancer resistance in the blind mole rat is mediated by concerted necrotic cell death mechanism. \emph{Proceedings of the National Academy of Sciences of the United States of America}. \textbf{109}, 19392--6 (2012).
 
-\leavevmode\hypertarget{ref-blat}{}%
-28. Kent JW. BLAT?The BLAST-Like Alignment Tool. Genome Research. 2002;12: 656--664. doi:\href{https://doi.org/10.1101/gr.229202}{10.1101/gr.229202}
+\leavevmode\hypertarget{ref-Tian2013}{}%
+16. X. Tian, J. Azpurua, C. Hine, A. Vaidya, M. Myakishev-Rempel, J. Ablaeva, Z. Mao, E. Nevo, V. Gorbunova, A. Seluanov, High molecular weight hyaluronan mediates the cancer resistance of the naked mole-rat. \textbf{499} (2013), doi:\href{https://doi.org/10.1038/nature12234}{10.1038/nature12234}.
 
-\leavevmode\hypertarget{ref-AltenhoffAndDessimoz2009}{}%
-29. Altenhoff AM, Dessimoz C. Phylogenetic and functional assessment of orthologs inference projects and methods. PLoS computational biology. 2009;5: e1000262. doi:\href{https://doi.org/10.1371/journal.pcbi.1000262}{10.1371/journal.pcbi.1000262}
+\leavevmode\hypertarget{ref-Sulak2015}{}%
+17. M. Sulak, L. Fong, K. Mika, S. Chigurupati, L. Yon, N. P. Mongan, R. D. Emes, V. J. Lynch, TP53 copy number expansion is associated with the evolution of increased body size and an enhanced DNA damage response in elephants. \emph{eLife}. \textbf{5}, e11994 (2016).
 
-\leavevmode\hypertarget{ref-SalichosAndRokas2011}{}%
-30. Salichos L, Rokas A. Evaluating ortholog prediction algorithms in a yeast model clade. PloS one. 2011;6: e18755. doi:\href{https://doi.org/10.1371/journal.pone.0018755}{10.1371/journal.pone.0018755}
+\leavevmode\hypertarget{ref-HAGR}{}%
+18. R. Tacutu, T. Craig, A. Budovsky, D. Wuttke, G. Lehmann, D. Taranukha, J. Costa, V. E. Fraifeld, J. de Magalhães, Human Ageing Genomic Resources: Integrated databases and tools for the biology and genetics of ageing. \emph{Nucleic Acids Research}. \textbf{41}, D1027--D1033 (2013).
 
-\leavevmode\hypertarget{ref-uniprot}{}%
-31. Consortium TU. UniProt: the universal protein knowledgebase. Nucleic Acids Research. 2017;45: D158--D169. doi:\href{https://doi.org/10.1093/nar/gkw1099}{10.1093/nar/gkw1099}
+\leavevmode\hypertarget{ref-Schwartz1995}{}%
+19. G. T. Schwartz, D. T. Rasmussen, R. J. Smith, Body-Size Diversity and Community Structure of Fossil Hyracoids. \emph{Journal of Mammalogy}. \textbf{76}, 1088--1099 (1995).
 
-\leavevmode\hypertarget{ref-gVolante}{}%
-32. Nishimura O, Hara Y, Kuraku S. gVolante for standardizing completeness assessment of genome and transcriptome assemblies. Bioinformatics. 2017;33: 3635--3637. doi:\href{https://doi.org/10.1093/bioinformatics/btx445}{10.1093/bioinformatics/btx445}
+\leavevmode\hypertarget{ref-Scheffer1972}{}%
+20. V. B. Scheffer, The Weight of the Steller Sea Cow. \emph{Journal of Mammalogy}. \textbf{53}, 912--914 (1972).
 
-\leavevmode\hypertarget{ref-CEGMA}{}%
-33. Parra G, Bradnam K, Ning Z, Keane T, Korf I. Assessing the gene space in draft genomes. Nucleic Acids Research. 2008;37: 289--297. doi:\href{https://doi.org/10.1093/nar/gkn916}{10.1093/nar/gkn916}
+\leavevmode\hypertarget{ref-Larramendi:20151c2}{}%
+21. A. Larramendi, Shoulder Height, Body Mass, and Shape of Proboscideans. \emph{Acta Palaeontologica Polonica}. \textbf{61} (2015), doi:\href{https://doi.org/10.4202/app.00136.2014}{10.4202/app.00136.2014}.
 
-\leavevmode\hypertarget{ref-HISAT}{}%
-34. Kim D, Langmead B, Salzberg SL. HISAT: a fast spliced aligner with low memory requirements. Nature Methods. 2015;12: 357--360. doi:\href{https://doi.org/10.1038/nmeth.3317}{10.1038/nmeth.3317}
+\leavevmode\hypertarget{ref-OLeary2013a}{}%
+22. M. A. O'Leary, J. I. Bloch, J. J. Flynn, T. J. Gaudin, A. Giallombardo, N. P. Giannini, S. L. Goldberg, B. P. Kraatz, Z.-X. Luo, J. Meng, X. Ni, M. J. Novacek, F. A. Perini, Z. S. Randall, G. W. Rougier, E. J. Sargis, M. T. Silcox, N. B. Simmons, M. Spaulding, P. M. Velazco, M. Weksler, J. R. Wible, A. L. Cirranello, The placental mammal ancestor and the post-K-Pg radiation of placentals. \emph{Science (New York, N.Y.)}. \textbf{339}, 662--7 (2013).
 
-\leavevmode\hypertarget{ref-StringTie}{}%
-35. Pertea M, Pertea GM, Antonescu CM, Chang T-C, Mendell JT, Salzberg SL. StringTie enables improved reconstruction of a transcriptome from RNA-seq reads. Nature Biotechnology. 2015;33: 290--295. doi:\href{https://doi.org/10.1038/nbt.3122}{10.1038/nbt.3122}
+\leavevmode\hypertarget{ref-Springer2013}{}%
+23. M. S. Springer, R. W. Meredith, E. C. Teeling, W. J. Murphy, Technical comment on "The placental mammal ancestor and the post-K-Pg radiation of placentals". \emph{Science (New York, N.Y.)}. \textbf{341}, 613 (2013).
 
-\leavevmode\hypertarget{ref-Tuxedo}{}%
-36. Pertea M, Kim D, Pertea GM, Leek JT, Salzberg SL. Transcript-level expression analysis of RNA-seq experiments with HISAT, StringTie and Ballgown. Nature Protocols. 2016;11: 1650--1667. doi:\href{https://doi.org/10.1038/nprot.2016.095}{10.1038/nprot.2016.095}
+\leavevmode\hypertarget{ref-OLeary2013b}{}%
+24. M. A. O'Leary, J. I. Bloch, J. J. Flynn, T. J. Gaudin, A. Giallombardo, N. P. Giannini, S. L. Goldberg, B. P. Kraatz, Z.-X. Luo, J. Meng, X. Ni, M. J. Novacek, F. A. Perini, Z. Randall, G. W. Rougier, E. J. Sargis, M. T. Silcox, N. B. Simmons, M. Spaulding, P. M. Velazco, M. Weksler, J. R. Wible, A. L. Cirranello, Response to comment on "The placental mammal ancestor and the post-K-Pg radiation of placentals". \emph{Science (New York, N.Y.)}. \textbf{341}, 613 (2013).
 
-\leavevmode\hypertarget{ref-IQTREE}{}%
-37. Minh BQ, Schmidt HA, Chernomor O, Schrempf D, Woodhams MD, Haeseler A von, et al. IQ-TREE 2: New Models and Efficient Methods for Phylogenetic Inference in the Genomic Era. Molecular Biology and Evolution. 2020;37: 1530--1534. doi:\href{https://doi.org/10.1093/molbev/msaa015}{10.1093/molbev/msaa015}
+\leavevmode\hypertarget{ref-PuttickAndThomas2015}{}%
+25. M. N. Puttick, G. H. Thomas, Fossils and living taxa agree on patterns of body mass evolution: a case study with Afrotheria. \emph{Proceedings. Biological sciences / The Royal Society}. \textbf{282}, 20152023 (2015).
 
-\leavevmode\hypertarget{ref-UFBoot2}{}%
-38. Hoang DT, Chernomor O, Haeseler A von, Minh BQ, Vinh LS. UFBoot2: Improving the Ultrafast Bootstrap Approximation. Molecular Biology and Evolution. 2017;35: 518--522. doi:\href{https://doi.org/10.1093/molbev/msx281}{10.1093/molbev/msx281}
+\leavevmode\hypertarget{ref-Nunney1999}{}%
+26. L. Nunney, Lineage selection and the evolution of multistage carcinogenesis. \emph{Proceedings of the Royal Society of London. Series B: Biological Sciences}. \textbf{266}, 493--498 (1999).
 
-\leavevmode\hypertarget{ref-ModelFinder}{}%
-39. Kalyaanamoorthy S, Minh BQ, Wong TKF, Haeseler A von, Jermiin LS. ModelFinder: fast model selection for accurate phylogenetic estimates. Nature Methods. 2017;14: 587--589. doi:\href{https://doi.org/10.1038/nmeth.4285}{10.1038/nmeth.4285}
+\leavevmode\hypertarget{ref-Katzourakis2014}{}%
+27. A. Katzourakis, G. Magiorkinis, A. G. Lim, S. Gupta, R. Belshaw, R. Gifford, Larger Mammalian Body Size Leads to Lower Retroviral Activity. \emph{PLoS Pathogens}. \textbf{10}, e1004214 (2014).
 
-\leavevmode\hypertarget{ref-PMSF}{}%
-40. Wang H-C, Minh BQ, Susko E, Roger AJ. Modeling Site Heterogeneity with Posterior Mean Site Frequency Profiles Accelerates Accurate Phylogenomic Estimation. Systematic Biology. 2017;67: 216--235. doi:\href{https://doi.org/10.1093/sysbio/syx068}{10.1093/sysbio/syx068}
-
-\leavevmode\hypertarget{ref-Schrempf2019}{}%
-41. Schrempf D, Minh BQ, Haeseler A von, Kosiol C. Polymorphism-Aware Species Trees with Advanced Mutation Models, Bootstrap, and Rate Heterogeneity. Molecular Biology and Evolution. 2019;36: 1294--1301. doi:\href{https://doi.org/10.1093/molbev/msz043}{10.1093/molbev/msz043}
-
-\leavevmode\hypertarget{ref-Soubrier2012}{}%
-42. Soubrier J, Steel M, Lee MSY, Sarkissian CD, Guindon S, Ho SYW, et al. The Influence of Rate Heterogeneity among Sites on the Time Dependence of Molecular Rates. Molecular Biology and Evolution. 2012;29: 3345--3358. doi:\href{https://doi.org/10.1093/molbev/mss140}{10.1093/molbev/mss140}
-
-\leavevmode\hypertarget{ref-Yang1995}{}%
-43. Yang Z, Kumar S, Nei M. A new method of inference of ancestral nucleotide and amino acid sequences. Genetics. 1995;141: 1641--50.
-
-\leavevmode\hypertarget{ref-WebGestalt2019}{}%
-44. Liao Y, Wang J, Jaehnig EJ, Shi Z, Zhang B. WebGestalt 2019: gene set analysis toolkit with revamped UIs and APIs. Nucleic Acids Research. 2019;47: W199--W205. doi:\href{https://doi.org/10.1093/nar/gkz401}{10.1093/nar/gkz401}
-
-\leavevmode\hypertarget{ref-Reactome}{}%
-45. Jassal B, Matthews L, Viteri G, Gong C, Lorente P, Fabregat A, et al. The reactome pathway knowledgebase. Nucleic acids research. 2020;48: D498--D503. doi:\href{https://doi.org/10.1093/nar/gkz1031}{10.1093/nar/gkz1031}
-
-\leavevmode\hypertarget{ref-Wikipathways}{}%
-46. Slenter DN, Kutmon M, Hanspers K, Riutta A, Windsor J, Nunes N, et al. WikiPathways: a multifaceted pathway database bridging metabolomics to other omics research. Nucleic Acids Research. 2017;46: D661--D667. doi:\href{https://doi.org/10.1093/nar/gkx1064}{10.1093/nar/gkx1064}
-
-\leavevmode\hypertarget{ref-KEGG}{}%
-47. Kanehisa M, Goto S. KEGG: Kyoto Encyclopedia of Genes and Genomes. Nucleic Acids Research. 2000;28: 27--30. doi:\href{https://doi.org/10.1093/nar/28.1.27}{10.1093/nar/28.1.27}
-
-\leavevmode\hypertarget{ref-Peto:20151c2}{}%
-48. Peto R. Quantitative implications of the approximate irrelevance of mammalian body size and lifespan to lifelong cancer risk. Phil Trans R Soc B. 2015;370: 20150198. doi:\href{https://doi.org/10.1098/rstb.2015.0198}{10.1098/rstb.2015.0198}
-
-\leavevmode\hypertarget{ref-Felsenstein1985}{}%
-49. Felsenstein J. Phylogenies and the Comparative Method. The American Naturalist. 1985;125: 1--15. doi:\href{https://doi.org/10.1086/284325}{10.1086/284325}
-
-\leavevmode\hypertarget{ref-MartinsAndHansen1997}{}%
-50. Martins EP, Hansen TF. Phylogenies and the Comparative Method: A General Approach to Incorporating Phylogenetic Information into the Analysis of Interspecific Data. The American Naturalist. 1997;149: 646--667. doi:\href{https://doi.org/10.1086/286013}{10.1086/286013}
-
-\leavevmode\hypertarget{ref-Armitage:19851c2}{}%
-51. Armitage P. Multistage models of carcinogenesis. Environmental health perspectives. 1985;63: 195--201. doi:\href{https://doi.org/10.1289/ehp.8563195}{10.1289/ehp.8563195}
-
-\leavevmode\hypertarget{ref-Armitage:20041c2}{}%
-52. Armitage P, Doll R. The age distribution of cancer and a multi-stage theory of carcinogenesis. British Journal of Cancer. 2004;91: 6602297. doi:\href{https://doi.org/10.1038/sj.bjc.6602297}{10.1038/sj.bjc.6602297}
-
-\leavevmode\hypertarget{ref-Lynch2000}{}%
-53. Lynch M, Conery JS. The Evolutionary Fate and Consequences of Duplicate Genes. Science. 2000;290: 1151--1155. doi:\href{https://doi.org/10.1126/science.290.5494.1151}{10.1126/science.290.5494.1151}
-
-\leavevmode\hypertarget{ref-Goodman2009}{}%
-54. Goodman M, Sterner KN, Islam M, Uddin M, Sherwood CC, Hof PR, et al. Phylogenomic analyses reveal convergent patterns of adaptive evolution in elephant and human ancestries. Proceedings of the National Academy of Sciences. 2009;106: 20824--20829. doi:\href{https://doi.org/10.1073/pnas.0911239106}{10.1073/pnas.0911239106}
-
-\leavevmode\hypertarget{ref-Launonen2005}{}%
-55. Launonen V. Mutations in the human LKB1/STK11 gene. Human Mutation. 2005;26: 291--297. doi:\href{https://doi.org/10.1002/humu.20222}{10.1002/humu.20222}
-
-\leavevmode\hypertarget{ref-CooperAndPurvis2010}{}%
-56. Cooper N, Purvis A. Body Size Evolution in Mammals: Complexity in Tempo and Mode. The American Naturalist. 2010;175: 727--738. doi:\href{https://doi.org/10.1086/652466}{10.1086/652466}
-
-\leavevmode\hypertarget{ref-HoneAndBenton2004}{}%
-57. HONE D, BENTON M. The evolution of large size: how does Cope's Rule work? Trends in Ecology \& Evolution. 2005;20: 4--6. doi:\href{https://doi.org/10.1016/j.tree.2004.10.012}{10.1016/j.tree.2004.10.012}
-
-\leavevmode\hypertarget{ref-HuntAndRoy2006}{}%
-58. Hunt G, Roy K. Climate change, body size evolution, and Cope's Rule in deep-sea ostracodes. Proceedings of the National Academy of Sciences. 2006;103: 1347--1352. doi:\href{https://doi.org/10.1073/pnas.0510550103}{10.1073/pnas.0510550103}
-
-\leavevmode\hypertarget{ref-Jablonski1997}{}%
-59. Jablonski D. Body-size evolution in Cretaceous molluscs and the status of Cope's rule. Nature. 1997;385: 250--252. doi:\href{https://doi.org/10.1038/385250a0}{10.1038/385250a0}
-
-\leavevmode\hypertarget{ref-Tyner:20021c2}{}%
-60. Tyner SD, Venkatachalam S, Choi J, Jones S, Ghebranious N, Igelmann H, et al. p53 mutant mice that display early ageing-associated phenotypes. Nature. 2002;415: 45. doi:\href{https://doi.org/10.1038/415045a}{10.1038/415045a}
+\leavevmode\hypertarget{ref-Nagy2007}{}%
+28. J. D. Nagy, E. M. Victor, J. H. Cropper, Why don't all whales have cancer? A novel hypothesis resolving Peto's paradox. \emph{Integrative and Comparative Biology}. \textbf{47}, 317--328 (2007).
 
 \leavevmode\hypertarget{ref-GarciaCao:20021c2}{}%
-61. García?Cao I, García?Cao M, Martín?Caballero J, Criado LM, Klatt P, Flores JM, et al. 'Super p53' mice exhibit enhanced DNA damage response, are tumor resistant and age normally. The EMBO Journal. 2002;21: 6225--6235. doi:\href{https://doi.org/10.1093/emboj/cdf595}{10.1093/emboj/cdf595}
+29. I. García‐Cao, M. García‐Cao, J. Martín‐Caballero, L. M. Criado, P. Klatt, J. M. Flores, J. Weill, M. A. Blasco, M. Serrano, 'Super p53' mice exhibit enhanced DNA damage response, are tumor resistant and age normally. \emph{The EMBO Journal}. \textbf{21}, 6225--6235 (2002).
 
-\leavevmode\hypertarget{ref-BowheadGenome}{}%
-62. Keane M, Semeiks J, Webb AE, Li YI, Quesada V, Craig T, et al. Insights into the Evolution of Longevity from the Bowhead Whale Genome. Cell Reports. 2015;10: 112--122. doi:\href{https://doi.org/10.1016/j.celrep.2014.12.008}{10.1016/j.celrep.2014.12.008}
+\leavevmode\hypertarget{ref-Vazquez2018}{}%
+30. J. M. Vazquez, M. Sulak, S. Chigurupati, V. J. Lynch, A Zombie LIF Gene in Elephants Is Upregulated by TP53 to Induce Apoptosis in Response to DNA Damage. \emph{Cell Reports}. \textbf{24}, 1765--1776 (2018).
 
-\leavevmode\hypertarget{ref-seim2013}{}%
-63. Seim I, Fang X, Xiong Z, Lobanov AV, Huang Z, Ma S, et al. Genome analysis reveals insights into physiology and longevity of the Brandt?s bat Myotis brandtii. Nature Communications. 2013;4: 2212. doi:\href{https://doi.org/10.1038/ncomms3212}{10.1038/ncomms3212}
+\leavevmode\hypertarget{ref-Caulin2015}{}%
+31. A. F. Caulin, T. A. Graham, L.-S. Wang, C. C. Maley, Solutions to Peto's paradox revealed by mathematical modelling and cross-species cancer gene analysis. \emph{Philosophical transactions of the Royal Society of London. Series B, Biological sciences}. \textbf{370}, 20140222 (2015).
 
-\leavevmode\hypertarget{ref-myoDav1_pteAle1}{}%
-64. Zhang G, Cowled C, Shi Z, Huang Z, Bishop-Lilly KA, Fang X, et al. Comparative Analysis of Bat Genomes Provides Insight into the Evolution of Flight and Immunity. Science. 2012;339: 456--460. doi:\href{https://doi.org/10.1126/science.1230835}{10.1126/science.1230835}
+\leavevmode\hypertarget{ref-Doherty2016}{}%
+32. A. Doherty, J. de Magalhães, Has gene duplication impacted the evolution of Eutherian longevity? \emph{Aging Cell}. \textbf{15}, 978--980 (2016).
 
-\leavevmode\hypertarget{ref-NakedMoleRatGenome}{}%
-65. Kim EB, Fang X, Fushan AA, Huang Z, Lobanov AV, Han L, et al. Genome sequencing reveals insights into physiology and longevity of the naked mole rat. Nature. 2011;479: 223--7. doi:\href{https://doi.org/10.1038/nature10533}{10.1038/nature10533}
+\leavevmode\hypertarget{ref-Bininda-Emonds2008}{}%
+33. O. R. P. Bininda-Emonds, M. Cardillo, K. E. Jones, R. D. E. MacPhee, R. M. D. Beck, R. Grenyer, S. A. Price, R. A. Vos, J. L. Gittleman, A. Purvis, Erratum: The delayed rise of present-day mammals. \emph{Nature}. \textbf{456}, 274--274 (2008).
 
-\leavevmode\hypertarget{ref-BlindMoleRatGenome}{}%
-66. Fang X, Nevo E, Han L, Levanon EY, Zhao J, Avivi A, et al. Genome-wide adaptive complexes to underground stresses in blind mole rats Spalax. Nature Communications. 2014;5: 3966. doi:\href{https://doi.org/10.1038/ncomms4966}{10.1038/ncomms4966}
+\leavevmode\hypertarget{ref-ElliotAndMooers2014}{}%
+34. M. G. Elliot, A. Ø. Mooers, Inferring ancestral states without assuming neutrality or gradualism using a stable model of continuous character evolution. \emph{BMC evolutionary biology}. \textbf{14}, 226 (2014).
+
+\leavevmode\hypertarget{ref-blat}{}%
+35. J. W. Kent, BLAT---The BLAST-Like Alignment Tool. \emph{Genome Research}. \textbf{12}, 656--664 (2002).
+
+\leavevmode\hypertarget{ref-AltenhoffAndDessimoz2009}{}%
+36. A. M. Altenhoff, C. Dessimoz, Phylogenetic and functional assessment of orthologs inference projects and methods. \emph{PLoS computational biology}. \textbf{5}, e1000262 (2009).
+
+\leavevmode\hypertarget{ref-SalichosAndRokas2011}{}%
+37. L. Salichos, A. Rokas, Evaluating ortholog prediction algorithms in a yeast model clade. \emph{PloS one}. \textbf{6}, e18755 (2011).
+
+\leavevmode\hypertarget{ref-uniprot}{}%
+38. T. U. Consortium, UniProt: the universal protein knowledgebase. \emph{Nucleic Acids Research}. \textbf{45}, D158--D169 (2017).
+
+\leavevmode\hypertarget{ref-gVolante}{}%
+39. O. Nishimura, Y. Hara, S. Kuraku, gVolante for standardizing completeness assessment of genome and transcriptome assemblies. \emph{Bioinformatics}. \textbf{33}, 3635--3637 (2017).
+
+\leavevmode\hypertarget{ref-CEGMA}{}%
+40. G. Parra, K. Bradnam, Z. Ning, T. Keane, I. Korf, Assessing the gene space in draft genomes. \emph{Nucleic Acids Research}. \textbf{37}, 289--297 (2008).
+
+\leavevmode\hypertarget{ref-HISAT}{}%
+41. D. Kim, B. Langmead, S. L. Salzberg, HISAT: a fast spliced aligner with low memory requirements. \emph{Nature Methods}. \textbf{12}, 357--360 (2015).
+
+\leavevmode\hypertarget{ref-StringTie}{}%
+42. M. Pertea, G. M. Pertea, C. M. Antonescu, T.-C. Chang, J. T. Mendell, S. L. Salzberg, StringTie enables improved reconstruction of a transcriptome from RNA-seq reads. \emph{Nature Biotechnology}. \textbf{33}, 290--295 (2015).
+
+\leavevmode\hypertarget{ref-Tuxedo}{}%
+43. M. Pertea, D. Kim, G. M. Pertea, J. T. Leek, S. L. Salzberg, Transcript-level expression analysis of RNA-seq experiments with HISAT, StringTie and Ballgown. \emph{Nature Protocols}. \textbf{11}, 1650--1667 (2016).
+
+\leavevmode\hypertarget{ref-IQTREE}{}%
+44. B. Q. Minh, H. A. Schmidt, O. Chernomor, D. Schrempf, M. D. Woodhams, A. von Haeseler, R. Lanfear, IQ-TREE 2: New Models and Efficient Methods for Phylogenetic Inference in the Genomic Era. \emph{Molecular Biology and Evolution}. \textbf{37}, 1530--1534 (2020).
+
+\leavevmode\hypertarget{ref-UFBoot2}{}%
+45. D. T. Hoang, O. Chernomor, A. von Haeseler, B. Q. Minh, L. S. Vinh, UFBoot2: Improving the Ultrafast Bootstrap Approximation. \emph{Molecular Biology and Evolution}. \textbf{35}, 518--522 (2017).
+
+\leavevmode\hypertarget{ref-ModelFinder}{}%
+46. S. Kalyaanamoorthy, B. Q. Minh, T. K. F. Wong, A. von Haeseler, L. S. Jermiin, ModelFinder: fast model selection for accurate phylogenetic estimates. \emph{Nature Methods}. \textbf{14}, 587--589 (2017).
+
+\leavevmode\hypertarget{ref-PMSF}{}%
+47. H.-C. Wang, B. Q. Minh, E. Susko, A. J. Roger, Modeling Site Heterogeneity with Posterior Mean Site Frequency Profiles Accelerates Accurate Phylogenomic Estimation. \emph{Systematic Biology}. \textbf{67}, 216--235 (2017).
+
+\leavevmode\hypertarget{ref-Schrempf2019}{}%
+48. D. Schrempf, B. Q. Minh, A. von Haeseler, C. Kosiol, Polymorphism-Aware Species Trees with Advanced Mutation Models, Bootstrap, and Rate Heterogeneity. \emph{Molecular Biology and Evolution}. \textbf{36}, 1294--1301 (2019).
+
+\leavevmode\hypertarget{ref-Soubrier2012}{}%
+49. J. Soubrier, M. Steel, M. S. Y. Lee, C. D. Sarkissian, S. Guindon, S. Y. W. Ho, A. Cooper, The Influence of Rate Heterogeneity among Sites on the Time Dependence of Molecular Rates. \emph{Molecular Biology and Evolution}. \textbf{29}, 3345--3358 (2012).
+
+\leavevmode\hypertarget{ref-Yang1995}{}%
+50. Z. Yang, S. Kumar, M. Nei, A new method of inference of ancestral nucleotide and amino acid sequences. \emph{Genetics}. \textbf{141}, 1641--50 (1995).
+
+\leavevmode\hypertarget{ref-WebGestalt2019}{}%
+51. Y. Liao, J. Wang, E. J. Jaehnig, Z. Shi, B. Zhang, WebGestalt 2019: gene set analysis toolkit with revamped UIs and APIs. \emph{Nucleic Acids Research}. \textbf{47}, W199--W205 (2019).
+
+\leavevmode\hypertarget{ref-Reactome}{}%
+52. B. Jassal, L. Matthews, G. Viteri, C. Gong, P. Lorente, A. Fabregat, K. Sidiropoulos, J. Cook, M. Gillespie, R. Haw, F. Loney, B. May, M. Milacic, K. Rothfels, C. Sevilla, V. Shamovsky, S. Shorser, T. Varusai, J. Weiser, G. Wu, L. Stein, H. Hermjakob, P. D'Eustachio, The reactome pathway knowledgebase. \emph{Nucleic acids research}. \textbf{48}, D498--D503 (2020).
+
+\leavevmode\hypertarget{ref-Chen2013}{}%
+53. E. Y. Chen, C. M. Tan, Y. Kou, Q. Duan, Z. Wang, G. V. Meirelles, N. R. Clark, A. Ma'ayan, Enrichr: interactive and collaborative HTML5 gene list enrichment analysis tool. \emph{BMC bioinformatics}. \textbf{14}, 128 (2013).
+
+\leavevmode\hypertarget{ref-Peto:20151c2}{}%
+54. R. Peto, Quantitative implications of the approximate irrelevance of mammalian body size and lifespan to lifelong cancer risk. \emph{Phil. Trans. R. Soc. B}. \textbf{370}, 20150198 (2015).
+
+\leavevmode\hypertarget{ref-Felsenstein1985}{}%
+55. J. Felsenstein, Phylogenies and the Comparative Method. \emph{The American Naturalist}. \textbf{125}, 1--15 (1985).
+
+\leavevmode\hypertarget{ref-MartinsAndHansen1997}{}%
+56. E. P. Martins, T. F. Hansen, Phylogenies and the Comparative Method: A General Approach to Incorporating Phylogenetic Information into the Analysis of Interspecific Data. \emph{The American Naturalist}. \textbf{149}, 646--667 (1997).
+
+\leavevmode\hypertarget{ref-ape2019}{}%
+57. E. Paradis, K. Schliep, Ape 5.0: An environment for modern phylogenetics and evolutionary analyses in R. \emph{Bioinformatics}. \textbf{35}, 526--528 (2019).
+
+\leavevmode\hypertarget{ref-Armitage:19851c2}{}%
+58. P. Armitage, Multistage models of carcinogenesis. \emph{Environmental health perspectives}. \textbf{63}, 195--201 (1985).
+
+\leavevmode\hypertarget{ref-Armitage:20041c2}{}%
+59. P. Armitage, R. Doll, The age distribution of cancer and a multi-stage theory of carcinogenesis. \emph{British Journal of Cancer}. \textbf{91}, 6602297 (2004).
+
+\leavevmode\hypertarget{ref-R-ape}{}%
+60. E. Paradis, S. Blomberg, B. Bolker, J. Brown, S. Claramunt, J. Claude, H. S. Cuong, R. Desper, G. Didier, B. Durand, J. Dutheil, R. Ewing, O. Gascuel, T. Guillerme, C. Heibl, A. Ives, B. Jones, F. Krah, D. Lawson, V. Lefort, P. Legendre, J. Lemon, G. Louvel, E. Marcon, R. McCloskey, J. Nylander, R. Opgen-Rhein, A.-A. Popescu, M. Royer-Carenzi, K. Schliep, K. Strimmer, D. de Vienne, \emph{Ape: Analyses of phylogenetics and evolution} (2020; \url{https://CRAN.R-project.org/package=ape}).
+
+\leavevmode\hypertarget{ref-R-base}{}%
+61. R Core Team, \emph{R: A language and environment for statistical computing} (R Foundation for Statistical Computing, Vienna, Austria, 2019; \url{https://www.R-project.org/}).
+
+\leavevmode\hypertarget{ref-R-bookdown}{}%
+62. Y. Xie, \emph{Bookdown: Authoring books and technical documents with r markdown} (2020; \url{https://CRAN.R-project.org/package=bookdown}).
+
+\leavevmode\hypertarget{ref-R-broom.mixed}{}%
+63. B. Bolker, D. Robinson, \emph{Broom.mixed: Tidying methods for mixed models} (2020; \url{https://CRAN.R-project.org/package=broom.mixed}).
+
+\leavevmode\hypertarget{ref-R-data.table}{}%
+64. M. Dowle, A. Srinivasan, \emph{Data.table: Extension of `data.frame`} (2019; \url{https://CRAN.R-project.org/package=data.table}).
+
+\leavevmode\hypertarget{ref-R-dplyr}{}%
+65. H. Wickham, R. François, L. Henry, K. Müller, \emph{Dplyr: A grammar of data manipulation} (2020; \url{https://CRAN.R-project.org/package=dplyr}).
+
+\leavevmode\hypertarget{ref-R-forcats}{}%
+66. H. Wickham, \emph{Forcats: Tools for working with categorical variables (factors)} (2020; \url{https://CRAN.R-project.org/package=forcats}).
+
+\leavevmode\hypertarget{ref-R-geiger}{}%
+67. L. Harmon, M. Pennell, C. Brock, J. Brown, W. Challenger, J. Eastman, R. FitzJohn, R. Glor, G. Hunt, L. Revell, G. Slater, J. Uyeda, J. Weir, \emph{Geiger: Analysis of evolutionary diversification} (2020; \url{https://CRAN.R-project.org/package=geiger}).
+
+\leavevmode\hypertarget{ref-R-gghighlight}{}%
+68. H. Yutani, \emph{Gghighlight: Highlight lines and points in 'ggplot2'} (2020; \url{https://CRAN.R-project.org/package=gghighlight}).
+
+\leavevmode\hypertarget{ref-R-ggimage}{}%
+69. G. Yu, \emph{Ggimage: Use image in 'ggplot2'} (2020; \url{https://CRAN.R-project.org/package=ggimage}).
+
+\leavevmode\hypertarget{ref-R-ggnewscale}{}%
+70. E. Campitelli, \emph{Ggnewscale: Multiple fill and colour scales in 'ggplot2'} (2020; \url{https://CRAN.R-project.org/package=ggnewscale}).
+
+\leavevmode\hypertarget{ref-R-ggplot2}{}%
+71. H. Wickham, W. Chang, L. Henry, T. L. Pedersen, K. Takahashi, C. Wilke, K. Woo, H. Yutani, D. Dunnington, \emph{Ggplot2: Create elegant data visualisations using the grammar of graphics} (2020; \url{https://CRAN.R-project.org/package=ggplot2}).
+
+\leavevmode\hypertarget{ref-R-ggplotify}{}%
+72. G. Yu, \emph{Ggplotify: Convert plot to 'grob' or 'ggplot' object} (2020; \url{https://CRAN.R-project.org/package=ggplotify}).
+
+\leavevmode\hypertarget{ref-R-ggpubr}{}%
+73. A. Kassambara, \emph{Ggpubr: 'Ggplot2' based publication ready plots} (2020; \url{https://CRAN.R-project.org/package=ggpubr}).
+
+\leavevmode\hypertarget{ref-R-ggrepel}{}%
+74. K. Slowikowski, \emph{Ggrepel: Automatically position non-overlapping text labels with 'ggplot2'} (2020; \url{https://CRAN.R-project.org/package=ggrepel}).
+
+\leavevmode\hypertarget{ref-R-ggsci}{}%
+75. N. Xiao, \emph{Ggsci: Scientific journal and sci-fi themed color palettes for 'ggplot2'} (2018; \url{https://CRAN.R-project.org/package=ggsci}).
+
+\leavevmode\hypertarget{ref-R-ggtree}{}%
+76. G. Yu, T. T.-Y. Lam, \emph{Ggtree: An r package for visualization of tree and annotation data} (2020; \url{https://yulab-smu.github.io/treedata-book/}).
+
+\leavevmode\hypertarget{ref-R-kableExtra}{}%
+77. H. Zhu, \emph{KableExtra: Construct complex table with 'kable' and pipe syntax} (2019; \url{https://CRAN.R-project.org/package=kableExtra}).
+
+\leavevmode\hypertarget{ref-R-magick}{}%
+78. J. Ooms, \emph{Magick: Advanced graphics and image-processing in r} (2020; \url{https://CRAN.R-project.org/package=magick}).
+
+\leavevmode\hypertarget{ref-R-magrittr}{}%
+79. S. M. Bache, H. Wickham, \emph{Magrittr: A forward-pipe operator for r} (2014; \url{https://CRAN.R-project.org/package=magrittr}).
+
+\leavevmode\hypertarget{ref-R-nlme}{}%
+80. J. Pinheiro, D. Bates, R-core, \emph{Nlme: Linear and nonlinear mixed effects models} (2020; \url{https://CRAN.R-project.org/package=nlme}).
+
+\leavevmode\hypertarget{ref-R-plotly}{}%
+81. C. Sievert, C. Parmer, T. Hocking, S. Chamberlain, K. Ram, M. Corvellec, P. Despouy, \emph{Plotly: Create interactive web graphics via 'plotly.js'} (2020; \url{https://CRAN.R-project.org/package=plotly}).
+
+\leavevmode\hypertarget{ref-R-purrr}{}%
+82. L. Henry, H. Wickham, \emph{Purrr: Functional programming tools} (2020; \url{https://CRAN.R-project.org/package=purrr}).
+
+\leavevmode\hypertarget{ref-R-readr}{}%
+83. H. Wickham, J. Hester, R. Francois, \emph{Readr: Read rectangular text data} (2018; \url{https://CRAN.R-project.org/package=readr}).
+
+\leavevmode\hypertarget{ref-R-stargazer}{}%
+84. M. Hlavac, \emph{Stargazer: Well-formatted regression and summary statistics tables} (2018; \url{https://CRAN.R-project.org/package=stargazer}).
+
+\leavevmode\hypertarget{ref-R-stringr}{}%
+85. H. Wickham, \emph{Stringr: Simple, consistent wrappers for common string operations} (2019; \url{https://CRAN.R-project.org/package=stringr}).
+
+\leavevmode\hypertarget{ref-R-tibble}{}%
+86. K. Müller, H. Wickham, \emph{Tibble: Simple data frames} (2020; \url{https://CRAN.R-project.org/package=tibble}).
+
+\leavevmode\hypertarget{ref-R-tidyr}{}%
+87. H. Wickham, L. Henry, \emph{Tidyr: Tidy messy data} (2020; \url{https://CRAN.R-project.org/package=tidyr}).
+
+\leavevmode\hypertarget{ref-R-tidytree}{}%
+88. G. Yu, \emph{Tidytree: A tidy tool for phylogenetic tree data manipulation} (2020; \url{https://yulab-smu.github.io/treedata-book/}).
+
+\leavevmode\hypertarget{ref-R-tidyverse}{}%
+89. H. Wickham, \emph{Tidyverse: Easily install and load the 'tidyverse'} (2019; \url{https://CRAN.R-project.org/package=tidyverse}).
+
+\leavevmode\hypertarget{ref-R-treeio}{}%
+90. G. Yu, \emph{Treeio: Base classes and functions for phylogenetic tree input and output} (2020).
+
+\leavevmode\hypertarget{ref-R-UpSetR}{}%
+91. N. Gehlenborg, \emph{UpSetR: A more scalable alternative to venn and euler diagrams for visualizing intersecting sets} (2019; \url{https://CRAN.R-project.org/package=UpSetR}).
+
+\leavevmode\hypertarget{ref-bookdown2016}{}%
+92. Y. Xie, \emph{Bookdown: Authoring books and technical documents with R markdown} (Chapman; Hall/CRC, Boca Raton, Florida, 2016; \url{https://github.com/rstudio/bookdown}).
+
+\leavevmode\hypertarget{ref-geiger2009}{}%
+93. M. Alfaro, F. Santini, C. Brock, H. Alamillo, A. Dornburg, D. Rabosky, G. Carnevale, L. Harmon, Nine exceptional radiations plus high turnover explain species diversity in jawed vertebrates. \emph{Proceedings of the National Academy of Sciences of the United States of America}. \textbf{106}, 13410--13414 (2009).
+
+\leavevmode\hypertarget{ref-geiger2011}{}%
+94. J. Eastman, M. Alfaro, P. Joyce, A. Hipp, L. Harmon, A novel comparative method for identifying shifts in the rate of character evolution on trees. \emph{Evolution}. \textbf{65}, 3578--3589 (2011).
+
+\leavevmode\hypertarget{ref-geiger2012}{}%
+95. G. Slater, L. Harmon, D. Wegmann, P. Joyce, L. Revell, M. Alfaro, Fitting models of continuous trait evolution to incompletely sampled comparative data using approximate bayesian computation. \emph{Evolution}. \textbf{66}, 752--762 (2012).
+
+\leavevmode\hypertarget{ref-geiger2008}{}%
+96. L. Harmon, J. Weir, C. Brock, R. Glor, W. Challenger, GEIGER: Investigating evolutionary radiations. \emph{Bioinformatics}. \textbf{24}, 129--131 (2008).
+
+\leavevmode\hypertarget{ref-geiger2014}{}%
+97. M. Pennell, J. Eastman, G. Slater, J. Brown, J. Uyeda, R. Fitzjohn, M. Alfaro, L. Harmon, Geiger v2.0: An expanded suite of methods for fitting macroevolutionary models to phylogenetic trees. \emph{Bioinformatics}. \textbf{30}, 2216--2218 (2014).
+
+\leavevmode\hypertarget{ref-ggplot22016}{}%
+98. H. Wickham, \emph{Ggplot2: Elegant graphics for data analysis} (Springer-Verlag New York, 2016; \url{https://ggplot2.tidyverse.org}).
+
+\leavevmode\hypertarget{ref-ggtree2020}{}%
+99. G. Yu, Using ggtree to visualize data on tree-like structures. \emph{Current Protocols in Bioinformatics}. \textbf{69}, e96 (2020).
+
+\leavevmode\hypertarget{ref-ggtree2018}{}%
+100. G. Yu, T. T.-Y. Lam, H. Zhu, Y. Guan, Two methods for mapping and visualizing associated data on phylogeny using ggtree. \emph{Molecular Biology and Evolution}. \textbf{35}, 3041--3043 (2018).
+
+\leavevmode\hypertarget{ref-ggtree2017}{}%
+101. G. Yu, D. Smith, H. Zhu, Y. Guan, T. T.-Y. Lam, Ggtree: An r package for visualization and annotation of phylogenetic trees with their covariates and other associated data. \emph{Methods in Ecology and Evolution}. \textbf{8}, 28--36 (2017).
+
+\leavevmode\hypertarget{ref-plotly2020}{}%
+102. C. Sievert, \emph{Interactive web-based data visualization with r, plotly, and shiny} (Chapman; Hall/CRC, 2020; \url{https://plotly-r.com}).
+
+\leavevmode\hypertarget{ref-tidyverse2019}{}%
+103. H. Wickham, M. Averick, J. Bryan, W. Chang, L. D. McGowan, R. François, G. Grolemund, A. Hayes, L. Henry, J. Hester, M. Kuhn, T. L. Pedersen, E. Miller, S. M. Bache, K. Müller, J. Ooms, D. Robinson, D. P. Seidel, V. Spinu, K. Takahashi, D. Vaughan, C. Wilke, K. Woo, H. Yutani, Welcome to the tidyverse. \emph{Journal of Open Source Software}. \textbf{4}, 1686 (2019).
+
+\leavevmode\hypertarget{ref-treeio2020}{}%
+104. L.-G. Wang, T. T.-Y. Lam, S. Xu, Z. Dai, L. Zhou, T. Feng, P. Guo, C. W. Dunn, B. R. Jones, T. Bradley, H. Zhu, Y. Guan, Y. Jiang, G. Yu, Treeio: An r package for phylogenetic tree input and output with richly annotated and associated data. \emph{Molecular Biology and Evolution}. \textbf{37}, 599--603 (2020).
+
+\leavevmode\hypertarget{ref-Liang2013}{}%
+105. J. Liang, G. B. Mills, AMPK: a contextual oncogene or tumor suppressor? \emph{Cancer research}. \textbf{73}, 2929--35 (2013).
+
+\leavevmode\hypertarget{ref-Launonen2005}{}%
+106. V. Launonen, Mutations in the human LKB1/STK11 gene. \emph{Human Mutation}. \textbf{26}, 291--297 (2005).
+
+\leavevmode\hypertarget{ref-Drost2010}{}%
+107. J. Drost, F. Mantovani, F. Tocco, R. Elkon, A. Comel, H. Holstege, R. Kerkhoven, J. Jonkers, P. M. Voorhoeve, R. Agami, G. D. Sal, BRD7 is a candidate tumour suppressor gene required for p53 function. \emph{Nature Cell Biology}. \textbf{12}, 380--389 (2010).
+
+\leavevmode\hypertarget{ref-Burrows2010}{}%
+108. A. E. Burrows, A. Smogorzewska, S. J. Elledge, Polybromo-associated BRG1-associated factor components BRD7 and BAF180 are critical regulators of p53 required for induction of replicative senescence. \emph{Proceedings of the National Academy of Sciences of the United States of America}. \textbf{107}, 14280--5 (2010).
+
+\leavevmode\hypertarget{ref-Fukuda:20161c2}{}%
+109. T. Fukuda, Y. Iino, M. Onuma, B. Gen, M. Inoue-Murayama, T. Kiyono, Expression of human cell cycle regulators in the primary cell line of the African savannah elephant (loxodonta africana) increases proliferation until senescence, but does not induce immortalization. \emph{In Vitro Cellular \& Developmental Biology - Animal}. \textbf{52}, 20--26 (2016).
+
+\leavevmode\hypertarget{ref-Gomes2011}{}%
+110. N. M. V. Gomes, O. A. Ryder, M. L. Houck, S. J. Charter, W. Walker, N. R. Forsyth, S. N. Austad, C. Venditti, M. Pagel, J. W. Shay, W. E. Wright, Comparative biology of mammalian telomeres: hypotheses on ancestral states and the roles of telomeres in longevity determination. \emph{Aging Cell}. \textbf{10}, 761--768 (2011).
+
+\leavevmode\hypertarget{ref-Hart1974}{}%
+111. R. W. Hart, R. B. Setlow, Correlation Between Deoxyribonucleic Acid Excision-Repair and Life-Span in a Number of Mammalian Species. \emph{Proceedings of the National Academy of Sciences}. \textbf{71}, 2169--2173 (1974).
+
+\leavevmode\hypertarget{ref-Francis1981}{}%
+112. A. A. Francis, W. H. Lee, J. D. Regan, The relationship of DNA excision repair of ultraviolet-induced lesions to the maximum life span of mammals. \emph{Mechanisms of Ageing and Development}. \textbf{16}, 181--189 (1981).
+
+\leavevmode\hypertarget{ref-Tyner:20021c2}{}%
+113. S. D. Tyner, S. Venkatachalam, J. Choi, S. Jones, N. Ghebranious, H. Igelmann, X. Lu, G. Soron, B. Cooper, C. Brayton, S. H. Park, T. Thompson, G. Karsenty, A. Bradley, L. A. Donehower, p53 mutant mice that display early ageing-associated phenotypes. \emph{Nature}. \textbf{415}, 45 (2002).
 
 \leavevmode\hypertarget{ref-Rastogi2005}{}%
-67. Rastogi S, Liberles DA. Subfunctionalization of duplicated genes as a transition state to neofunctionalization. BMC Evolutionary Biology. 2005;5: 28. doi:\href{https://doi.org/10.1186/1471-2148-5-28}{10.1186/1471-2148-5-28}
+114. S. Rastogi, D. A. Liberles, Subfunctionalization of duplicated genes as a transition state to neofunctionalization. \emph{BMC Evolutionary Biology}. \textbf{5}, 28 (2005).
 
 \leavevmode\hypertarget{ref-QianAndZhang2014}{}%
-68. Qian W, Zhang J. Genomic evidence for adaptation by gene duplication. Genome research. 2014;24: 1356--62. doi:\href{https://doi.org/10.1101/gr.172098.114}{10.1101/gr.172098.114}
+115. W. Qian, J. Zhang, Genomic evidence for adaptation by gene duplication. \emph{Genome research}. \textbf{24}, 1356--62 (2014).
 
 \leavevmode\hypertarget{ref-Stoltzfus1999}{}%
-69. Stoltzfus A. On the Possibility of Constructive Neutral Evolution. Journal of Molecular Evolution. 1999;49: 169--181. doi:\href{https://doi.org/10.1007/pl00006540}{10.1007/pl00006540}
+116. A. Stoltzfus, On the Possibility of Constructive Neutral Evolution. \emph{Journal of Molecular Evolution}. \textbf{49}, 169--181 (1999).
+
+\leavevmode\hypertarget{ref-Bininda-Emonds2007}{}%
+117. O. R. P. Bininda-Emonds, M. Cardillo, K. E. Jones, R. D. E. MacPhee, R. M. D. Beck, R. Grenyer, S. A. Price, R. A. Vos, J. L. Gittleman, A. Purvis, The delayed rise of present-day mammals. \emph{Nature}. \textbf{446}, 507--512 (2007).
 
 
 \end{document}
