@@ -11,5 +11,3 @@ src/
 .Rhistory
 smRecSearch.Rproj
 
-.RDataTmp
-paper_PLOS/empiricalPValue.tsv

@@ -434,21 +434,6 @@ binTableFromList <- function (input) {
   data[, Gene:=elements][]
 }
 
-fromList <- function (input) {
-  # Same as original fromList()...
-  elements <- unique(unlist(input))
-  data <- unlist(lapply(input, function(x) {
-    x <- as.vector(match(elements, x))
-  }))
-  data[is.na(data)] <- as.integer(0)
-  data[data != 0] <- as.integer(1)
-  data <- data.frame(matrix(data, ncol = length(input), byrow = F))
-  data <- data[which(rowSums(data) != 0), ]
-  names(data) <- names(input)
-  # ... Except now it conserves your original value names!
-  row.names(data) <- elements
-  return(data)
-}
 
 phylopic_uid_item_safer <- function (name) {
   x <- gsub("[^a-zA-Z]+", "+", name)
@@ -487,30 +472,24 @@ lineage.pathway.fdr.table <- function(path="output/ORA"){
       Database = ORAs %>% sapply(str_extract, "(?<=pathway_)[A-Za-z]+(?=-)"),
       FDR.Threshold = ORAs %>% sapply(str_extract, "(?<=FDR_)[0-9]\\.[0-9]+(?=/)"),
       Direction.lineage = ORAs %>% sapply(str_extract, "(?<=Project_).+?(?=/)"),
-      Pathway.EnrichRatio.FDR.pval.Genes.Size = ORAs %>% sapply(
+      Pathway.EnrichRatio.FDR.Genes.Size = ORAs %>% sapply(
         ., . %>% 
           read_tsv %>% 
-          select(description, enrichmentRatio, FDR, pValue, userId, size) %>% 
+          select(description, enrichmentRatio, FDR, userId, size) %>% 
           mutate_all(. %>% str_replace_all(",|;", ":")) %>% 
-          unite("PEF", description, enrichmentRatio, FDR, pValue, userId, size, sep = ",") %>% 
+          unite("PEF", description, enrichmentRatio, FDR, userId, size, sep = ",") %>% 
           pull(PEF) %>% 
           paste0(collapse=";")),
       fname = ORAs
     ) %>% 
     separate(Direction.lineage, c("Direction", "Ancestor", "to", "Node"), sep="_", extra = "merge") %>% 
-    separate_rows(Pathway.EnrichRatio.FDR.pval.Genes.Size, sep=";") %>% 
-    separate(Pathway.EnrichRatio.FDR.pval.Genes.Size, c("Pathway","EnrichRatio","FDR", "pValue", "Genes", "Size"), sep=",") %>% 
+    separate_rows(Pathway.EnrichRatio.FDR.Genes.Size, sep=";") %>% 
+    separate(Pathway.EnrichRatio.FDR.Genes.Size, c("Pathway","EnrichRatio","FDR", "Genes", "Size"), sep=",") %>% 
     group_by(Model, Database, Direction, Ancestor, Node, Pathway, EnrichRatio, Genes, RBHB) %>% 
-    summarize(
-      is.Dynamic = unique(is.dynamic) %>% paste0(collapse = ","), 
-      FDR.Threshold=min(FDR.Threshold), 
-      FDR=unique(FDR), 
-      pValue=unique(pValue),
-      Size=unique(Size) %>% paste(collapse=";")
-    ) %>% 
+    summarize(is.Dynamic = unique(is.dynamic) %>% paste0(collapse = ","), FDR.Threshold=min(FDR.Threshold), FDR=unique(FDR), Size=unique(Size) %>% paste(collapse=";")) %>% 
     ungroup %>% 
     mutate(Genes=str_replace_all(Genes, ":", ";")) %>% 
-    arrange(Ancestor, Node, FDR, pValue, Pathway)
+    arrange(Ancestor, Node, FDR, Pathway)
 }
 
 dynToCN <- function(val){
@@ -616,16 +595,16 @@ class.pathway <- function(Pathway){
                 str_detect(P, "G2"),
                 "Cell Cycle: G2",
                 ifelse(
-                  str_detect(P, "[Mm]ito(sis|tic)|[Mm]eio(sis|tic)|M Phase|[Ss]ister [cC]hromatid"),
-                  "Cell Cycle: Mitotic/Meiotic",
+                  str_detect(P, "[Mm]itotic|M Phase|[Ss]ister [cC]hromatid"),
+                  "Cell Cycle: Mitotic",
                   ifelse(
-                    str_detect(P, "Cell [Cc]ycle|CDK|Cyclin"),
+                    str_detect(P, "Cell [Cc]ycle|CDK"),
                     "Cell Cycle: General",
                     ifelse(
-                      str_detect(P, "DNA.*[Dd]amage|[Rr]epair|\\b[Ii][Rr]\\b|DNA replication|Holliday|[Dd]ouble [Ss]trand [Bb]reak|Translesion synthesis|Homologous Recombination|Single Strand Annealing|Non.?[Hh]omologous [Ee]nd.[Jj]oining|NHEJ|NER\\b|DNA Replication|Synthesis of DNA"),
+                      str_detect(P, "DNA.*[Dd]amage|[Rr]epair|\\b[Ii][Rr]\\b|Double Strand Break|Translesion synthesis|Homologous Recombination|Single Strand Annealing|Non.?[Hh]omologous [Ee]nd.[Jj]oining|NHEJ|NER\\b"),
                       "DNA Damage Response & Repair",
                       ifelse(
-                        str_detect(P, "[Cc]ell [Dd]eath|Apopto(sis|tic)|Ferroptosis|Necrosis|[Cc]aspase"),
+                        str_detect(P, "[Cc]ell [Dd]eath|Apoptosis|Ferroptosis|Necrosis"),
                         "Cell Death Pathways",
                         ifelse(
                           str_detect(P, "[Ss]enescence"),
@@ -634,10 +613,10 @@ class.pathway <- function(Pathway){
                             str_detect(P, "ATM|ATR|A[Kk][Tt]"),
                             "ATM, ATR, and AKT Pathways",
                             ifelse(
-                              str_detect(P, "Pathways in Cancer|\\b[Rr][Aa][Ss]\\b|\\bRb\\b|Retinoblastoma|\\bPTEN\\b|Tumor suppressor|PI3|[Cc]ancer|[Tt]umor"),
+                              str_detect(P, "Pathways in Cancer|\\b[Rr][Aa][Ss]\\b|\\bRb\\b|Retinoblastoma|\\bPTEN\\b|Tumor suppressor|PI3"),
                               "Other Cancer-Related Pathways",
                               ifelse(
-                                str_detect(P, "(?!Fluid)(\\b[Ss]tress\\b|\\b[Hh]ypoxia\\b|Oxidative damage|\\bUPR\\b|[Hh]eat [Ss]tress|[Hh]eat [Ss]hock]|Reactive Oxygen Species)"),
+                                str_detect(P, "(?!Fluid)(\\b[Ss]tress\\b|\\b[Hh]ypoxia\\b|Oxidative damage|\\bUPR\\b)"),
                                 "Cell Stress Response",
                                 ifelse(
                                   str_detect(P, "TOR"),
@@ -957,7 +936,7 @@ text.bodysize.ancNode.byMRCA.CI <- function(nodeA, nodeB, tree_table=tree.Atlant
   anc.node = MRCA(tree_table, nodeA, nodeB) %>% pull(node)
   bsize <-  tree_table %>% 
     filter(node == anc.node) %>% 
-    select(CI_low=`lnSize.low`, CI_High=`lnSize.high`) %>% 
+    select(CI_low=`95%CI_Low`, CI_High=`95%CI_High`) %>% 
     transmute(CI_range = paste0(CI_low %>% exp %>% divide_by(1000) %>% round(digits=2), "kg-", CI_High %>% exp %>% divide_by(1000) %>% round(2), "kg")) %>% 
     pull(CI_range)
   return(bsize)
@@ -967,7 +946,7 @@ text.bodysizeCI.node.byLabel <- function(node.label, tree_table=tree.Atlantogena
   tree_table %<>% mutate(label=str_replace(label, " ", "."), Median = Median %>% exp)
   bsize <-  tree_table %>% 
     filter(label == node.label) %>% 
-    select(CI_low=`lnSize.low`, CI_High=`lnSize.high`) %>% 
+    select(CI_low=`95%CI_Low`, CI_High=`95%CI_High`) %>% 
     transmute(CI_range = paste0(CI_low %>% exp %>% divide_by(1000) %>% round(digits=2), "kg-", CI_High %>% exp %>% divide_by(1000) %>% round(2), "kg")) %>% 
     pull(CI_range)
   return(bsize)
@@ -1051,26 +1030,4 @@ get.ancestor.label <- function(n, tree.data){
   anc.node <- tree.data %>% filter(node==n) %>% pull(parent) %>% unique()
   ancestor.label <- tree.data %>% filter(node==anc.node) %>% pull(label)
   return(ancestor.label)
-}
-
-
-scale_breaks_tree <- function(x){
-  x <- scales::breaks_pretty()(x)
-  ifelse(x<=0, x, ifelse(x>=100, x, NA)) %>% na.omit() %>% as.numeric %>% as.numeric()
-}
-
-
-facet_height <- function (p, heights) 
-{
-  if (!is.null(names(heights))) {
-    .panel <- panel_col_levels(p)
-    w <- rep(1, length = length(.panel))
-    names(w) <- .panel
-    w[names(heights)] <- heights
-    heights <- w
-  }
-  gt <- ggplot_gtable(ggplot_build(p))
-  j <- gt$layout$t[grep("panel-", gt$layout$name)]
-  gt$heights[j] <- gt$heights[j] * heights
-  return(ggplotify::as.ggplot(gt))
 }

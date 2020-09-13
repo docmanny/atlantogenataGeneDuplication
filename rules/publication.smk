@@ -31,22 +31,3 @@ rule lifespanPGLS_cancerRisk:
     script: "../code/pub_lifespanPGLS_cancerRisk.R"
 
 
-
-
-
-
-
-
-
-# rule knit_paper:
-#     input:
-#         RMarkdown = "paper_PLOS/paper_PLOS_draft.Rmd",
-#         UP000005640 = "data/input/UP000005640.withheader.tsv",
-#         gene_list = "output/recBlastDBPrep/AvA_geneList.txt",
-#         gene_list_filtered = "output/recBlastDBPrep/AvA_geneList_filtered.txt",
-#         genomeTable = "output/other/genomeTable.csv",
-#         stabletraits_progress = "data/stableTraits/eutheria.progress",
-#         time_tree = "data/stableTraits/eutheria.tree"
-#     output: "paper_PLOS/paper_PLOS_draft.html"
-#     script:
-#         "code/renderpaper.R"
