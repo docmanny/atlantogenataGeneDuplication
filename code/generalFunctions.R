@@ -616,7 +616,7 @@ class.pathway <- function(Pathway){
                               str_detect(P, "Pathways in Cancer|\\b[Rr][Aa][Ss]\\b|\\bRb\\b|Retinoblastoma|\\bPTEN\\b|Tumor suppressor|PI3"),
                               "Other Cancer-Related Pathways",
                               ifelse(
-                                str_detect(P, "[Ss]tress|[Hh]ypoxia|Oxidative damage|UPR") %>% str_detect("[Ff]luid", negate=T),
+                                str_detect(P, "(?!Fluid)(\\b[Ss]tress\\b|\\b[Hh]ypoxia\\b|Oxidative damage|\\bUPR\\b)"),
                                 "Cell Stress Response",
                                 ifelse(
                                   str_detect(P, "TOR"),
@@ -627,7 +627,11 @@ class.pathway <- function(Pathway){
                                     ifelse(
                                       str_detect(P, "[Oo]ncogen"),
                                       "Oncogenic Pathway",
-                                      "Other"
+                                      ifelse(
+                                        str_detect(P, "Insulin|IGF"),
+                                        "Insulin- and IGF-Related Pathways",
+                                        "Other"
+                                      )
                                       )
                                   )
                                 )
@@ -656,7 +660,7 @@ graph.ORA.dotplot <- function(ORA.df, plotly=F){
       # text=GeneList, 
       color=Class
     )) + 
-    geom_point(position = position_jitter(width = .02, height=.02, seed = NULL)) +
+    geom_point() + #position = position_jitter(width = .02, height=.02, seed = NULL)) +
     # guides(col=guide_legend())+
     # facet_wrap(~Database) + 
     gghighlight(Class != "Other", keep_scales = T, calculate_per_facet = T, use_direct_label = F, label_key = NULL)+
@@ -664,13 +668,366 @@ graph.ORA.dotplot <- function(ORA.df, plotly=F){
     scale_x_log10(guide=guide_axis(title="FDR (log)")) +
     scale_y_log10(guide=guide_axis(title="Enrichment Ratio (log)")) +
     #geom_text_repel(data=. %>% filter(FDR<=1e-4|Class %in% c("TP53 Pathway", "Senescence", "Cell Death Pathways")), nudge_y = 0.5, show.legend = F, force = 15, size=3) +
-    geom_text_repel(data=. %>% filter(FDR<=1e-4), nudge_y = 0.5, show.legend = F, force = 15, size=3) +
-    geom_text_repel(data=. %>% filter(EnrichRatio>=7), nudge_y = -0.2, force = 15, show.legend=F, size=3) + 
+    geom_text_repel(data=. %>% filter(FDR<=1e-4), nudge_y = 0.5,
+                    show.legend = F, force = 15, size=3)+#, position = position_jitter(width = .02, height=.02, seed = NULL)) +
+    geom_text_repel(data=. %>% filter(EnrichRatio>=7), nudge_y = -0.2, 
+                    force = 15, show.legend=F, size=3)+#, position = position_jitter(width = .02, height=.02, seed = NULL)) +
     # geom_text_repel(data=. %>% filter(Class %in% c("TP53 Pathway", "Senescence", "Cell Death Pathways")), nudge_y = 0.5, force = 10, show.legend=F) + 
     scale_color_d3(palette="category20") +
     theme_pubclean() + 
-    theme(legend.position = "bottom")+
+    labs_pubr() + 
+    theme(
+      text = element_text(face = "plain", 
+                          colour = "black", lineheight = 0.9, 
+                          hjust = 0.5, vjust = 0.5, angle = 0, margin = margin(), 
+                          debug = FALSE), 
+      axis.text = element_text(size = 6, 
+                               colour = "black", face = "bold"),
+      axis.title = element_text(size = 8, 
+                                colour = "black", face = "bold"),
+      plot.title = element_text(size = 8, 
+                                colour = "black", lineheight = 1, face = "bold"), 
+      legend.text = element_text(size = 6, 
+                                 face = "plain", colour = "black"),
+      legend.position = "bottom"
+    ) +
     guides(color=guide_legend(title="Cell Cycle Pathway", title.position = "bottom", title.hjust = 0.5), size = guide_legend(title="Size (log)", title.position = "bottom", title.hjust = 0.5)) 
   if(plotly) {p %<>% ggplotly}
   return(p)
+}
+
+
+get_upper_tri <- function(cormat){
+  cormat[lower.tri(cormat)]<- NA
+  return(cormat)
+}
+
+get_lower_tri <- function(cormat){
+  cormat[upper.tri(cormat)]<- NA
+  return(cormat)
+}
+reorder_cormat <- function(cormat){
+  # Use correlation between variables as distance
+  dd <- as.dist((1-cormat)/2)
+  hc <- hclust(dd)
+  cormat <-cormat[hc$order, hc$order]
+}
+
+
+not.me <- function(attr1, attr2, threshold=4){
+  sapply(
+    seq_along(attr1),
+    function(n, a1=attr1, a2=attr2, t=threshold){
+      ifelse(a1[n] >= t, a2[n], NA)
+    }
+  )
+}
+yes.me <- function(attr1, attr2, threshold=4){
+  sapply(
+    seq_along(attr1),
+    function(n, a1=attr1, a2=attr2, t=threshold){
+      ifelse(a1[n] < t, a2[n], NA)
+    }
+  )
+}
+
+colorado <- function(src, boulder) {                        # From https://stackoverflow.com/a/39695859, pun is too good to change
+  if (!is.factor(src)) src <- factor(src)                   # make sure it's a factor
+  src_levels <- levels(src)                                 # retrieve the levels in their order
+  brave <- boulder %in% src_levels                          # make sure everything we want to make bold is actually in the factor levels
+  if (all(brave)) {                                         # if so
+    b_pos <- purrr::map_int(boulder, ~which(.==src_levels)) # then find out where they are
+    b_vec <- rep("plain", length(src_levels))               # make'm all plain first
+    b_vec[b_pos] <- "bold"                                  # make our targets bold
+    b_vec                                                   # return the new vector
+  } else {
+    stop("All elements of 'boulder' must be in src")
+  }
+}
+
+highlightTextSize <- function(src, boulder, sizes=c(4,8)) {
+  if (!is.factor(src)) src <- factor(src)                 
+  src_levels <- levels(src)                               
+  brave <- boulder %in% src_levels                        
+  if (all(brave)) {                                       
+    b_pos <- purrr::map_int(boulder, ~which(.==src_levels))
+    b_vec <- rep(sizes[1], length(src_levels))            
+    b_vec[b_pos] <- sizes[2]                              
+    b_vec                                                   
+  } else {
+    stop("All elements of 'boulder' must be in src")
+  }
+}
+
+highlightTextColor <- function(src, boulder, color=c("grey","black")) {
+  if (!is.factor(src)) src <- factor(src)                 
+  src_levels <- levels(src)                               
+  brave <- boulder %in% src_levels                        
+  if (all(brave)) {                                       
+    b_pos <- purrr::map_int(boulder, ~which(.==src_levels))
+    b_vec <- rep(color[1], length(src_levels))            
+    b_vec[b_pos] <- color[2]                              
+    b_vec                                                   
+  } else {
+    stop("All elements of 'boulder' must be in src")
+  }
+}
+# runGLS <- function(df, pcor = bm){
+#   # print(class(df))
+#   # print(head(df))
+#   bla <- gls(
+#     media.CN ~ Genome + N50 + meanSequenceLength + Completeness + Total+ pc.Ortho + Average + , 
+#     data = df, 
+#     correlation=pcor
+#   ) 
+#   # print(bla)
+#   # print(class(bla))
+#   return(bla)
+# }
+tidyGLS <- function(df){
+  # print(names(df))
+  # print(class(df$results))
+  a <- tidy(df, conf.int=T)
+  print(a)
+  return(a)
+}
+
+quiet <- function(x) { 
+  sink(tempfile()) 
+  on.exit(sink()) 
+  invisible(force(x)) 
+} 
+
+text.ratio.nodeByMRCA.ancNode <- function(nodeA, outNode, tree_table=tree.Atlantogenata.table, nodeid=T){
+  tree_table %<>% mutate(label=str_replace(label, " ", "."), Median = Median %>% exp)
+  if (nodeid){
+    nodeA = nodeid(tree_table, nodeA)
+    outNode = nodeid(tree_table, outNode)
+  }
+  real.node = tree_table %>% filter(node == MRCA(tree_table, nodeA, outNode) %>% pull(node)) %>% pull(node)
+  anc.node = tree_table %>% filter(node == MRCA(tree_table, nodeA, outNode) %>% pull(node)) %>% pull(parent)
+  bsize.A <- tree_table %>% 
+    filter(node == real.node) %>%
+    pull(Median)
+  # print(bsize.A)
+  bsize.B <- tree_table %>% 
+    filter(node == anc.node) %>% 
+    pull(Median)
+  # print(bsize.B)
+  ratio.bsize <- bsize.A/bsize.B
+  if (!is.numeric(ratio.bsize)) {warning(sprintf("%s is not numeric", ratio.bsize))}
+  ratio.bsize <- ifelse(
+    ratio.bsize<1, 
+    divide_by(1, ratio.bsize) %>% round(digits=2) %>% paste0(., "x decrease"), 
+    ratio.bsize %>% round(digits=2) %>% paste0(., "x increase")
+  )
+  return(ratio.bsize)
+}
+
+text.ratio.node.ancnode.byMRCA <- function(nodeA, outNode, tree_table=tree.Atlantogenata.table, nodeid=T){
+  tree_table %<>% mutate(label=str_replace(label, " ", "."), Median = Median %>% exp)
+  if (nodeid){
+    nodeA = nodeid(tree_table, nodeA)
+    outNode = nodeid(tree_table, outNode)
+  }
+  anc.node = MRCA(tree_table, nodeA, outNode) %>% pull(node)
+  bsize.A <- tree_table %>% 
+    filter(node == nodeA) %>%
+    pull(Median)
+  # print(bsize.A)
+  bsize.B <- tree_table %>% 
+    filter(node == anc.node) %>% 
+    pull(Median)
+  # print(bsize.B)
+  ratio.bsize <- bsize.A/bsize.B
+  if (!is.numeric(ratio.bsize)) {warning(sprintf("%s is not numeric", ratio.bsize))}
+  ratio.bsize <- ifelse(
+    ratio.bsize<1, 
+    divide_by(1, ratio.bsize) %>% round(digits=2) %>% paste0(., "x decrease"), 
+    ratio.bsize %>% round(digits=2) %>% paste0(., "x increase")
+  )
+  return(ratio.bsize)
+}
+
+text.ratio.node.ancnode.byNodes <- function(nodeA, anc.node, tree_table=tree.Atlantogenata.table){
+  tree_table %<>% mutate(label=str_replace(label, " ", "."), Median = Median %>% exp)
+  bsize.A <- tree_table %>% 
+    filter(node == nodeA) %>%  
+    pull(Median)
+  # print(bsize.A)
+  bsize.B <- tree_table %>% 
+    filter(node == anc.node) %>% 
+    pull(Median)
+  # print(bsize.B)
+  ratio.bsize <- bsize.A/bsize.B
+  if (!is.numeric(ratio.bsize)) {warning(sprintf("%s is not numeric", ratio.bsize))}
+  ratio.bsize <- ifelse(
+    ratio.bsize<1, 
+    divide_by(1, ratio.bsize) %>% round(digits=2) %>% paste0(., "x decrease"), 
+    ratio.bsize %>% round(digits=2) %>% paste0(., "x increase")
+  )
+  return(ratio.bsize)
+}
+
+text.ratio.node.ancnode.byLabel <- function(node.label, ancNode.label, tree_table=tree.Atlantogenata.table){
+  tree_table %<>% mutate(label=str_replace(label, " ", "."), Median = Median %>% exp)
+  bsize.A <- tree_table %>%
+    mutate(label=str_replace(label, " ", ".")) %>%  
+    filter(label==node.label) %>%
+    pull(Median)
+  # print(bsize.A)
+  bsize.B <- tree_table %>% 
+    mutate(label=str_replace(label, " ", ".")) %>% 
+    filter(label==ancNode.label) %>% 
+    pull(Median)
+  # print(bsize.B)
+  ratio.bsize <- bsize.A/bsize.B
+  if (!is.numeric(ratio.bsize)) {warning(sprintf("%s is not numeric", ratio.bsize))}
+  ratio.bsize <- ifelse(
+    ratio.bsize<1, 
+    1/ratio.bsize %>% round(digits=2) %>% paste0(., "x decrease"), 
+    ratio.bsize %>% round(digits=2) %>% paste0(., "x increase")
+  )
+  return(ratio.bsize)
+}
+
+text.ratio.node.ancnode.atLabel <- function(node.label, tree_table=tree.Atlantogenata.table){
+  tree_table %<>% mutate(label=str_replace(label, " ", "."), Median = Median %>% exp)
+  nodeA <- nodeid(tree_table, node.label)
+  anc.node <- parent(tree_table, node.label) %>% pull(node)
+  bsize.A <- tree_table %>%
+    filter(node==nodeA) %>%
+    pull(Median)
+  # print(bsize.A)
+  bsize.B <- tree_table %>% 
+    filter(node==anc.node) %>% 
+    pull(Median)
+  # print(bsize.B)
+  ratio.bsize <- bsize.A/bsize.B
+  if (!is.numeric(ratio.bsize)) {warning(sprintf("%s is not numeric", ratio.bsize))}
+  ratio.bsize <- ifelse(
+    ratio.bsize<1, 
+    1/ratio.bsize %>% round(digits=2) %>% paste0(., "x decrease"), 
+    ratio.bsize %>% round(digits=2) %>% paste0(., "x increase")
+  )
+  return(ratio.bsize)
+}
+
+
+text.bodysize.ancNode.byMRCA <- function(nodeLabelA, nodeLabelB, tree_table=tree.Atlantogenata.table){
+  tree_table %<>% mutate(label=str_replace(label, " ", "."), Median = Median %>% exp)
+  anc.node = MRCA(tree_table, nodeLabelA, nodeLabelB) %>% pull(node)
+  bsize <-  tree_table %>% 
+    filter(node == anc.node) %>% 
+    pull(Median) %>% 
+    divide_by(1000)
+  # print(bsize)
+  # print(class(bsize))
+  bsize <- ifelse(
+    bsize < 1,
+    bsize %>% multiply_by(1000) %>% round(., digits = 2) %>% paste0(., "g"),
+    bsize %>% round(digits = 2) %>% paste0(., "kg")
+  )
+    return(bsize)
+}
+
+text.bodysize.ancNode.byMRCA.CI <- function(nodeA, nodeB, tree_table=tree.Atlantogenata.table){
+  tree_table %<>% mutate(label=str_replace(label, " ", "."), Median = Median %>% exp)
+  anc.node = MRCA(tree_table, nodeA, nodeB) %>% pull(node)
+  bsize <-  tree_table %>% 
+    filter(node == anc.node) %>% 
+    select(CI_low=`95%CI_Low`, CI_High=`95%CI_High`) %>% 
+    transmute(CI_range = paste0(CI_low %>% exp %>% divide_by(1000) %>% round(digits=2), "kg-", CI_High %>% exp %>% divide_by(1000) %>% round(2), "kg")) %>% 
+    pull(CI_range)
+  return(bsize)
+}
+
+text.bodysizeCI.node.byLabel <- function(node.label, tree_table=tree.Atlantogenata.table){
+  tree_table %<>% mutate(label=str_replace(label, " ", "."), Median = Median %>% exp)
+  bsize <-  tree_table %>% 
+    filter(label == node.label) %>% 
+    select(CI_low=`95%CI_Low`, CI_High=`95%CI_High`) %>% 
+    transmute(CI_range = paste0(CI_low %>% exp %>% divide_by(1000) %>% round(digits=2), "kg-", CI_High %>% exp %>% divide_by(1000) %>% round(2), "kg")) %>% 
+    pull(CI_range)
+  return(bsize)
+}
+
+text.bodysize.byLabel <- function(node.label, tree_table=tree.Atlantogenata.table){
+  tree_table %<>% mutate(label=str_replace(label, " ", "."), Median = Median %>% exp)
+  bsize <-  tree_table %>% 
+    filter(label==node.label) %>% 
+    pull(Median) %>% 
+    divide_by(1000) %>% 
+    round(digits=2) %>% 
+    paste0(., "kg")
+  return(bsize)
+}
+
+as.percentage <- function(decimal){
+  scales::label_percent(accuracy = 0.01)(decimal)
+}
+subtract.rows <- function(r1, r2, exclude_vars){
+  keep.label <- r1 %>% select(parent, node, branch.length, label, starts_with(exclude_vars))
+  subtractand <- r1 %>% select(-parent, -node, -branch.length, -label, -starts_with(exclude_vars))
+  subtractor <- r2 %>% select(-parent, -node, -branch.length, -label, -starts_with(exclude_vars))
+  new.vals <- subtractand-subtractor
+  new.row <- cbind(keep.label, new.vals)
+  return(new.row)
+}
+
+gene.increase.tree <- function(tree.data, node=NULL, root.node=NULL, parent=NULL, exclude="lnSize"){
+  # Lol look at me programming a tree traversal algorithm
+  # first get root node
+  if (is.null(root.node)){
+    final.table <- tree.data %>% select(parent, node, branch.length, label)
+    root.node = rootnode(tree.data) %>% pull(node) %>% unique
+    my.node = root.node
+  } else{
+    my.node = node
+  }
+  parent.node = tree.data %>% filter(node==my.node) %>% pull(parent) %>% unique
+  child.nodes = child(tree.data, my.node) %>% pull(node)
+  if(length(child.nodes) != 0){
+    child.rows <- lapply(
+      child.nodes,
+      function(n, t = tree.data, r=root.node){
+        gene.increase.tree(tree.data = t, node=n, root.node = r)
+      }
+    ) %>% bind_rows() 
+  }else{
+    child.rows = tree.data %>% filter(label=="There's no way you'll match this as a label unless you're trying really hard.")
+  }
+  if(my.node != root.node){
+    t1 = tree.data %>% filter(node==my.node)
+    t2 = tree.data %>% filter(node==parent.node)
+    my.row <- subtract.rows(t1, t2, exclude_vars = exclude)
+  }else{
+    t1 = tree.data %>% filter(node==my.node)
+    t2 = tree.data %>% filter(node==root.node)
+    my.row <- subtract.rows(t1, t2, exclude_vars = exclude)
+  }
+  new.table <- bind_rows(my.row, child.rows) %>% as_tibble
+  if (my.node == root.node){
+    new.table <- new.table %>% as_tibble
+    new.table <- full_join(final.table, new.table, by=c("parent", "node", "branch.length", "label"))
+  }
+  return(new.table)
+}
+
+branch.size.ratio <- function(n, tree.data){
+  if(!is_tibble(tree.data)){tree.data %<>% as_tibble}
+  node.size <- tree.data %>% filter(node==n) %>% pull(lnSize) %>% unique() %>% exp
+  anc.node <- tree.data %>% filter(node==n) %>% pull(parent) %>% unique()
+  # print(label)
+  # print(anc.node)
+  anc.node.size <- tree.data %>% filter(node==anc.node) %>% pull(lnSize) %>% unique() %>% exp
+  ratio <- node.size %>% divide_by(anc.node.size) %>% log %>% round(digits=2)
+  return(ratio)
+}
+
+get.ancestor.label <- function(n, tree.data){
+  if(!is_tibble(tree.data)){tree.data %<>% as_tibble}
+  anc.node <- tree.data %>% filter(node==n) %>% pull(parent) %>% unique()
+  ancestor.label <- tree.data %>% filter(node==anc.node) %>% pull(label)
+  return(ancestor.label)
 }
