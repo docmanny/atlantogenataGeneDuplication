@@ -2,6 +2,8 @@ Pervasive duplication of tumor suppressors in Afrotherians during the evolution 
 =====
 <a content="https://www.biorxiv.org/content/10.1101/2020.09.10.291906v1" href="https://www.biorxiv.org/content/10.1101/2020.09.10.291906v1" rel="me noopener noreferrer" style="vertical-align:center;"><img alt="bioRxiv" src="https://www.biorxiv.org/sites/default/files/bioRxiv_article.jpg"><a/>
 
+[![DOI](https://zenodo.org/badge/315503791.svg)](https://zenodo.org/badge/latestdoi/315503791)
+
 This is the home of the reproducible manuscript for our publication. Here, you will find the instructions for how to properly set up your system to reproduce our results.
 
 Authors
